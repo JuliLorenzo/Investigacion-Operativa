@@ -18,4 +18,5 @@ public class Proveedor extends Base {
     private String nombreProveedor;
 
 
+
 }
