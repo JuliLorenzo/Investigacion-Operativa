@@ -12,6 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+
 public class OrdenCompraDetalle extends Base {
 
     @Column(name="cantidad_a_comprar")

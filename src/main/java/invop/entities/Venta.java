@@ -15,6 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+
 public class Venta extends Base{
 
 

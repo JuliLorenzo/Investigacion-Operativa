@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Getter
 @Setter
 @Builder
+
 public class Proveedor extends Base {
     @NotNull
     @Column(name = "nombre_proveedor")

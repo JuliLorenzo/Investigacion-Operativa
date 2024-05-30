@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Getter
 @Setter
 @Builder
+
 public class Articulo extends Base {
 
     @NotNull

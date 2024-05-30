@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+
 public class OrdenCompra extends Base{
 
     @Column(name = "fecha_orden_compra")
