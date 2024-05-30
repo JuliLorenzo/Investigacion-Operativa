@@ -7,7 +7,7 @@ import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
-@Table(name = "articulo_insumo")
+@Table(name = "venta_detalles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,7 +16,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class VentaDetalle extends Base{
 
     @NotNull
-    @Column(name = "venta_detalle")
-    private int venta_detalle;
+    @Column(name = "cantidad_vendida")
+    private int cantidadVendida;
 
 }

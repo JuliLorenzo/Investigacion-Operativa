@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "articulo_insumo")
+@Table(name = "ventas")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -19,6 +19,6 @@ public class Venta extends Base{
 
     @NotNull
     @Column(name = "fecha_venta")
-    private Date fecha_venta;
+    private Date fechaVenta;
 
 }

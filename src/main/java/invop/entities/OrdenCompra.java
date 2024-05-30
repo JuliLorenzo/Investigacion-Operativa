@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "orden_compra")
+@Table(name = "ordenes_compra")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -29,7 +29,6 @@ public class OrdenCompra extends Base{
     @JoinColumn(name="id_orden_compra")
     @Builder.Default
     private List<OrdenCompraDetalle> ordenCompraDetalles = new ArrayList<>();
-
 
     public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
         ordenCompraDetalles.add(ordenCompraDetalle);

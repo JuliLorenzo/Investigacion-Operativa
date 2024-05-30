@@ -1,15 +1,14 @@
 package invop.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.Date;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 
 @Entity
-@Table(name = "DemandaHistorica")
+@Table(name = "demandas_historicas")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -19,11 +18,16 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class DemandaHistorica extends Base {
 
     @NotNull
-    @Column(name = "demanda_historica")
-    private Date fecha_desde;
+    @Column(name = "fecha_desde")
+    private Date fechaDesde;
 
     @NotNull
     @Column(name = "fecha_hasta")
-    private Date fecha_hasta;
+    private Date fechaHasta;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_articulo")
+    private Articulo articulo;
 
 }
