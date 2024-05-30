@@ -2,6 +2,7 @@ package invop.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,4 +35,9 @@ public class OrdenCompra extends Base{
     public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
         ordenCompraDetalles.add(ordenCompraDetalle);
     }
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
 }

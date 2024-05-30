@@ -1,11 +1,9 @@
 package invop.entities;
 
 import jakarta.persistence.*;
-
 import java.util.Date;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
-
 
 @Entity
 @Table(name = "demandas_historicas")
