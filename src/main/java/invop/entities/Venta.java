@@ -17,6 +17,7 @@ import java.util.Date;
 @Builder
 public class Venta extends Base{
 
+
     @NotNull
     @Column(name = "fecha_venta")
     private Date fechaVenta;
