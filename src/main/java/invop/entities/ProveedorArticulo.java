@@ -19,7 +19,6 @@ public class ProveedorArticulo extends Base {
     private Double precioArticuloProveedor;
 
     @ManyToOne
-    @MapsId("articuloId")
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
 
