@@ -2,6 +2,8 @@ package invop.entities;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
+
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -26,5 +28,8 @@ public class DemandaHistorica extends Base {
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
+
+    @ManyToMany(mappedBy = "demandaHistoricaList")
+    private List<PrediccionDemanda> prediccionDemandaList;
 
 }
