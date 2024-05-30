@@ -18,17 +18,10 @@ public class ProveedorArticulo extends Base {
     @Column(name = "precio_articulo_proveedor")
     private Double precioArticuloProveedor;
 
-    @EmbeddedId
-    private ProveedorArticuloId id;
-
     @ManyToOne
     @MapsId("articuloId")
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
 
-    @ManyToOne
-    @MapsId("proveedorId")
-    @JoinColumn(name = "proveedor_id")
-    private Proveedor proveedor;
 
 }
