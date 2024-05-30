@@ -15,8 +15,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Proveedor extends Base {
     @NotNull
     @Column(name = "nombre_proveedor")
-    private String nombreProveedor;
-
-
+    private String nombre_proveedor;
 
 }

@@ -24,7 +24,7 @@ public class TestConnection {
                 System.out.println("nombre del articulo: " + nombreArticulo);
             }
 
-        }catch(SQLException e){
+        } catch(SQLException e) {
             System.out.println("Error al conectar con la base de datos: " + e.getMessage());
         }
     }
