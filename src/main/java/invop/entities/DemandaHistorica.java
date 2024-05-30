@@ -16,6 +16,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Setter
 @Builder
 
+
+
 public class DemandaHistorica extends Base {
 
     @NotNull

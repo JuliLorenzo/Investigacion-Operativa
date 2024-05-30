@@ -27,7 +27,7 @@ public class Articulo extends Base {
     @Column(name = "cantidad_articulo")
     private int cantidad_articulo;
 
-    @Column(name = "lote_optimo_articulo")
+    @Column(name = "lote_optimo_articulo", insertable = false, updatable = false)
     private int lote_optimo_articulo;
 
     @Column(name = "punto_pedido_articulo")
