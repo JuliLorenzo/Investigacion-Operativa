@@ -37,7 +37,7 @@ public class Articulo extends Base {
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_articulo")
     @Builder.Default
     private List<OrdenCompra> ordenesCompra = new ArrayList<>();

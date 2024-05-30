@@ -27,7 +27,7 @@ public class OrdenCompra extends Base{
     @Column(name = "total_orden_compra")
     private double totalOrdenCompra;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_orden_compra")
     @Builder.Default
     private List<OrdenCompraDetalle> ordenCompraDetalles = new ArrayList<>();

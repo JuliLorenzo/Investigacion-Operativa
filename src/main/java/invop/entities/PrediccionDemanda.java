@@ -25,7 +25,7 @@ public class PrediccionDemanda extends Base{
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
             name ="historicas-predicciones",
             joinColumns = @JoinColumn(name = "prediccion_demanda_id"),
