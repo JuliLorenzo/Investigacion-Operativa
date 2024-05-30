@@ -30,10 +30,10 @@ public class Articulo extends Base {
     @Column(name = "lote_optimo_articulo")
     private int lote_optimo_articulo;
 
-    @Column(name = "lote_optimo_articulo")
+    @Column(name = "punto_pedido_articulo")
     private int punto_pedido_articulo;
 
-    @Column(name = "lote_optimo_articulo")
+    @Column(name = "stock_seguridad_articulo")
     private int stock_seguridad_articulo;
 
     @Column(name = "cgi_articulo")
