@@ -1,4 +1,7 @@
 package invop.repositorios;
 
-public interface VentaRepositorio {
+import invop.entities.DemandaHistorica;
+import invop.entities.Venta;
+
+public interface VentaRepositorio extends BaseRepositorio<Venta, Long>{
 }
