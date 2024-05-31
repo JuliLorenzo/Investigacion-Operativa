@@ -20,4 +20,6 @@ public class VentaDetalle extends Base{
     @Column(name = "cantidad_vendida")
     private int cantidadVendida;
 
+
+
 }

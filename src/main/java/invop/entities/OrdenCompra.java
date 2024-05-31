@@ -32,12 +32,12 @@ public class OrdenCompra extends Base{
     @Builder.Default
     private List<OrdenCompraDetalle> ordenCompraDetalles = new ArrayList<>();
 
-    public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
-        ordenCompraDetalles.add(ordenCompraDetalle);
-    }
-
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedor;
+
+    public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
+        ordenCompraDetalles.add(ordenCompraDetalle);
+    }
 }
