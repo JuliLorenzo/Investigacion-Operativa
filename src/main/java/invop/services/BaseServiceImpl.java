@@ -13,6 +13,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     protected BaseRepository<E, ID> baseRepository;
 
     public BaseServiceImpl(BaseRepository<E, ID> baseRepository) {
+
         this.baseRepository = baseRepository;
     }
 

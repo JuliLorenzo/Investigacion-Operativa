@@ -10,6 +10,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Autowired
     public ArticuloServiceImpl(ArticuloRepository articuloRepository) {
+
         super(articuloRepository);
     }
 

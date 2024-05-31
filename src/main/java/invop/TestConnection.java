@@ -18,8 +18,8 @@ public class TestConnection {
             ResultSet resultSet = statement.executeQuery(queryPrueba);
             //mostrar resultados de la query
             while(resultSet.next()){
-                String idArticulo = resultSet.getString("idArticulo");
-                String nombreArticulo = resultSet.getString("nombreArticulo");
+                String idArticulo = resultSet.getString("id");
+                String nombreArticulo = resultSet.getString("nombre_articulo");
                 System.out.println("id del articulo: " + idArticulo);
                 System.out.println("nombre del articulo: " + nombreArticulo);
             }
