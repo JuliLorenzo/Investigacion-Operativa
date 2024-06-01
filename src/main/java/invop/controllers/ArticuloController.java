@@ -11,4 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "api/v1/articulos")
 
 public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloServiceImpl> {
+
 }
