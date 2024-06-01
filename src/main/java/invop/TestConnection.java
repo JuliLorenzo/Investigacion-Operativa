@@ -13,15 +13,25 @@ public class TestConnection {
 
         try (Connection connection = DriverManager.getConnection(url, username, password)){
             System.out.println("Conexion exitosa");
-            String queryPrueba = "SELECT * FROM Articulos";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(queryPrueba);
+            String queryPruebaArticulos = "SELECT * FROM Articulos";
+            Statement statement1 = connection.createStatement();
+            ResultSet resultSet1 = statement1.executeQuery(queryPruebaArticulos);
             //mostrar resultados de la query
-            while(resultSet.next()){
-                String idArticulo = resultSet.getString("id");
-                String nombreArticulo = resultSet.getString("nombre_articulo");
+            while(resultSet1.next()){
+                String idArticulo = resultSet1.getString("id");
+                String nombreArticulo = resultSet1.getString("nombre_articulo");
                 System.out.println("id del articulo: " + idArticulo);
                 System.out.println("nombre del articulo: " + nombreArticulo);
+            }
+            String queryPruebaVentas = "SELECT * FROM Ventas";
+            Statement statement2 = connection.createStatement();
+            ResultSet resultSet2 = statement2.executeQuery(queryPruebaVentas);
+            //mostrar resultados de la query
+            while(resultSet2.next()){
+                String idVenta = resultSet2.getString("id");
+                String fechaVenta = resultSet2.getString("fecha_venta");
+                System.out.println("id de venta: " + idVenta);
+                System.out.println("fecha de venta: " + fechaVenta);
             }
 
         } catch(SQLException e) {

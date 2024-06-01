@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -19,15 +20,14 @@ import java.util.Date;
 public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>{
 
     @GetMapping("/findVentasByFechas")
-    public ResponseEntity<?> findVentasByFechas(@RequestParam String desde, @RequestParam  String hasta) {
+    public ResponseEntity<?> findVentasByFechas(@RequestParam LocalDate desde, @RequestParam LocalDate hasta) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
-            Date fechaDesde = formatter.parse(desde);
-            Date fechaHasta = formatter.parse(hasta);
+            LocalDate fechaDesde = desde;
+            LocalDate fechaHasta = hasta;
             return ResponseEntity.status(HttpStatus.OK).body(servicio.findVentasByFechas(fechaDesde, fechaHasta));
-        }catch(Exception e){
+        } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
-
     }
 }

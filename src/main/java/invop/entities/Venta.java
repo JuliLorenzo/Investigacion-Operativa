@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.time.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,10 +18,9 @@ import java.util.List;
 
 public class Venta extends Base{
 
-
     @NotNull
     @Column(name = "fecha_venta")
-    private Date fechaVenta;
+    private LocalDate fechaVenta;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_venta")

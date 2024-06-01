@@ -6,6 +6,7 @@ import invop.repositories.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     }
 
     @Override
-    public List<Venta> findVentasByFechas(Date fechaDesde, Date fechaHasta) throws Exception{
+    public List<Venta> findVentasByFechas(LocalDate fechaDesde, LocalDate fechaHasta) throws Exception {
         try {
             List<Venta> buscarVentas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
             return buscarVentas;
