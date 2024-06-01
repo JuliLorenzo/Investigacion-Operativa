@@ -34,4 +34,6 @@ public class Venta extends Base{
     public void agregarDetalleVenta(VentaDetalle ventaDetalle){
         ventaDetalles.add(ventaDetalle);
     }
+
+
 }

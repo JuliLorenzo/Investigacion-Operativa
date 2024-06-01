@@ -19,7 +19,7 @@ public class PrediccionDemanda extends Base{
 
     @NotNull
     @Column(name = "valor_prediccion")
-    private int valorPrediccion;
+    private Integer valorPrediccion;
 
     @ManyToOne
     @JoinColumn(name = "articulo_id")

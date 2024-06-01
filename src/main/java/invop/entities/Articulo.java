@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "articulos")
@@ -23,16 +24,16 @@ public class Articulo extends Base {
 
     @NotNull
     @Column(name = "cantidad_articulo")
-    private int cantidadArticulo;
+    private Integer cantidadArticulo;
 
     @Column(name = "lote_optimo_articulo")
-    private int loteOptimoArticulo;
+    private Integer loteOptimoArticulo;
 
     @Column(name = "punto_pedido_articulo")
-    private int puntoPedidoArticulo;
+    private Integer puntoPedidoArticulo;
 
     @Column(name = "stock_seguridad_articulo")
-    private int stockSeguridadArticulo;
+    private Integer stockSeguridadArticulo;
 
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;

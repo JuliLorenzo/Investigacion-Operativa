@@ -16,7 +16,7 @@ public class VentaDetalle extends Base{
 
     @NotNull
     @Column(name = "cantidad_vendida")
-    private int cantidadVendida;
+    private Integer cantidadVendida;
 
 
 

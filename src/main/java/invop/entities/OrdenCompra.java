@@ -25,7 +25,7 @@ public class OrdenCompra extends Base{
     private String estadoOrdenCompra;
 
     @Column(name = "total_orden_compra")
-    private double totalOrdenCompra;
+    private Double totalOrdenCompra;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_orden_compra")

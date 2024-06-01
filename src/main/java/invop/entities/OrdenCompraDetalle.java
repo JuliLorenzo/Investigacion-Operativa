@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class OrdenCompraDetalle extends Base {
 
     @Column(name="cantidad_a_comprar")
-    private int cantidadAComprar;
+    private Integer cantidadAComprar;
 
     @NotNull
     @ManyToOne()
