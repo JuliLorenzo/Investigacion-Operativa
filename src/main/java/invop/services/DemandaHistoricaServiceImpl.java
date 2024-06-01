@@ -17,9 +17,7 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
         this.demandaHistoricaRepository = demandaHistoricaRepository;
     }
 
-    public void calcularDemandaHistorica(Date fechaDesde, Date fechaHasta, Long idArticulo){
-
-    }
+    public void calcularDemandaHistorica(Date fechaDesde, Date fechaHasta, Long idArticulo){}
 
 }
 
