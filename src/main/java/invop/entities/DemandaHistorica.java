@@ -1,6 +1,8 @@
 package invop.entities;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -18,11 +20,11 @@ public class DemandaHistorica extends Base {
 
     @NotNull
     @Column(name = "fecha_desde")
-    private Date fechaDesde;
+    private LocalDate fechaDesde;
 
     @NotNull
     @Column(name = "fecha_hasta")
-    private Date fechaHasta;
+    private LocalDate fechaHasta;
 
     @NotNull
     @Column(name = "cantidad_vendida")
