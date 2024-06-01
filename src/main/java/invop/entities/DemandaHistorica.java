@@ -25,6 +25,10 @@ public class DemandaHistorica extends Base {
     private Date fechaHasta;
 
     @NotNull
+    @Column(name = "cantidad_vendida")
+    private Date cantidadVendida;
+
+    @NotNull
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
