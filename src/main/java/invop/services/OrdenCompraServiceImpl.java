@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> implements OrdenCompraService {
 
     @Autowired
+    private OrdenCompraRepository ordenCompraRepository;
     public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository){
         super(ordenCompraRepository);
+        this.ordenCompraRepository = ordenCompraRepository;
     }
 }

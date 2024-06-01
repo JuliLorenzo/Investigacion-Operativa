@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArticulo, Long> implements ProveedorArticuloService {
 
     @Autowired
+    private ProveedorArticuloRepository proveedorArticuloRepository;
     public ProveedorArticuloServiceImpl(ProveedorArticuloRepository proveedorArticuloRepository){
         super(proveedorArticuloRepository);
+        this.proveedorArticuloRepository = proveedorArticuloRepository;
     }
 }

@@ -1,7 +1,7 @@
 package invop.controllers;
 
 import invop.entities.DemandaHistorica;
-import invop.services.DemandaHistoricaImpl;
+import invop.services.DemandaHistoricaServiceImpl;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/demandashistoricas")
 
-public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistorica, DemandaHistoricaImpl> {
+public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistorica, DemandaHistoricaServiceImpl> {
 }

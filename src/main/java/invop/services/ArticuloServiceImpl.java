@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> implements ArticuloService {
 
     @Autowired
+    private ArticuloRepository articuloRepository;
     public ArticuloServiceImpl(ArticuloRepository articuloRepository) {
         super(articuloRepository);
+        this.articuloRepository = articuloRepository;
     }
-
 }

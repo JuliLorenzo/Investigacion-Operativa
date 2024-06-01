@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 public class VentaDetalleServiceImpl extends BaseServiceImpl<VentaDetalle, Long> implements VentaDetalleService {
 
     @Autowired
+    private VentaDetalleRepository ventaDetalleRepository;
     public VentaDetalleServiceImpl(VentaDetalleRepository ventaDetalleRepository){
         super(ventaDetalleRepository);
+        this.ventaDetalleRepository = ventaDetalleRepository;
     }
 }
