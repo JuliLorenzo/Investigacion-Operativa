@@ -3,7 +3,9 @@ package invop.services;
 import invop.entities.Articulo;
 import invop.entities.DemandaHistorica;
 
-public interface DemandaHistoricaService extends BaseService<DemandaHistorica, Long> {
+import java.time.LocalDate;
 
+public interface DemandaHistoricaService extends BaseService<DemandaHistorica, Long> {
+    public void calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) throws Exception;
 }
 
