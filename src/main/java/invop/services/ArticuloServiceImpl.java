@@ -2,6 +2,7 @@ package invop.services;
 
 import invop.entities.Articulo;
 import invop.repositories.ArticuloRepository;
+import invop.repositories.BaseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Autowired
     private ArticuloRepository articuloRepository;
-    public ArticuloServiceImpl(ArticuloRepository articuloRepository) {
-        super(articuloRepository);
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
+        super(baseRepository);
         this.articuloRepository = articuloRepository;
     }
 
@@ -51,6 +52,23 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         try {
             return 0; //LO DEJO EN CERO PQ TODAVIA NO SE COMO SE CALCULA xd
         }catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception{
+        try {
+            int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
+            int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
+
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+
+            articulo.setLoteOptimoArticulo(loteOptimoCalculado);
+            articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
+
+        } catch(Exception e ){
             throw new Exception(e.getMessage());
         }
     }
