@@ -7,4 +7,9 @@ import java.util.List;
 public interface ArticuloService extends BaseService<Articulo, Long> {
     // Métodos específicos de Articulo
 
+    //METODOS PARA EL EOQ
+    public int calculoLoteOptimo(int demandaAnterior, double costoPedido, double costoAlmacenamiento) throws Exception;
+    public int calculoPuntoPedido(int demandaAnterior, double tiempoDemoraProveedor) throws Exception;
+
+    public int calculoStockSeguridad() throws Exception;
 }
