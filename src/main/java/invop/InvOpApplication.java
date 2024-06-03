@@ -14,6 +14,7 @@ public class InvOpApplication {
 
 		SpringApplication.run(InvOpApplication.class, args);
 		TestConnection.main(args);
+
 		//calcularDemandaHistorica();
 	}
 

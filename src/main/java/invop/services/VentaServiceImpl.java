@@ -33,6 +33,21 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
     public double calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
         List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
+        double cantidadTotalVendida = 0;
+
+        //recorrer ventas y acumular la cantidad vendida del articulo
+        for (Venta venta : ventas) {
+            for (VentaDetalle detalle : venta.getVentaDetalles()) {
+                if (detalle.getArticulo().getId().equals(idArticulo)) {
+                    cantidadTotalVendida = cantidadTotalVendida + detalle.getCantidadVendida();
+                }
+            }
+        }
+        return cantidadTotalVendida;
+    }
+
+        /* public double calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
+        List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
 
         double cantidadTotalVendida = 0;
 
@@ -45,15 +60,15 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     }
 
     private double calcularCantidadVendidaArticulo(Venta venta, Long idArticulo) {
-        double cantidadTotalVendida = 0;
+        double cantidadVendida = 0;
 
         for (VentaDetalle detalle : venta.getVentaDetalles()) {
             if (detalle.getArticulo().getId().equals(idArticulo)) {
-                cantidadTotalVendida += detalle.getCantidadVendida();
+                cantidadVendida += detalle.getCantidadVendida();
             }
         }
-        return cantidadTotalVendida;
-    }
+        return cantidadVendida;*/
+
 }
 
 
