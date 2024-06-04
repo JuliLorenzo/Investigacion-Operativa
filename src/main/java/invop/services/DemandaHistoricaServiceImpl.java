@@ -17,10 +17,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     @Autowired
     private DemandaHistoricaRepository demandaHistoricaRepository;
 
-    /* @Autowired
-   private VentaRepository ventaRepository;
-   */
-
     @Autowired
    private ArticuloRepository articuloRepository;
 
@@ -36,16 +32,16 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     }
 
     public void crearDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        double cantidadTotalFinal = calcularDemandaHistorica(fechaDesde,fechaHasta,idArticulo);
+        int cantidadTotalFinal = calcularDemandaHistorica(fechaDesde,fechaHasta,idArticulo);
         nuevaDemandaHistorica(fechaDesde, fechaHasta, idArticulo, cantidadTotalFinal);
     }
 
-    public Double calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        double cantidadTotal = ventaService.calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
+    public Integer calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
+        int cantidadTotal = ventaService.calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
         return cantidadTotal;
     }
 
-    public void nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Double cantidadTotal){
+    public void nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Integer cantidadTotal){
         DemandaHistorica demandaHistorica = new DemandaHistorica();
         demandaHistorica.setFechaDesde(fechaDesde);
         demandaHistorica.setFechaHasta(fechaHasta);
@@ -53,30 +49,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
         demandaHistorica.setArticulo(articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado")));
         demandaHistoricaRepository.save(demandaHistorica);
     }
-
- /* public void calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
-
-        double cantidadTotalVendida = 0;
-        //recorrer ventas y acumular la cantidad vendida del articulo
-        for(Venta venta : ventas){
-            for(VentaDetalle detalle : venta.getVentaDetalles()){
-                if (detalle.getArticulo().getId().equals(idArticulo)){
-                    cantidadTotalVendida = cantidadTotalVendida + detalle.getCantidadVendida();
-                }
-            }
-        }
-        //crear y guardar la demanda historica
-        DemandaHistorica demandaHistorica = new DemandaHistorica();
-        demandaHistorica.setFechaDesde(fechaDesde);
-        demandaHistorica.setFechaHasta(fechaHasta);
-        demandaHistorica.setCantidadVendida(cantidadTotalVendida);
-        demandaHistorica.setArticulo(articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado")));
-
-        demandaHistoricaRepository.save(demandaHistorica);
-    }
-    */
-
 
 }
 

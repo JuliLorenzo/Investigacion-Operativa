@@ -9,7 +9,7 @@ import java.util.List;
 public interface VentaService extends BaseService<Venta, Long> {
     List<Venta> findVentasByFechas(LocalDate fechaDesde, LocalDate fechaHasta) throws Exception;
 
-    double calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo);
+    Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo);
 
 
     }
