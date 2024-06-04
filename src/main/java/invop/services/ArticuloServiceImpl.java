@@ -1,20 +1,30 @@
 package invop.services;
 
 import invop.entities.Articulo;
+import invop.entities.OrdenCompra;
+import invop.entities.OrdenCompraDetalle;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
+import invop.repositories.OrdenCompraRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> implements ArticuloService {
 
     @Autowired
     private ArticuloRepository articuloRepository;
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository) {
+
+    @Autowired
+    private OrdenCompraService ordenCompraService;
+
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
+        this.ordenCompraService = ordenCompraService;
     }
 
 
@@ -71,6 +81,29 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         } catch(Exception e ){
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    @Transactional
+    public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception{
+        List<OrdenCompra> ordenesPendientes = ordenCompraService.findOrdenCompraByEstado("Pendiente");
+        List<OrdenCompra> ordenesEnCurso = ordenCompraService.findOrdenCompraByEstado("En curso");
+        boolean existe = false;
+        for(OrdenCompra ordenCompra : ordenesPendientes){
+            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
+                if (detalle.getArticulo().getId().equals(idArticulo)){
+                    existe = true;
+                }
+            }
+        }
+        for(OrdenCompra ordenCompra : ordenesEnCurso){
+            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
+                if (detalle.getArticulo().getId().equals(idArticulo)){
+                    existe = true;
+                }
+            }
+        }
+        return existe;
     }
 
 }

@@ -12,5 +12,6 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public int calculoStockSeguridad() throws Exception;
 
     public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception;
-    //
+
+    public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception;
 }
