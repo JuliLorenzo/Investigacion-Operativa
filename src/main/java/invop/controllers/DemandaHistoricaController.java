@@ -21,24 +21,25 @@ public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistor
 
     @Autowired
     private DemandaHistoricaService demandaHistoricaService;
+
     @PostMapping("/calcularDemandaHistorica")
     public ResponseEntity<?> calcularDemandaHistorica(
             @RequestParam LocalDate desde, @RequestParam LocalDate hasta, @RequestParam Long idArticulo
     ) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                LocalDate fechaDesde = desde;
-                LocalDate fechaHasta = hasta;
-                demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
-                return ResponseEntity.ok().build();
-            } catch(EntityNotFoundException e){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Articulo no encontrado");
-            } catch (IllegalArgumentException e){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parametros inválidos");
-            } catch(Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error inesperado");
-            }
+        try {
+            LocalDate fechaDesde = desde;
+            LocalDate fechaHasta = hasta;
+            demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+            return ResponseEntity.ok().build();
+        } catch(EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Articulo no encontrado");
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parametros inválidos");
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error inesperado");
         }
+    }
 
 
 }
