@@ -83,6 +83,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
+
+    //!!!!!!!!! ESTO LO SEPARARIA, Q SEA UN METODO PARA BUSCAR LAS PENDIENTES Y OTRO PARA LAS Q ESTAN EN CURSO
     @Override
     @Transactional
     public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception{
