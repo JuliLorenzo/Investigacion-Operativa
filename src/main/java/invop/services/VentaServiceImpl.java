@@ -31,11 +31,11 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         }
     }
 
-    public double calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
+    public Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
         List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
         System.out.println("Ventas encontradas: " + ventas.size());
 
-        double cantidadTotalVendida = 0;
+        Integer cantidadTotalVendida = 0;
 
         //recorrer ventas y acumular la cantidad vendida del articulo
         for (Venta venta : ventas) {

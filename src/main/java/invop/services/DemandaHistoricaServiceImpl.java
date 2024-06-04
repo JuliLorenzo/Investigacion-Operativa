@@ -36,16 +36,16 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     }
 
     public void crearDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        double cantidadTotalFinal = calcularDemandaHistorica(fechaDesde,fechaHasta,idArticulo);
+        Integer cantidadTotalFinal = calcularDemandaHistorica(fechaDesde,fechaHasta,idArticulo);
         nuevaDemandaHistorica(fechaDesde, fechaHasta, idArticulo, cantidadTotalFinal);
     }
 
-    public Double calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        double cantidadTotal = ventaService.calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
+    public Integer calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
+        Integer cantidadTotal = ventaService.calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
         return cantidadTotal;
     }
 
-    public void nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Double cantidadTotal){
+    public void nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Integer cantidadTotal){
         DemandaHistorica demandaHistorica = new DemandaHistorica();
         demandaHistorica.setFechaDesde(fechaDesde);
         demandaHistorica.setFechaHasta(fechaHasta);
