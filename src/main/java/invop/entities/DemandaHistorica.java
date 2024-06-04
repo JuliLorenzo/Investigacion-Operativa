@@ -28,7 +28,7 @@ public class DemandaHistorica extends Base {
 
     @NotNull
     @Column(name = "cantidad_vendida")
-    private Double cantidadVendida;
+    private Integer cantidadVendida;
 
     @NotNull
     @ManyToOne()
