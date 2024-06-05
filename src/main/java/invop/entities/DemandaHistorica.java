@@ -1,11 +1,8 @@
 package invop.entities;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.*;
 import java.util.List;
-
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
