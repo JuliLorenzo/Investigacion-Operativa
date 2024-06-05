@@ -13,7 +13,7 @@ public class TestConnection {
 
         try (Connection connection = DriverManager.getConnection(url, username, password)){
             System.out.println("Conexion exitosa");
-            String queryPruebaArticulos = "SELECT * FROM Articulos";
+            /* String queryPruebaArticulos = "SELECT * FROM Articulos";
             Statement statement1 = connection.createStatement();
             ResultSet resultSet1 = statement1.executeQuery(queryPruebaArticulos);
             //mostrar resultados de la query
@@ -32,7 +32,7 @@ public class TestConnection {
                 String fechaVenta = resultSet2.getString("fecha_venta");
                 System.out.println("id de venta: " + idVenta);
                 System.out.println("fecha de venta: " + fechaVenta);
-            }
+            }*/
 
         } catch(SQLException e) {
             System.out.println("Error al conectar con la base de datos: " + e.getMessage());

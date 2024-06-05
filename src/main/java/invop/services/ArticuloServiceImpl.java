@@ -27,7 +27,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         this.ordenCompraService = ordenCompraService;
     }
 
-
     @Override
     @Transactional
     public int calculoLoteOptimo(int demandaAnterior, double costoPedido, double costoAlmacenamiento) throws Exception {
