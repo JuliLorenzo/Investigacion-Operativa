@@ -18,6 +18,13 @@ public class ProveedorArticulo extends Base {
     @Column(name = "precio_articulo_proveedor")
     private Double precioArticuloProveedor;
 
+    @Column(name = "costo_pedido")
+    private Double costoPedidoArticuloProveedor;
+
+    @Column(name = "costo_almacenamiento")
+    private Double costoAlmacenamientoArticuloProveedor;
+
+
     @ManyToOne
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;

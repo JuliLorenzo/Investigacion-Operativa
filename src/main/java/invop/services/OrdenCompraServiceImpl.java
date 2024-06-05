@@ -5,6 +5,8 @@ import invop.repositories.OrdenCompraRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.List;
 
@@ -13,9 +15,12 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
 
     @Autowired
     private OrdenCompraRepository ordenCompraRepository;
-    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository){
+
+
+    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository, OrdenCompraDetalleService ordenCompraDetalleService){
         super(ordenCompraRepository);
         this.ordenCompraRepository = ordenCompraRepository;
+
     }
 
 

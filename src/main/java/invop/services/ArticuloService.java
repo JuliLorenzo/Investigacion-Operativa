@@ -14,4 +14,6 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception;
 
     public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception;
-}
+    public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
+
+    }

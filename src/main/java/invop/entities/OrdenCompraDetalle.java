@@ -17,8 +17,13 @@ public class OrdenCompraDetalle extends Base {
     @Column(name="cantidad_a_comprar")
     private Integer cantidadAComprar;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_orden_compra")
+    private OrdenCompra ordenCompra;
+
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
+
 }

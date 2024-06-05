@@ -13,5 +13,8 @@ import java.util.List;
 @Repository
 public interface OrdenCompraDetalleRepository extends BaseRepository<OrdenCompraDetalle, Long> {
 
+    //List<OrdenCompraDetalle> findByArticuloId(Long articuloId);
+    @Query("SELECT o FROM OrdenCompraDetalle o WHERE o.articulo.id = :articuloId")
+    List<OrdenCompraDetalle> findByArticuloId(@Param("articuloId") Long articuloId);
 
 }

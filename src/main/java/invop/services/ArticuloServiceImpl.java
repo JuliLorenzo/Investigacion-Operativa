@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -21,10 +22,14 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Autowired
     private OrdenCompraService ordenCompraService;
 
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService) {
+    @Autowired
+    private OrdenCompraDetalleService ordenCompraDetalleService;
+
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, OrdenCompraDetalleService ordenCompraDetalleService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
+        this.ordenCompraDetalleService = ordenCompraDetalleService;
     }
 
     @Override
@@ -107,4 +112,15 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return existe;
     }
 
+    //Controla que el Articulo no tenga Ordenes de Compras Activas.
+    @Transactional
+    public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
+        try {
+            boolean ordenActiva = ordenCompraDetalleService.articuloConOrdenActiva(idArticulo);
+            return ordenActiva;
+
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 }
