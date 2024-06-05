@@ -113,14 +113,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
-    @Transactional
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
-        try {
             boolean ordenActiva = ordenCompraDetalleService.articuloConOrdenActiva(idArticulo);
             return ordenActiva;
-
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
     }
+
+
+
+
 }
