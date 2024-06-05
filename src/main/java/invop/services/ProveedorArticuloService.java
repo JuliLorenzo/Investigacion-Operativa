@@ -8,4 +8,6 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public List<Object> findProveedoresByArticulo(String filtroArticulo) throws Exception;
 
+    public List<Object> findArticulosByProveedor(String filtroProveedor) throws Exception;
+
 }

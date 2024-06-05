@@ -30,4 +30,15 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    @Transactional
+    public List<Object> findArticulosByProveedor(String filtroProveedor) throws Exception {
+        try {
+            List<Object> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
+            return buscarArticulos;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 }
