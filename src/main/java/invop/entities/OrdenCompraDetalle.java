@@ -22,9 +22,5 @@ public class OrdenCompraDetalle extends Base {
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
 
-    @NotNull
-    @ManyToOne()
-    @JoinColumn(name = "id_orden_compra")
-    private OrdenCompra ordenCompra;
 
 }

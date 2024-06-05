@@ -19,21 +19,7 @@ public class OrdenCompraDetalleServiceImpl extends BaseServiceImpl<OrdenCompraDe
         super(ordenCompraDetalleRepository);
         this.ordenCompraDetalleRepository = ordenCompraDetalleRepository;
     }
-    public boolean articuloConOrdenActiva(Long articuloId) {
-        //Busca los detalles las ordenes de compra del Articulo
-        List<OrdenCompraDetalle> detalles = ordenCompraDetalleRepository.findByArticuloId(articuloId);
 
-        //Controla si algun detalle corresponde a una Orden de Compra Activa
-        for (OrdenCompraDetalle detalle : detalles) {
-            OrdenCompra ordenCompra = detalle.getOrdenCompra();
-            if (ordenCompra != null &&
-                    ("En curso".equalsIgnoreCase(ordenCompra.getEstadoOrdenCompra()) ||
-                            "Pendiente".equalsIgnoreCase(ordenCompra.getEstadoOrdenCompra()))) {
-                return true;
-            }
-        }
-        return false;
-    }
     }
 
 

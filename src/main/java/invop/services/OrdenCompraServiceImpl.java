@@ -1,6 +1,7 @@
 package invop.services;
 
 import invop.entities.OrdenCompra;
+import invop.entities.OrdenCompraDetalle;
 import invop.repositories.OrdenCompraRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> implements OrdenCompraService {
@@ -23,7 +25,6 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
 
     }
 
-
     @Override
     @Transactional
     public List<OrdenCompra> findOrdenCompraByEstado(String filtroEstado) throws Exception{
@@ -35,6 +36,30 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         }
     }
 
+    public boolean articuloConOrdenActiva(Long articuloId) throws Exception{
+        try {
+            List<OrdenCompra> ordenesPendiente = findOrdenCompraByEstado("Pendiente");
+            List<OrdenCompra> ordenesEnCurso = findOrdenCompraByEstado("En Curso");
+
+            List<OrdenCompra> ordenesActivas = new ArrayList<>(ordenesPendiente);
+            ordenesActivas.addAll(ordenesEnCurso);
+
+            //Recorrer las ordenes de compra activas
+            for (OrdenCompra orden : ordenesActivas) {
+                //Recorre los detalles de las ordenes de compras
+                for (OrdenCompraDetalle detalle : orden.getOrdenCompraDetalles()) {
+                    //Verificar si el detalle contiene el articulo ingresado
+                    if (detalle.getArticulo().getId().equals(articuloId)) {
+                        return true;
+                    }
+                }
+            }
+        } catch(Exception e){
+            throw new Exception(e.getMessage());
+            }
+        return false;
+
+        }
 
     //SEGUIRLO
     @Override

@@ -22,14 +22,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Autowired
     private OrdenCompraService ordenCompraService;
 
-    @Autowired
-    private OrdenCompraDetalleService ordenCompraDetalleService;
 
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, OrdenCompraDetalleService ordenCompraDetalleService) {
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
-        this.ordenCompraDetalleService = ordenCompraDetalleService;
     }
 
     @Override
@@ -114,7 +111,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
-            boolean ordenActiva = ordenCompraDetalleService.articuloConOrdenActiva(idArticulo);
+            boolean ordenActiva = ordenCompraService.articuloConOrdenActiva(idArticulo);
             return ordenActiva;
     }
 
