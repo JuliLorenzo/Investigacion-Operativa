@@ -36,13 +36,17 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         }
     }
 
+    public List<OrdenCompra> findOrdenCompraActiva() throws Exception {
+        List<OrdenCompra> ordenesPendiente = findOrdenCompraByEstado("Pendiente");
+        List<OrdenCompra> ordenesEnCurso = findOrdenCompraByEstado("En Curso");
+
+        List<OrdenCompra> ordenesActivas = new ArrayList<>(ordenesPendiente);
+        ordenesActivas.addAll(ordenesEnCurso);
+        return ordenesActivas;
+    }
     public boolean articuloConOrdenActiva(Long articuloId) throws Exception{
         try {
-            List<OrdenCompra> ordenesPendiente = findOrdenCompraByEstado("Pendiente");
-            List<OrdenCompra> ordenesEnCurso = findOrdenCompraByEstado("En Curso");
-
-            List<OrdenCompra> ordenesActivas = new ArrayList<>(ordenesPendiente);
-            ordenesActivas.addAll(ordenesEnCurso);
+            List<OrdenCompra> ordenesActivas = findOrdenCompraActiva();
 
             //Recorrer las ordenes de compra activas
             for (OrdenCompra orden : ordenesActivas) {
@@ -60,6 +64,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         return false;
 
         }
+
 
     //SEGUIRLO
     @Override
