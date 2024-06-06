@@ -85,29 +85,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
-    //!!!!!!!!! ESTO LO SEPARARIA, Q SEA UN METODO PARA BUSCAR LAS PENDIENTES Y OTRO PARA LAS Q ESTAN EN CURSO
-    @Override
-    @Transactional
-    public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception{
-        List<OrdenCompra> ordenesPendientes = ordenCompraService.findOrdenCompraByEstado("Pendiente");
-        List<OrdenCompra> ordenesEnCurso = ordenCompraService.findOrdenCompraByEstado("En curso");
-        boolean existe = false;
-        for(OrdenCompra ordenCompra : ordenesPendientes){
-            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
-                if (detalle.getArticulo().getId().equals(idArticulo)){
-                    existe = true;
-                }
-            }
-        }
-        for(OrdenCompra ordenCompra : ordenesEnCurso){
-            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
-                if (detalle.getArticulo().getId().equals(idArticulo)){
-                    existe = true;
-                }
-            }
-        }
-        return existe;
-    }
+
 
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
