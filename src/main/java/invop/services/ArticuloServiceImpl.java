@@ -31,11 +31,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Override
     @Transactional
-    public int calculoLoteOptimo(int demandaAnterior, double costoPedido, double costoAlmacenamiento) throws Exception {
+    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
         //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
         try{
             int loteOptimo = 0;
-            loteOptimo = (int)Math.sqrt((2 * demandaAnterior * costoPedido) / costoAlmacenamiento);
+            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
         }
         catch(Exception e ){
