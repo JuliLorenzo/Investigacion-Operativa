@@ -45,10 +45,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Override
     @Transactional
-    public int calculoPuntoPedido(int demandaAnterior, double tiempoDemoraProveedor) throws Exception{
+    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
         try {
-            int puntoPedido = demandaAnterior * (int)Math.round(tiempoDemoraProveedor);
+            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
             return puntoPedido;
        } catch(Exception e ){
             throw new Exception(e.getMessage());
