@@ -20,8 +20,11 @@ public class OrdenCompraDetalleServiceImpl extends BaseServiceImpl<OrdenCompraDe
         this.ordenCompraDetalleRepository = ordenCompraDetalleRepository;
     }
 
+    }
 
 
 
 
-}
+
+
+

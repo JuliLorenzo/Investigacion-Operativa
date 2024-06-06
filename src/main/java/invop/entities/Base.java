@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @MappedSuperclass
@@ -21,9 +23,9 @@ public class Base implements Serializable {
     @NotNull
     @Column(name = "fecha_alta")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaAlta;
+    private LocalDateTime fechaAlta;
 
     @Column(name = "fecha_baja")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaBaja;
+    private LocalDateTime fechaBaja;
 }

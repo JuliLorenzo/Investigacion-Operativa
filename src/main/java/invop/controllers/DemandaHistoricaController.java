@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -30,7 +31,8 @@ public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistor
         try {
             LocalDate fechaDesde = desde;
             LocalDate fechaHasta = hasta;
-            demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+            LocalDateTime fechaAlta = LocalDateTime.now();
+            demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, idArticulo, fechaAlta);
             return ResponseEntity.ok().build();
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Articulo no encontrado");

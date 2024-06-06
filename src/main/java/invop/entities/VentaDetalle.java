@@ -18,8 +18,6 @@ public class VentaDetalle extends Base{
     @Column(name = "cantidad_vendida")
     private Integer cantidadVendida;
 
-
-
     @NotNull
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
