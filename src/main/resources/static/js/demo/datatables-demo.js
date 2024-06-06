@@ -14,10 +14,19 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${articulo.id}</td>
                     <td>${articulo.nombreArticulo}</td>
                     <td>${articulo.cantidadArticulo}</td>
-                    <td>${articulo.loteOptimoArticulo}</td>
-                    <td>${articulo.puntoPedidoArticulo}</td>
-                    <td>${articulo.stockSeguridadArticulo}</td>
-                    <td>${articulo.cgiArticulo}</td>
+                    <td>
+                        <div style="align-content: center">
+                            <a href="#" class="btn btn-info btn-circle btn-sm">
+                                <i class="fas fa-link"></i>
+                            </a>
+                            <a href="#" class="btn btn-warning btn-circle btn-sm">
+                                <i class="fas fa-pencil"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
                 `;
           tableBody.appendChild(row);
         });
