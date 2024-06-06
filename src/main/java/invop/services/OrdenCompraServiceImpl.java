@@ -65,15 +65,4 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
 
         }
 
-
-    //SEGUIRLO
-    @Override
-    @Transactional
-    public boolean controlEstadoOrdenes() throws Exception{
-        try{
-            return true;
-        }catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-    }
 }

@@ -31,11 +31,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Override
     @Transactional
-    public int calculoLoteOptimo(int demandaAnterior, double costoPedido, double costoAlmacenamiento) throws Exception {
+    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
         //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
         try{
             int loteOptimo = 0;
-            loteOptimo = (int)Math.sqrt((2 * demandaAnterior * costoPedido) / costoAlmacenamiento);
+            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
         }
         catch(Exception e ){
@@ -45,10 +45,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Override
     @Transactional
-    public int calculoPuntoPedido(int demandaAnterior, double tiempoDemoraProveedor) throws Exception{
+    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
         try {
-            int puntoPedido = demandaAnterior * (int)Math.round(tiempoDemoraProveedor);
+            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
             return puntoPedido;
        } catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -85,29 +85,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
-    //!!!!!!!!! ESTO LO SEPARARIA, Q SEA UN METODO PARA BUSCAR LAS PENDIENTES Y OTRO PARA LAS Q ESTAN EN CURSO
-    @Override
-    @Transactional
-    public boolean articuloConOrdenCompraActiva(Long idArticulo) throws Exception{
-        List<OrdenCompra> ordenesPendientes = ordenCompraService.findOrdenCompraByEstado("Pendiente");
-        List<OrdenCompra> ordenesEnCurso = ordenCompraService.findOrdenCompraByEstado("En curso");
-        boolean existe = false;
-        for(OrdenCompra ordenCompra : ordenesPendientes){
-            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
-                if (detalle.getArticulo().getId().equals(idArticulo)){
-                    existe = true;
-                }
-            }
-        }
-        for(OrdenCompra ordenCompra : ordenesEnCurso){
-            for(OrdenCompraDetalle detalle : ordenCompra.getOrdenCompraDetalles()){
-                if (detalle.getArticulo().getId().equals(idArticulo)){
-                    existe = true;
-                }
-            }
-        }
-        return existe;
-    }
+
 
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
