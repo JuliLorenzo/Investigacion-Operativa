@@ -11,8 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${venta.id}</td>
-                    <td>${venta.fechaAlta}</td>
-                    <td>${venta.fechaBaja}</td>
                     <td>${venta.fechaVenta}</td>
                     <td>
                         <div style="align-content: center">
