@@ -10,4 +10,6 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public List<Object> findArticulosByProveedor(String filtroProveedor) throws Exception;
 
+    public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception;
+
 }

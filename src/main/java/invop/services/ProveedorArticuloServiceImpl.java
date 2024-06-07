@@ -41,4 +41,14 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
             throw new Exception(e.getMessage());
         }
     }
+
+    public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
+        try {
+            Double costoCompra = precioArticulo * cantidadAComprar;
+            Double cgi = costoCompra + costoAlmacenamiento * (cantidadAComprar/2) + costoPedido * (demandaAnual/cantidadAComprar);
+            return cgi;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }
