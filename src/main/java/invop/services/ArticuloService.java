@@ -9,4 +9,5 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
 
+    public void darDeBajaArticulo(Long idArticulo) throws Exception;
     }
