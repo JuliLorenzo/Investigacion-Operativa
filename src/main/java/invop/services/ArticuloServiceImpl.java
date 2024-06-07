@@ -42,6 +42,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             return ordenActiva;
     }
 
+    //Borrar articulo si no hay orden de compra activa
     public void darDeBajaArticulo(Long idArticulo) throws Exception{
         boolean ordenActiva = controlOrdenCompraActiva(idArticulo);
         try{

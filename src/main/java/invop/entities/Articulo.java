@@ -1,5 +1,6 @@
 package invop.entities;
 
+import invop.enums.ModeloInventario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -24,6 +25,12 @@ public class Articulo extends Base {
     @NotNull
     @Column(name = "cantidad_articulo")
     private Integer cantidadArticulo;
+
+    /*
+    @Column(name = "modelo_inventario")
+    @Enumerated(EnumType.STRING)
+    private ModeloInventario modeloInventario;
+    */
 
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
