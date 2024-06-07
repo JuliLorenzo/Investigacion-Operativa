@@ -31,4 +31,12 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
             nativeQuery = true
     )
     List<Object> findArticulosByProveedor(@Param("filtroProveedor") String filtroArticulo);
+
+    @Query(
+            value = "SELECT avg(tiempo_demora_articulo) " +
+                    "FROM proveedor_articulo " +
+                    "WHERE articulo_id = :filtroArticulo",
+            nativeQuery = true
+    )
+    Double obtenerTiempoDemoraPromedioProveedores(@Param("filtroArticulo") String filtroArticulo);
 }

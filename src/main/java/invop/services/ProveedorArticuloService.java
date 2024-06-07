@@ -26,5 +26,7 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception;
 
+    public Double obtenerTiempoDemoraPromedioProveedores(String filtroArticulo) throws Exception;
+
 
 }
