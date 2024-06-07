@@ -20,12 +20,12 @@ public class Base implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    /*@NotNull
     @Column(name = "fecha_alta")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fechaAlta;
 
     @Column(name = "fecha_baja")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime fechaBaja;
+    private LocalDateTime fechaBaja;*/
 }
