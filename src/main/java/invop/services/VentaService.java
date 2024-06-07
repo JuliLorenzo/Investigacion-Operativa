@@ -11,6 +11,6 @@ public interface VentaService extends BaseService<Venta, Long> {
 
     List<Venta> findVentasByFechas(LocalDate fechaDesde, LocalDate fechaHasta) throws Exception;
 
-    Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, LocalDateTime fechaAlta);
+    Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo);
 
     }
