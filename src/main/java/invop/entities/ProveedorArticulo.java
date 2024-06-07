@@ -24,6 +24,19 @@ public class ProveedorArticulo extends Base {
     @Column(name = "costo_almacenamiento")
     private Double costoAlmacenamientoArticuloProveedor;
 
+    @Column(name = "lote_optimo_articulo")
+    private Integer loteOptimoArticulo;
+
+    //Revisar si no va en ProveedorArticulo
+    @Column(name = "punto_pedido_articulo")
+    private Integer puntoPedidoArticulo;
+
+    //Revisar si no va en ProveedorArticulo
+    @Column(name = "stock_seguridad_articulo")
+    private Integer stockSeguridadArticulo;
+
+    @Column(name = "cgi_articulo")
+    private Double cgiArticulo;
 
     @ManyToOne
     @JoinColumn(name = "articulo_id")

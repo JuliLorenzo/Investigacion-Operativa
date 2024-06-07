@@ -25,19 +25,9 @@ public class Articulo extends Base {
     @Column(name = "cantidad_articulo")
     private Integer cantidadArticulo;
 
-    @Column(name = "lote_optimo_articulo")
-    private Integer loteOptimoArticulo;
-
-    //Revisar si no va en ProveedorArticulo
-    @Column(name = "punto_pedido_articulo")
-    private Integer puntoPedidoArticulo;
-
-    //Revisar si no va en ProveedorArticulo
-    @Column(name = "stock_seguridad_articulo")
-    private Integer stockSeguridadArticulo;
-
-    @Column(name = "cgi_articulo")
-    private Double cgiArticulo;
+    @ManyToOne()
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedorPredeterminado;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_articulo")
