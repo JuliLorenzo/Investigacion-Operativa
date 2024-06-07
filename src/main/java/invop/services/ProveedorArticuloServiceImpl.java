@@ -51,4 +51,12 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
             throw new Exception(e.getMessage());
         }
     }
+
+    public void guardarValorCGI(Double valorCGI, ProveedorArticulo proveedorArticulo) throws Exception{
+        proveedorArticulo.setCgiArticulo(valorCGI);
+        proveedorArticuloRepository.save(proveedorArticulo);
+
+    }
+
+
 }
