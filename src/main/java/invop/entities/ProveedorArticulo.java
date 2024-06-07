@@ -21,21 +21,6 @@ public class ProveedorArticulo extends Base {
     @Column(name = "costo_pedido")
     private Double costoPedidoArticuloProveedor;
 
-    @Column(name = "costo_almacenamiento")
-    private Double costoAlmacenamientoArticuloProveedor;
-
-    @Column(name = "lote_optimo_articulo")
-    private Integer loteOptimoArticulo;
-
-    @Column(name = "punto_pedido_articulo")
-    private Integer puntoPedidoArticulo;
-
-    @Column(name = "stock_seguridad_articulo")
-    private Integer stockSeguridadArticulo;
-
-    @Column(name = "cgi_articulo")
-    private Double cgiArticulo;
-
     /*
     !! ATRIBUTOS ADICIONALES PARA EL METODO INTERVALO FIJO:
 

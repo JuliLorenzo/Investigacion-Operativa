@@ -26,6 +26,21 @@ public class Articulo extends Base {
     @Column(name = "cantidad_articulo")
     private Integer cantidadArticulo;
 
+    @Column(name = "costo_almacenamiento")
+    private Double costoAlmacenamientoArticulo;
+
+    @Column(name = "lote_optimo_articulo")
+    private Integer loteOptimoArticulo;
+
+    @Column(name = "punto_pedido_articulo")
+    private Integer puntoPedidoArticulo;
+
+    @Column(name = "stock_seguridad_articulo")
+    private Integer stockSeguridadArticulo;
+
+    @Column(name = "cgi_articulo")
+    private Double cgiArticulo;
+
     /*
     @Column(name = "modelo_inventario")
     @Enumerated(EnumType.STRING)
@@ -35,7 +50,6 @@ public class Articulo extends Base {
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedorPredeterminado;
-
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_articulo")

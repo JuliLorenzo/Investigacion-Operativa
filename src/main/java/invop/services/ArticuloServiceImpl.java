@@ -3,6 +3,7 @@ package invop.services;
 import invop.entities.Articulo;
 import invop.entities.OrdenCompra;
 import invop.entities.OrdenCompraDetalle;
+import invop.entities.ProveedorArticulo;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.OrdenCompraRepository;
@@ -10,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 
 import java.util.List;
@@ -23,12 +25,21 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Autowired
     private OrdenCompraService ordenCompraService;
+    @Autowired
+    private DemandaHistoricaService demandaHistoricaService;
 
 
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService) {
+
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
+        this.demandaHistoricaService = demandaHistoricaService;
+    }
+
+    public Articulo findArticuloById(Long id) {
+        return articuloRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Artículo no encontrado con id: " + id));
     }
 
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
@@ -51,11 +62,126 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
+
+    public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
+        try {
+            Double costoCompra = precioArticulo * cantidadAComprar;
+            Double cgi = costoCompra + costoAlmacenamiento * (cantidadAComprar/2) + costoPedido * (demandaAnual/cantidadAComprar);
+            return cgi;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception{
+        Articulo.setCgiArticulo(valorCGI);
+        ArticuloRepository.save(Articulo);
+
+    }
+
+    @Override
+    @Transactional
+    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
+        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
+        try{
+            int loteOptimo = 0;
+            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
+            return loteOptimo;
+        }
+        catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    // METODO LOTE FIJO: Calculo Lote Optimo
+    @Override
+    @Transactional
+    public int calculoDeLoteOptimo(Long idArticulo) throws Exception {
+        try{
+            Articulo articulo = findArticuloById(idArticulo);
+
+            // Obtener la fecha actual
+            LocalDate fechaActual = LocalDate.now();
+            // Calcular la fecha de hace un año
+            LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
+
+            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            int loteOptimo = 0;
+            double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
+            double costoPedido = ProveedorArticuloService.
+
+            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
+            return loteOptimo;
+        }
+        catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+
+    @Override
+    @Transactional
+    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
+        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
+        try {
+            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
+            return puntoPedido;
+        } catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public int calculoStockSeguridad() throws Exception{
+        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
+        try {
+            return 0; //LO DEJO EN CERO PQ TODAVIA NO SE COMO SE CALCULA xd
+        }catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception{
+        try {
+            int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
+            int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
+
+            Articulo articulo = ArticuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+
+            articulo.setLoteOptimoArticulo(loteOptimoCalculado);
+            articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
+
+        } catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //METODOS PARA EL MODELO INTERVALO FIJO
+    public int cantidadMeta() throws Exception{
+        // Implementación futura
+        return 0;
+    }
+    public int cantidadAPedir() throws Exception{
+        // Implementación futura
+        return 0;
+    }
+    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception{
+        // Implementación futura
+        return 0;
+    }
+
+    //METODO PARA LA GENERACION DE LA ORDEN COMPRA
+
     //Buscar proveedor predeterminado
 
 
     //Buscar proveedores existentes para un Articulo
-    
+
 
 
 
