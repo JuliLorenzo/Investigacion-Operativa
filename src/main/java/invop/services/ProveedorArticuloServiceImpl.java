@@ -114,5 +114,16 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
+    //METODOS PARA EL MODELO INTERVALO FIJO
+    public int cantidadMeta() throws Exception{
+        // Implementación futura
+        return 0;
+    }
+
+    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception{
+        // Implementación futura
+        return 0;
+    }
+
 
 }

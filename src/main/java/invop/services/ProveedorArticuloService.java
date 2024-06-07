@@ -22,4 +22,8 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public void metodoLoteFijo(Long idArticulo,int demandaAnual, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception;
 
+    //METODOS PARA EL MODELO INTERVALO FIJO
+    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception;
+
+
 }

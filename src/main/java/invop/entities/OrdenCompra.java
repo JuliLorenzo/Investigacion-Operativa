@@ -37,6 +37,7 @@ public class OrdenCompra extends Base{
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedor;
 
+
     public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
         ordenCompraDetalles.add(ordenCompraDetalle);
     }

@@ -31,11 +31,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         this.ordenCompraService = ordenCompraService;
     }
 
-
-
-
-
-
     //Controla que el Articulo no tenga Ordenes de Compras Activas.
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception{
             boolean ordenActiva = ordenCompraService.articuloConOrdenActiva(idArticulo);
@@ -55,6 +50,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
 
     }
+
+    //Buscar proveedor predeterminado
+
+
+    //Buscar proveedores existentes para un Articulo
+    
 
 
 

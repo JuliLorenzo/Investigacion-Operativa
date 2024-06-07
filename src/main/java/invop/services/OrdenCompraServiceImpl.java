@@ -44,6 +44,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         ordenesActivas.addAll(ordenesEnCurso);
         return ordenesActivas;
     }
+    //Metodo para una CARGA MANUAL de una Orden de Compra
     public boolean articuloConOrdenActiva(Long articuloId) throws Exception{
         try {
             List<OrdenCompra> ordenesActivas = findOrdenCompraActiva();

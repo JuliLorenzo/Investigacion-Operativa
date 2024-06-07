@@ -36,10 +36,12 @@ public class Articulo extends Base {
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedorPredeterminado;
 
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_articulo")
     @Builder.Default
     private List<OrdenCompra> ordenesCompra = new ArrayList<>();
+
 
     public void agregarOrdenCompra(OrdenCompra ordenCompra){
         ordenesCompra.add(ordenCompra);

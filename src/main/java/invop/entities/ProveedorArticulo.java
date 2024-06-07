@@ -27,16 +27,26 @@ public class ProveedorArticulo extends Base {
     @Column(name = "lote_optimo_articulo")
     private Integer loteOptimoArticulo;
 
-    //Revisar si no va en ProveedorArticulo
     @Column(name = "punto_pedido_articulo")
     private Integer puntoPedidoArticulo;
 
-    //Revisar si no va en ProveedorArticulo
     @Column(name = "stock_seguridad_articulo")
     private Integer stockSeguridadArticulo;
 
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
+
+    /*
+    !! ATRIBUTOS ADICIONALES PARA EL METODO INTERVALO FIJO:
+
+    CANTIDAD META (en caso de que sea un valor fijo)
+    @Column(name = "cantidad_meta")
+    private Integer cantidadMeta;
+
+    PERIODO DE PEDIDO (EN DIAS)
+    @Column(name = "periodo_pedido")
+    private Integer periodoPedido;
+     */
 
     @ManyToOne
     @JoinColumn(name = "articulo_id")
