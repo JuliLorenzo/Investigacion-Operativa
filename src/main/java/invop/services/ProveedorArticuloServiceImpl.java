@@ -119,11 +119,16 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         // Implementación futura
         return 0;
     }
-
+    public int cantidadAPedir() throws Exception{
+        // Implementación futura
+        return 0;
+    }
     public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception{
         // Implementación futura
         return 0;
     }
+
+    //METODO PARA LA GENERACION DE LA ORDEN COMPRA
 
 
 }
