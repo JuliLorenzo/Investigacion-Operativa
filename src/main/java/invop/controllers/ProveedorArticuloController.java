@@ -33,4 +33,12 @@ public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArt
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+    @GetMapping("/obtenerTiempoDemoraPromedio")
+    public ResponseEntity<?> obtenerTiempoDemoraPromedioProveedores(@RequestParam String filtroArticulo) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.obtenerTiempoDemoraPromedioProveedores(filtroArticulo));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+        }
+    }
 }
