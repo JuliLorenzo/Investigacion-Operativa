@@ -23,9 +23,9 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<Object> findProveedoresByArticulo(String filtroArticulo) throws Exception{
+    public List<ProveedorArticulo> findProveedoresByArticulo(String filtroArticulo) throws Exception{
         try {
-            List<Object> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
+            List<ProveedorArticulo> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
             return buscarProveedores;
         } catch (Exception e){
             throw new Exception(e.getMessage());
@@ -34,44 +34,43 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<Object> findArticulosByProveedor(String filtroProveedor) throws Exception {
+    public List<ProveedorArticulo> findArticulosByProveedor(String filtroProveedor) throws Exception {
         try {
-            List<Object> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
+            List<ProveedorArticulo> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
             return buscarArticulos;
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
-    public List<Object> findArticuloByProveedorDeterminado(List<Object> articulosProveedor, String nombreProveedor) throws Exception {
+    public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, String nombreProveedor) throws Exception {
         try {
-            List<Object> articulo = proveedorArticuloRepository.findArticulosByProveedor(nombreProveedor);
-            return articulo;
+            for (ProveedorArticulo proveedorArticulo : articulosDelProveedor){
+                if (proveedorArticulo.getProveedor().getNombreProveedor().equals(nombreProveedor)){
+                    ProveedorArticulo articuloEncontrado = proveedorArticulo;
+                    return articuloEncontrado;
+                }
+                }
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
+        return null;
     }
 
-
-    @Override
+    //Busca el Costo de Pedido de un ProveedorArticulo.
     @Transactional
-    public Long findArticuloByProveedorYArticulo(String nombreArticulo, String nombreProveedor) throws Exception {
+    public Double findCostoPedido(String nombreArticulo, String nombreProveedor) throws Exception {
         try {
-            List<Object> articulos = proveedorArticuloRepository.findProveedoresByArticulo(nombreArticulo);
-            List<Object> articuloProveedor = findArticuloByProveedorDeterminado(articulos, nombreProveedor);
+            List<ProveedorArticulo> articulos = proveedorArticuloRepository.findArticulosByProveedor(nombreProveedor);
+            ProveedorArticulo articuloProveedor = findArticuloDeProveedorDeterminado(articulos, nombreProveedor);
 
-            Object articuloEncontrado = articuloProveedor.get(0);
+            if (articuloProveedor == null) {
+                throw new Exception("Artículo no encontrado para el proveedor especificado.");
+            }
 
-
-            long costoPedido = articuloEncontrado.get
-
-
-
-
-
-            return buscarArticulos;
+            return articuloProveedor.getCostoPedidoArticuloProveedor();
         } catch (Exception e){
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al buscar el costo de pedido: " + e.getMessage(), e);
         }
     }
 

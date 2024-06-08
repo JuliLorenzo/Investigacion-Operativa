@@ -19,7 +19,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "AND pa.fecha_baja IS NULL",
             nativeQuery = true
     )
-    List<Object> findProveedoresByArticulo(@Param("filtroArticulo") String filtroArticulo);
+    List<ProveedorArticulo> findProveedoresByArticulo(@Param("filtroArticulo") String filtroArticulo);
 
     @Query(
             value = "SELECT DISTINCT a.nombre_articulo " +
@@ -30,5 +30,5 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "AND pa.fecha_baja IS NULL",
             nativeQuery = true
     )
-    List<Object> findArticulosByProveedor(@Param("filtroProveedor") String filtroArticulo);
+    List<ProveedorArticulo> findArticulosByProveedor(@Param("filtroProveedor") String filtroArticulo);
 }

@@ -1,12 +1,9 @@
 package invop.services;
 
 import invop.entities.Articulo;
-import invop.entities.OrdenCompra;
-import invop.entities.OrdenCompraDetalle;
 import invop.entities.ProveedorArticulo;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
-import invop.repositories.OrdenCompraRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +24,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private OrdenCompraService ordenCompraService;
     @Autowired
     private DemandaHistoricaService demandaHistoricaService;
+    @Autowired
+    private ProveedorArticuloService proveedorArticuloService;
 
 
-
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService) {
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
         this.demandaHistoricaService = demandaHistoricaService;
+        this.proveedorArticuloService = proveedorArticuloService;
     }
 
     public Articulo findArticuloById(Long id) {
@@ -75,9 +74,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception{
         Articulo.setCgiArticulo(valorCGI);
-        ArticuloRepository.save(Articulo);
+        articuloRepository.save(Articulo);
 
     }
+
 
     @Override
     @Transactional
@@ -93,24 +93,27 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
-    // METODO LOTE FIJO: Calculo Lote Optimo
+
+    // METODO LOTE FIJO: Calculo Lote Optimo -> Dividirlo
     @Override
     @Transactional
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception {
         try{
+            //Buscar el Articulo
             Articulo articulo = findArticuloById(idArticulo);
 
-            // Obtener la fecha actual
+            //Obtener fecha actual y fecha de hace un año
             LocalDate fechaActual = LocalDate.now();
-            // Calcular la fecha de hace un año
             LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
 
-            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
-            int loteOptimo = 0;
-            double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
-            double costoPedido = ProveedorArticuloService.
+            //Buscar ProveedorPredeterminado para obtener el CP
+            String proveedorPredeterminado = articulo.getProveedorPredeterminado().getNombreProveedor();
 
-            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
+            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
+            double costoPedido = proveedorArticuloService.findCostoPedido(articulo.getNombreArticulo(), proveedorPredeterminado);
+
+            int loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
         }
         catch(Exception e ){
@@ -151,7 +154,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
             int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
 
-            Articulo articulo = ArticuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
 
             articulo.setLoteOptimoArticulo(loteOptimoCalculado);
             articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
@@ -181,8 +184,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
     //Buscar proveedores existentes para un Articulo
-
-
 
 
 

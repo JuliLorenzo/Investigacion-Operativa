@@ -37,5 +37,8 @@ public class ProveedorArticulo extends Base {
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
 
+    @ManyToOne()
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
 
 }
