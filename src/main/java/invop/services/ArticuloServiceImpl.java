@@ -61,7 +61,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
-
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
         try {
             Double costoCompra = precioArticulo * cantidadAComprar;
@@ -95,6 +94,23 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
     // METODO LOTE FIJO: Calculo Lote Optimo -> Dividirlo
+    //Ver si mover el metodo a DemandaHistorica
+    @Override
+    @Transactional
+    public int calculoDemandaAnual(Long idArticulo) throws Exception {
+        try {
+            //Obtener fecha actual y fecha de hace un año
+            LocalDate fechaActual = LocalDate.now();
+            LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
+            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            return demandaAnual;
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
     @Override
     @Transactional
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception {
@@ -102,16 +118,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             //Buscar el Articulo
             Articulo articulo = findArticuloById(idArticulo);
 
-            //Obtener fecha actual y fecha de hace un año
-            LocalDate fechaActual = LocalDate.now();
-            LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
-
             //Buscar ProveedorPredeterminado para obtener el CP
-            String proveedorPredeterminado = articulo.getProveedorPredeterminado().getNombreProveedor();
+            Long proveedorPredeterminado = articulo.getProveedorPredeterminado().getId();
 
-            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            int demandaAnual = calculoDemandaAnual(idArticulo);
             double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
-            double costoPedido = proveedorArticuloService.findCostoPedido(articulo.getNombreArticulo(), proveedorPredeterminado);
+            double costoPedido = proveedorArticuloService.findCostoPedido(idArticulo, proveedorPredeterminado);
 
             int loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
@@ -122,39 +134,62 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
-
-    @Override
     @Transactional
-    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
+    public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
-            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
+            int demandaAnual = calculoDemandaAnual(idArticulo);
+            double promedioDemoraProv= proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
+
+            int puntoPedido = demandaAnual * (int)Math.round(promedioDemoraProv);
+
             return puntoPedido;
         } catch(Exception e ){
             throw new Exception(e.getMessage());
         }
 
     }
+    public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception{
+        Articulo.setPuntoPedidoArticulo(valorPP);
+        articuloRepository.save(Articulo);
 
-    @Override
-    @Transactional
-    public int calculoStockSeguridad() throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try {
-            return 0; //LO DEJO EN CERO PQ TODAVIA NO SE COMO SE CALCULA xd
-        }catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
     }
 
     @Override
     @Transactional
-    public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception{
+    public int calculoStockSeguridad(Long idArticulo) throws Exception{
         try {
-            int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
-            int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
+            Articulo articulo = findArticuloById(idArticulo);
 
+            //Valor de Z -> Despues modificar
+            Double valorNormalZ = 1.67;
+
+            Integer puntoPedido;
+            if (articulo.getPuntoPedidoArticulo() == null){
+                puntoPedido = calculoPuntoPedido(idArticulo);
+            } else {
+                puntoPedido = articulo.getPuntoPedidoArticulo();
+            }
+
+            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(puntoPedido));
+            return stockSeguridad;
+        }catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void guardarStockSeguridad(Integer valorSS, Articulo Articulo) throws Exception{
+        Articulo.setStockSeguridadArticulo(valorSS);
+        articuloRepository.save(Articulo);
+
+    }
+
+    @Override
+    @Transactional
+    public void metodoLoteFijo(Long idArticulo) throws Exception{
+        try {
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+
+            int loteOptimoCalculado = calculoDeLoteOptimo(idArticulo);
+            int puntoPedidoCalculado = calculoPuntoPedido(idArticulo);
 
             articulo.setLoteOptimoArticulo(loteOptimoCalculado);
             articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);

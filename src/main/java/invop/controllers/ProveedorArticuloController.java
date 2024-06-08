@@ -17,7 +17,7 @@ import java.util.List;
 public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArticulo, ProveedorArticuloServiceImpl>{
 
     @GetMapping("/findProveedoresByArticulo")
-    public ResponseEntity<?> findProveedoresByArticulo(@RequestParam String filtroArticulo) {
+    public ResponseEntity<?> findProveedoresByArticulo(@RequestParam Long filtroArticulo) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.findProveedoresByArticulo(filtroArticulo));
         } catch(Exception e) {
@@ -26,7 +26,7 @@ public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArt
     }
 
     @GetMapping("/findArticulosByProveedor")
-    public ResponseEntity<?> findArticulosByProveedor(@RequestParam String filtroProveedor) {
+    public ResponseEntity<?> findArticulosByProveedor(@RequestParam Long filtroProveedor) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.findArticulosByProveedor(filtroProveedor));
         } catch(Exception e) {
@@ -34,7 +34,7 @@ public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArt
         }
     }
     @GetMapping("/obtenerTiempoDemoraPromedio")
-    public ResponseEntity<?> obtenerTiempoDemoraPromedioProveedores(@RequestParam String filtroArticulo) {
+    public ResponseEntity<?> obtenerTiempoDemoraPromedioProveedores(@RequestParam Long filtroArticulo) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.obtenerTiempoDemoraPromedioProveedores(filtroArticulo));
         } catch(Exception e) {

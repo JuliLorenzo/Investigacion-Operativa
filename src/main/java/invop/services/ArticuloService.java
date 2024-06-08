@@ -16,11 +16,13 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     //METODOS PARA EL EOQ
     public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception;
-    public int calculoPuntoPedido(int demandaAnterior, double tiempoDemoraProveedor) throws Exception;
-    public int calculoStockSeguridad() throws Exception;
+    public int calculoPuntoPedido(Long idArticulo) throws Exception;
+    public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception;
+    public int calculoStockSeguridad(Long idArticulo) throws Exception;
+    public void guardarStockSeguridad(Integer valorSS, Articulo Articulo) throws Exception;
 
-    public void metodoLoteFijo(Long idArticulo,int demandaAnual, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception;
-
+    public void metodoLoteFijo(Long idArticulo) throws Exception;
+    public int calculoDemandaAnual(Long idArticulo) throws Exception;
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception;
 
     //METODOS PARA EL MODELO INTERVALO FIJO

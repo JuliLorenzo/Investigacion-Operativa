@@ -23,7 +23,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<ProveedorArticulo> findProveedoresByArticulo(String filtroArticulo) throws Exception{
+    public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
         try {
             List<ProveedorArticulo> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
             return buscarProveedores;
@@ -34,7 +34,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<ProveedorArticulo> findArticulosByProveedor(String filtroProveedor) throws Exception {
+    public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception {
         try {
             List<ProveedorArticulo> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
             return buscarArticulos;
@@ -43,10 +43,10 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
-    public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, String nombreProveedor) throws Exception {
+    public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, Long idArticulo) throws Exception {
         try {
             for (ProveedorArticulo proveedorArticulo : articulosDelProveedor){
-                if (proveedorArticulo.getProveedor().getNombreProveedor().equals(nombreProveedor)){
+                if (proveedorArticulo.getArticulo().getId().equals(idArticulo)){
                     ProveedorArticulo articuloEncontrado = proveedorArticulo;
                     return articuloEncontrado;
                 }
@@ -59,10 +59,10 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     //Busca el Costo de Pedido de un ProveedorArticulo.
     @Transactional
-    public Double findCostoPedido(String nombreArticulo, String nombreProveedor) throws Exception {
+    public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception {
         try {
-            List<ProveedorArticulo> articulos = proveedorArticuloRepository.findArticulosByProveedor(nombreProveedor);
-            ProveedorArticulo articuloProveedor = findArticuloDeProveedorDeterminado(articulos, nombreProveedor);
+            List<ProveedorArticulo> articulos = proveedorArticuloRepository.findArticulosByProveedor(idProveedor);
+            ProveedorArticulo articuloProveedor = findArticuloDeProveedorDeterminado(articulos, idArticulo);
 
             if (articuloProveedor == null) {
                 throw new Exception("Artículo no encontrado para el proveedor especificado.");
@@ -74,7 +74,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
-    public Double obtenerTiempoDemoraPromedioProveedores(String filtroArticulo) throws Exception {
+    public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception {
         try {
             Double tiempoDemoraPromedioProveedores = proveedorArticuloRepository.obtenerTiempoDemoraPromedioProveedores(filtroArticulo);
             return tiempoDemoraPromedioProveedores;

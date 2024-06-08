@@ -19,7 +19,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "AND pa.fecha_baja IS NULL",
             nativeQuery = true
     )
-    List<ProveedorArticulo> findProveedoresByArticulo(@Param("filtroArticulo") String filtroArticulo);
+    List<ProveedorArticulo> findProveedoresByArticulo(@Param("filtroArticulo") Long filtroArticulo);
 
     @Query(
             value = "SELECT DISTINCT a.nombre_articulo " +
@@ -30,7 +30,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "AND pa.fecha_baja IS NULL",
             nativeQuery = true
     )
-    List<ProveedorArticulo> findArticulosByProveedor(@Param("filtroProveedor") String filtroArticulo);
+    List<ProveedorArticulo> findArticulosByProveedor(@Param("filtroProveedor") Long filtroArticulo);
 
     @Query(
             value = "SELECT avg(tiempo_demora_articulo) " +
@@ -38,5 +38,5 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "WHERE articulo_id = :filtroArticulo",
             nativeQuery = true
     )
-    Double obtenerTiempoDemoraPromedioProveedores(@Param("filtroArticulo") String filtroArticulo);
+    Double obtenerTiempoDemoraPromedioProveedores(@Param("filtroArticulo") Long filtroArticulo);
 }
