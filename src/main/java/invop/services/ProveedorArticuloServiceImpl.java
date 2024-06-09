@@ -63,7 +63,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
                     ProveedorArticulo articuloEncontrado = proveedorArticulo;
                     return articuloEncontrado;
                 }
-                }
+            }
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -75,11 +75,9 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         try {
             List<ProveedorArticulo> articulos = proveedorArticuloRepository.findArticulosByProveedor(idProveedor);
             ProveedorArticulo articuloProveedor = findArticuloDeProveedorDeterminado(articulos, idArticulo);
-
             if (articuloProveedor == null) {
                 throw new Exception("Artículo no encontrado para el proveedor especificado.");
             }
-
             return articuloProveedor.getCostoPedidoArticuloProveedor();
         } catch (Exception e){
             throw new Exception("Error al buscar el costo de pedido: " + e.getMessage(), e);

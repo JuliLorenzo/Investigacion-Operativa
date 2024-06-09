@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="fas fa-link"></i>
                             </a>
                             <a href="#" class="btn btn-warning btn-circle btn-sm">
-                                <i class="fas fa-pencil"></i>
+                                <i class="fas fa-edit"></i>
                             </a>
                             <a href="#" class="btn btn-danger btn-circle btn-sm">
                                 <i class="fas fa-trash"></i>

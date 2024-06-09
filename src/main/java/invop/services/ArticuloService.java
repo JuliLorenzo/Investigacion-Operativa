@@ -27,5 +27,5 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     //METODOS PARA EL MODELO INTERVALO FIJO
 
-    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception;
+    public int metodoIntervaloFijo(Long idArticulo) throws Exception;
     }
