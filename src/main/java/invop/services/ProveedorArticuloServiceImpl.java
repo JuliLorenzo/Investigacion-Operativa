@@ -23,9 +23,9 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<Object> findProveedoresByArticulo(String filtroArticulo) throws Exception{
+    public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
         try {
-            List<Object> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
+            List<ProveedorArticulo> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
             return buscarProveedores;
         } catch (Exception e){
             throw new Exception(e.getMessage());
@@ -34,101 +34,57 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<Object> findArticulosByProveedor(String filtroProveedor) throws Exception {
+    public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception {
         try {
-            List<Object> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
+            List<ProveedorArticulo> buscarArticulos = proveedorArticuloRepository.findArticulosByProveedor(filtroProveedor);
             return buscarArticulos;
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
-    public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
+    public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, Long idArticulo) throws Exception {
         try {
-            Double costoCompra = precioArticulo * cantidadAComprar;
-            Double cgi = costoCompra + costoAlmacenamiento * (cantidadAComprar/2) + costoPedido * (demandaAnual/cantidadAComprar);
-            return cgi;
+            for (ProveedorArticulo proveedorArticulo : articulosDelProveedor){
+                if (proveedorArticulo.getArticulo().getId().equals(idArticulo)){
+                    ProveedorArticulo articuloEncontrado = proveedorArticulo;
+                    return articuloEncontrado;
+                }
+                }
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+        return null;
+    }
+
+    //Busca el Costo de Pedido de un ProveedorArticulo.
+    @Transactional
+    public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception {
+        try {
+            List<ProveedorArticulo> articulos = proveedorArticuloRepository.findArticulosByProveedor(idProveedor);
+            ProveedorArticulo articuloProveedor = findArticuloDeProveedorDeterminado(articulos, idArticulo);
+
+            if (articuloProveedor == null) {
+                throw new Exception("Artículo no encontrado para el proveedor especificado.");
+            }
+
+            return articuloProveedor.getCostoPedidoArticuloProveedor();
+        } catch (Exception e){
+            throw new Exception("Error al buscar el costo de pedido: " + e.getMessage(), e);
+        }
+    }
+
+    public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception {
+        try {
+            Double tiempoDemoraPromedioProveedores = proveedorArticuloRepository.obtenerTiempoDemoraPromedioProveedores(filtroArticulo);
+            return tiempoDemoraPromedioProveedores;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    public void guardarValorCGI(Double valorCGI, ProveedorArticulo proveedorArticulo) throws Exception{
-        proveedorArticulo.setCgiArticulo(valorCGI);
-        proveedorArticuloRepository.save(proveedorArticulo);
 
-    }
 
-    @Override
-    @Transactional
-    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try{
-            int loteOptimo = 0;
-            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
-            return loteOptimo;
-        }
-        catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try {
-            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
-            return puntoPedido;
-        } catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-
-    }
-
-    @Override
-    @Transactional
-    public int calculoStockSeguridad() throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try {
-            return 0; //LO DEJO EN CERO PQ TODAVIA NO SE COMO SE CALCULA xd
-        }catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception{
-        try {
-            int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
-            int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
-
-            ProveedorArticulo proveedorArticulo = proveedorArticuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
-
-            proveedorArticulo.setLoteOptimoArticulo(loteOptimoCalculado);
-            proveedorArticulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
-
-        } catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    //METODOS PARA EL MODELO INTERVALO FIJO
-    public int cantidadMeta() throws Exception{
-        // Implementación futura
-        return 0;
-    }
-    public int cantidadAPedir() throws Exception{
-        // Implementación futura
-        return 0;
-    }
-    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception{
-        // Implementación futura
-        return 0;
-    }
-
-    //METODO PARA LA GENERACION DE LA ORDEN COMPRA
 
 
 }

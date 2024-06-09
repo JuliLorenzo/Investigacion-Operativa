@@ -1,12 +1,9 @@
 package invop.services;
 
 import invop.entities.Articulo;
-import invop.entities.OrdenCompra;
-import invop.entities.OrdenCompraDetalle;
 import invop.entities.ProveedorArticulo;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
-import invop.repositories.OrdenCompraRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +24,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private OrdenCompraService ordenCompraService;
     @Autowired
     private DemandaHistoricaService demandaHistoricaService;
+    @Autowired
+    private ProveedorArticuloService proveedorArticuloService;
 
 
-
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService) {
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
         this.demandaHistoricaService = demandaHistoricaService;
+        this.proveedorArticuloService = proveedorArticuloService;
     }
 
     public Articulo findArticuloById(Long id) {
@@ -62,7 +61,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
-
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
         try {
             Double costoCompra = precioArticulo * cantidadAComprar;
@@ -75,9 +73,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception{
         Articulo.setCgiArticulo(valorCGI);
-        ArticuloRepository.save(Articulo);
+        articuloRepository.save(Articulo);
 
     }
+
 
     @Override
     @Transactional
@@ -93,24 +92,40 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
-    // METODO LOTE FIJO: Calculo Lote Optimo
+
+    // METODO LOTE FIJO: Calculo Lote Optimo -> Dividirlo
+    //Ver si mover el metodo a DemandaHistorica
+    @Override
+    @Transactional
+    public int calculoDemandaAnual(Long idArticulo) throws Exception {
+        try {
+            //Obtener fecha actual y fecha de hace un año
+            LocalDate fechaActual = LocalDate.now();
+            LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
+            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            return demandaAnual;
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
     @Override
     @Transactional
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception {
         try{
+            //Buscar el Articulo
             Articulo articulo = findArticuloById(idArticulo);
 
-            // Obtener la fecha actual
-            LocalDate fechaActual = LocalDate.now();
-            // Calcular la fecha de hace un año
-            LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
+            //Buscar ProveedorPredeterminado para obtener el CP
+            Long proveedorPredeterminado = articulo.getProveedorPredeterminado().getId();
 
-            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
-            int loteOptimo = 0;
+            int demandaAnual = calculoDemandaAnual(idArticulo);
             double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
-            double costoPedido = ProveedorArticuloService.
+            double costoPedido = proveedorArticuloService.findCostoPedido(idArticulo, proveedorPredeterminado);
 
-            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
+            int loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
         }
         catch(Exception e ){
@@ -119,39 +134,62 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
-
-    @Override
     @Transactional
-    public int calculoPuntoPedido(int demandaAnual, double tiempoDemoraProveedor) throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
+    public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
-            int puntoPedido = demandaAnual * (int)Math.round(tiempoDemoraProveedor);
+            int demandaAnual = calculoDemandaAnual(idArticulo);
+            double promedioDemoraProv= proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
+
+            int puntoPedido = demandaAnual * (int)Math.round(promedioDemoraProv);
+
             return puntoPedido;
         } catch(Exception e ){
             throw new Exception(e.getMessage());
         }
 
     }
+    public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception{
+        Articulo.setPuntoPedidoArticulo(valorPP);
+        articuloRepository.save(Articulo);
 
-    @Override
-    @Transactional
-    public int calculoStockSeguridad() throws Exception{
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try {
-            return 0; //LO DEJO EN CERO PQ TODAVIA NO SE COMO SE CALCULA xd
-        }catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
     }
 
     @Override
     @Transactional
-    public void metodoLoteFijo(Long idArticulo,int demandaAnterior, double costoPedido, double costoAlmacenamiento, double tiempoDemoraProveedor) throws Exception{
+    public int calculoStockSeguridad(Long idArticulo) throws Exception{
         try {
-            int loteOptimoCalculado = calculoLoteOptimo(demandaAnterior, costoPedido, costoAlmacenamiento);
-            int puntoPedidoCalculado = calculoPuntoPedido(demandaAnterior, tiempoDemoraProveedor);
+            Articulo articulo = findArticuloById(idArticulo);
 
-            Articulo articulo = ArticuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            //Valor de Z -> Despues modificar
+            Double valorNormalZ = 1.67;
+
+            Integer puntoPedido;
+            if (articulo.getPuntoPedidoArticulo() == null){
+                puntoPedido = calculoPuntoPedido(idArticulo);
+            } else {
+                puntoPedido = articulo.getPuntoPedidoArticulo();
+            }
+
+            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(puntoPedido));
+            return stockSeguridad;
+        }catch(Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void guardarStockSeguridad(Integer valorSS, Articulo Articulo) throws Exception{
+        Articulo.setStockSeguridadArticulo(valorSS);
+        articuloRepository.save(Articulo);
+
+    }
+
+    @Override
+    @Transactional
+    public void metodoLoteFijo(Long idArticulo) throws Exception{
+        try {
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+
+            int loteOptimoCalculado = calculoDeLoteOptimo(idArticulo);
+            int puntoPedidoCalculado = calculoPuntoPedido(idArticulo);
 
             articulo.setLoteOptimoArticulo(loteOptimoCalculado);
             articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
@@ -181,8 +219,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
     //Buscar proveedores existentes para un Articulo
-
-
 
 
 
