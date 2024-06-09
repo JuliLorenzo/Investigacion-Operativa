@@ -5,6 +5,7 @@ import invop.entities.ProveedorArticulo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "AND pa.fecha_baja IS NULL",
             nativeQuery = true
     )
-    List<ProveedorArticulo> findProveedoresByArticulo(@Param("filtroArticulo") Long filtroArticulo);
+    List<Object> findProveedoresByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
 
     @Query(
             value = "SELECT DISTINCT a.nombre_articulo " +

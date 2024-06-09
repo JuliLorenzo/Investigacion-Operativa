@@ -1,7 +1,5 @@
 package invop.services;
 
-import invop.entities.Articulo;
-import invop.entities.OrdenCompra;
 import invop.entities.ProveedorArticulo;
 import invop.repositories.ProveedorArticuloRepository;
 import jakarta.transaction.Transactional;
@@ -23,10 +21,9 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
+    public List<Object> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
         try {
-            List<ProveedorArticulo> buscarProveedores = proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
-            return buscarProveedores;
+            return proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }

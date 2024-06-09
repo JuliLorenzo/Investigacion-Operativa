@@ -16,8 +16,8 @@ import java.util.List;
 @RequestMapping(path = "api/v1/proveedoresarticulos")
 public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArticulo, ProveedorArticuloServiceImpl>{
 
-    @GetMapping("/findProveedoresByArticulo")
-    public ResponseEntity<?> findProveedoresByArticulo(@RequestParam Long filtroArticulo) {
+    @GetMapping("/findProveedoresByArticulo/{filtroArticulo}")
+    public ResponseEntity<?> findProveedoresByArticulo(@PathVariable Long filtroArticulo) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(servicio.findProveedoresByArticulo(filtroArticulo));
         } catch(Exception e) {
