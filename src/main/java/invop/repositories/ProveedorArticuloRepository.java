@@ -15,9 +15,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
             value = "SELECT DISTINCT p.nombre_proveedor " +
                     "FROM proveedores p " +
                     "JOIN proveedor_articulo pa ON pa.id_proveedor = p.id " +
-                    "WHERE pa.articulo_id = :filtroArticulo " +
-                    "AND p.fecha_baja IS NULL " +
-                    "AND pa.fecha_baja IS NULL",
+                    "WHERE pa.articulo_id = :filtroArticulo",
             nativeQuery = true
     )
     List<Object> findProveedoresByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
@@ -26,9 +24,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
             value = "SELECT DISTINCT a.nombre_articulo " +
                     "FROM articulos a " +
                     "JOIN proveedor_articulo pa ON pa.articulo_id = a.id " +
-                    "WHERE pa.id_proveedor = :filtroProveedor " +
-                    "AND a.fecha_baja IS NULL " +
-                    "AND pa.fecha_baja IS NULL",
+                    "WHERE pa.id_proveedor = :filtroProveedor",
             nativeQuery = true
     )
     List<ProveedorArticulo> findArticulosByProveedor(@Param("filtroProveedor") Long filtroArticulo);
@@ -41,6 +37,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
             nativeQuery = true
     )
     Double findCostoPedidoByArticuloAndProveedor(@Param("filtroArticulo") Long filtroArticulo, @Param("filtroProveedor") Long filtroProveedor);
+
     @Query(
             value = "SELECT avg(tiempo_demora_articulo) " +
                     "FROM proveedor_articulo " +
