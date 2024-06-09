@@ -26,6 +26,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception;
 
     //METODOS PARA EL MODELO INTERVALO FIJO
-
     public int metodoIntervaloFijo(Long idArticulo) throws Exception;
-    }
+
+
+}
