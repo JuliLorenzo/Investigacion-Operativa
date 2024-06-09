@@ -187,22 +187,22 @@
                     <!-- Page Heading -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
                         <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Artículos</h1>
-                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#createArticleModal">
+                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearArticuloModal">
                             <span class="text">Crear artículo</span>
                         </a>
                     </div>
                     <!-- Modal de Bootstrap -->
-                    <div class="modal fade" id="createArticleModal" tabindex="-1" role="dialog" aria-labelledby="createArticleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="crearArticuloModal" tabindex="-1" role="dialog" aria-labelledby="crearArticuloModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="createArticleModalLabel">Crear Nuevo Artículo</h5>
+                                    <h5 class="modal-title" id="crearArticuloModalLabel">Crear Nuevo Artículo</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="createArticuloForm">
+                                    <form id="crearArticuloForm">
                                         <div class="form-group">
                                             <label for="nombre">Nombre</label>
                                             <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -215,7 +215,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    <button type="button" class="btn btn-primary" id="submitArticleButton">Guardar Artículo</button>
+                                    <button type="button" class="btn btn-primary" id="guardarArticulo">Guardar</button>
                                 </div>
                             </div>
                         </div>
@@ -234,7 +234,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tableBody">
-                                    <!-- Aquí se agregarán dinámicamente las filas de la tabla -->
+                                    <!-- En datatable-Articulos.js se muestran dinámicamente las filas de la tabla -->
                                     </tbody>
 
                                 </table>
