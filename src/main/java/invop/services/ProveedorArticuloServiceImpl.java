@@ -95,8 +95,4 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
-
-
-
-
 }
