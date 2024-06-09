@@ -33,6 +33,15 @@ public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArt
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+    @GetMapping("/findCostoPedidoByArticuloAndProveedor")
+    public ResponseEntity<?> findCostoPedidoByArticuloAndProveedor(@RequestParam Long filtroArticulo, @RequestParam Long filtroProveedor) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.findCostoPedidoByArticuloAndProveedor(filtroArticulo, filtroProveedor));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+        }
+    }
+
     @GetMapping("/obtenerTiempoDemoraPromedio")
     public ResponseEntity<?> obtenerTiempoDemoraPromedioProveedores(@RequestParam Long filtroArticulo) {
         try {

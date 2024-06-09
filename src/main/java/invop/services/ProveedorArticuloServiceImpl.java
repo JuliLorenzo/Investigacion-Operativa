@@ -43,6 +43,19 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
+    @Override
+    @Transactional
+    public Double findCostoPedidoByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception{
+        try {
+            Double valorCP = proveedorArticuloRepository.findCostoPedidoByArticuloAndProveedor(idArticulo, idProveedor);
+            return valorCP;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //POSIBLE ELIMINACION -> REEMPLAZO CON UNA @QUERY
+    //Busca el Costo de Pedido de un ProveedorArticulo.
     public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, Long idArticulo) throws Exception {
         try {
             for (ProveedorArticulo proveedorArticulo : articulosDelProveedor){
@@ -57,7 +70,6 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         return null;
     }
 
-    //Busca el Costo de Pedido de un ProveedorArticulo.
     @Transactional
     public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception {
         try {

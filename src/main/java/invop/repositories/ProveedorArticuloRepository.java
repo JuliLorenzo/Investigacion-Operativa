@@ -33,6 +33,14 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
     List<ProveedorArticulo> findArticulosByProveedor(@Param("filtroProveedor") Long filtroArticulo);
 
     @Query(
+            value = "SELECT costo_pedido " +
+                    "FROM proveedor_articulo pa " +
+                    "WHERE pa.articulo_id = :filtroArticulo" +
+                    "AND pa.id_proveedor = :filtroProveedor",
+            nativeQuery = true
+    )
+    Double findCostoPedidoByArticuloAndProveedor(@Param("filtroArticulo") Long filtroArticulo, @Param("filtroProveedor") Long filtroProveedor);
+    @Query(
             value = "SELECT avg(tiempo_demora_articulo) " +
                     "FROM proveedor_articulo " +
                     "WHERE articulo_id = :filtroArticulo",
