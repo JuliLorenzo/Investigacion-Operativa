@@ -3,11 +3,12 @@ $(document).ready(function() {
   $('#dataTable').DataTable();
 });
 
-$('#guardarArticulo').click(function() {
+    $('#guardarArticulo').click(function() {
     var formData = {
         nombreArticulo: $('#nombre').val(),
-        cantidadArticulo: $('#cantidad').val()
-    };
+        cantidadArticulo: $('#cantidad').val(),
+            proveedorPredeterminado: $('#proveedor').val()  // Captura el valor del proveedor seleccionado
+        };
 
     $.ajax({
         type: 'POST',
@@ -18,28 +19,29 @@ $('#guardarArticulo').click(function() {
             $('#crearArticuloModal').modal('hide');
             alert('Artículo creado exitosamente');
 
-            // Agregar el nuevo artículo a la tabla
-            const tableBody = document.querySelector("#articulos-table tbody");
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                  <td>${response.id}</td>
-                  <td>${response.nombreArticulo}</td>
-                  <td>${response.cantidadArticulo}</td>
-                  <td>
-                      <div style="align-content: center">
-                          <a href="#" class="btn btn-info btn-circle btn-sm ver-proveedores" data-id="${articulo.id}">
-                              <i class="fas fa-link"></i>
-                          </a>
-                          <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${articulo.id}">
-                              <i class="fas fa-edit"></i>
-                          </a>
-                          <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${articulo.id}">
-                              <i class="fas fa-trash"></i>
-                          </a>
-                      </div>
-                  </td>
-              `;
-            tableBody.appendChild(row);
+                // Agregar el nuevo artículo a la tabla
+                const tableBody = document.querySelector("#articulos-table tbody");
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${response.id}</td>
+                    <td>${response.nombreArticulo}</td>
+                    <td>${response.cantidadArticulo}</td>
+                    <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                    <td>
+                        <div style="align-content: center">
+                            <a href="#" class="btn btn-info btn-circle btn-sm ver-proveedores" data-id="${response.id}">
+                                <i class="fas fa-link"></i>
+                            </a>
+                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${response.id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
 
             // Limpia el formulario después de enviar
             $('#crearArticuloForm')[0].reset();
@@ -51,43 +53,10 @@ $('#guardarArticulo').click(function() {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-  fetch("http://localhost:9090/api/v1/articulos")
-      .then(response => response.json())
-      .then(data => {
-        const tableBody = document.querySelector("#articulos-table tbody");
-        data.forEach(articulo => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-                    <td>${articulo.id}</td>
-                    <td>${articulo.nombreArticulo}</td>
-                    <td>${articulo.cantidadArticulo}</td>
-                    <td>
-                        <div style="align-content: center">
-                            <a href="#" class="btn btn-info btn-circle btn-sm ver-proveedores" data-id="${articulo.id}">
-                                <i class="fas fa-link"></i>
-                            </a>
-                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${articulo.id}">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${articulo.id}">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                `;
-          tableBody.appendChild(row);
-        });
-      })
-      .catch(error => {
-        console.error("Error al obtener los artículos:", error);
-      });
-});
-
-// Manejar clic en el botón de eliminación
-$(document).on('click', '.borrar-articulo', function(event) {
-    event.preventDefault();
-    const articuloId = $(this).data('id');
+    // Manejar clic en el botón de eliminación
+    $(document).on('click', '.borrar-articulo', function(event) {
+        event.preventDefault();
+        const articuloId = $(this).data('id');
 
     if (confirm('¿Está seguro de que desea eliminar este artículo?')) {
         $.ajax({
@@ -116,29 +85,3 @@ $(document).on('click', '.borrar-articulo', function(event) {
         });
     }
 });
-
-$(document).on('click', '.ver-proveedores', function(event) {
-    event.preventDefault();
-    const articuloId = $(this).data('id');
-    $.ajax({
-        type: 'GET',
-        url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
-        data: JSON.stringify(formData),
-        success: function(response) {
-            $('#proveedores-list').empty();
-            if (response.length > 0) {
-                // Itera sobre los proveedores y los agrega a la lista
-                response.forEach(proveedorNombre => {
-                    const listItem = `<li class="list-group-item">${proveedorNombre}</li>`;
-                    $('#proveedores-list').append(listItem);});
-            } else {
-                // Si no hay proveedores, mostrar un mensaje
-                const listItem = `<li class="list-group-item">No se encontraron proveedores para este artículo.</li>`;
-                $('#proveedores-list').append(listItem);
-            }
-
-            // Mostrar el modal
-            $('#proveedoresModal').modal('show');
-        }
-    });
-    });
