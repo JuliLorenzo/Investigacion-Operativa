@@ -10,7 +10,9 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
     public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception;
 
     public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception;
+
     public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception;
+
     public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
 
     //

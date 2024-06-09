@@ -4,6 +4,7 @@ import invop.entities.Articulo;
 import invop.entities.ProveedorArticulo;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
+import invop.repositories.VentaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Autowired
     private ArticuloRepository articuloRepository;
-
     @Autowired
     private OrdenCompraService ordenCompraService;
     @Autowired
@@ -27,6 +27,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Autowired
     private ProveedorArticuloService proveedorArticuloService;
 
+    @Autowired
+    private VentaRepository ventaRepository;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService) {
         super(baseRepository);
@@ -58,7 +60,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
-
     }
 
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
@@ -138,7 +139,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
             int demandaAnual = calculoDemandaAnual(idArticulo);
-            double promedioDemoraProv= proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
+            double promedioDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
 
             int puntoPedido = demandaAnual * (int)Math.round(promedioDemoraProv);
 
@@ -200,26 +201,38 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     //METODOS PARA EL MODELO INTERVALO FIJO
-    public int cantidadMeta() throws Exception{
-        // Implementación futura
-        return 0;
+
+    @Transactional
+    public int cantidadAPedir(Articulo articulo) throws Exception{
+        try {
+            // q = demandaPromedioDiaria * (TiempoEntrePedidos + TiempoDemoraProveedor) + Z * DesvEstandar(T+L) - InventarioActual
+            Long idArticulo = articulo.getId();
+            int demandaPromedioDiaria = ventaRepository.calcularDemandaPromedioDiariaDeArticulo(idArticulo);
+            int tiempoEntrePedidos = 0; // !!!
+            double promedioDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo); // SE USA EL PROMEDIO?!
+            Double valorNormalZ = 1.67;
+            Double desvEstandarTiempoPedidoYDemora = 0.0; // !!!
+            // desvEstandarTiempoPedidoYDemora = raiz(TiempoEntrePedidos+tiempoDemora)*desvEstandarDemandaDiaria
+            Integer inventarioActual = articulo.getCantidadArticulo();
+
+            Integer cantidadAPedir = (int) (demandaPromedioDiaria * (tiempoEntrePedidos + promedioDemoraProv) + valorNormalZ * desvEstandarTiempoPedidoYDemora - inventarioActual);
+            return cantidadAPedir;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
-    public int cantidadAPedir() throws Exception{
-        // Implementación futura
-        return 0;
-    }
-    public int metodoIntervaloFijo(Long idProveedorArticulo) throws Exception{
-        // Implementación futura
+
+    public int metodoIntervaloFijo(Long idArticulo) throws Exception{
+        try {
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            int cantidadAPedir = cantidadAPedir(articulo);
+        } catch (Exception e ){
+            throw new Exception(e.getMessage());
+        }
         return 0;
     }
 
     //METODO PARA LA GENERACION DE LA ORDEN COMPRA
-
-    //Buscar proveedor predeterminado
-
-
-    //Buscar proveedores existentes para un Articulo
-
 
 
 }
