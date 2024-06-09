@@ -11,7 +11,9 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception;
 
+    //PROBAR Y ELEGIR UN CALCULO DE CP
     public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception;
+    public Double findCostoPedidoByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception;
 
     public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
 

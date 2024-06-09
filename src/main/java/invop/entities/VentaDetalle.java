@@ -22,4 +22,9 @@ public class VentaDetalle extends Base{
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
+
+    public VentaDetalle(Articulo articulo, Integer cantidadVendida) {
+        this.articulo = articulo;
+        this.cantidadVendida = cantidadVendida;
+    }
 }

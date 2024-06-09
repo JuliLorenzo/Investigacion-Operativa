@@ -78,7 +78,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
-
     @Override
     @Transactional
     public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
@@ -208,9 +207,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             // q = demandaPromedioDiaria * (TiempoEntrePedidos + TiempoDemoraProveedor) + Z * DesvEstandar(T+L) - InventarioActual
             Long idArticulo = articulo.getId();
             int demandaPromedioDiaria = ventaRepository.calcularDemandaPromedioDiariaDeArticulo(idArticulo);
-            int tiempoEntrePedidos = 0; // !!!
+            int tiempoEntrePedidos = 0; // !!! No es un atributo de cada Articulo?
             double promedioDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo); // SE USA EL PROMEDIO?!
-            Double valorNormalZ = 1.67;
+            Double valorNormalZ = 1.67; //Valor de Z -> Despues intentar modificar/mejorar
             Double desvEstandarTiempoPedidoYDemora = 0.0; // !!!
             // desvEstandarTiempoPedidoYDemora = raiz(TiempoEntrePedidos+tiempoDemora)*desvEstandarDemandaDiaria
             Integer inventarioActual = articulo.getCantidadArticulo();

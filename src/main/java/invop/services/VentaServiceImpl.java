@@ -48,6 +48,16 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         }
         return cantidadTotalVendida;
     }
+    /*
+    //FALTA TERMINAR!! Crear una Venta
+    public void crearVenta() throws Exception {
+        Venta nuevaVenta = new Venta();
+        List<VentaDetalle> detallesNuevaVenta = nuevaVenta.getVentaDetalles().crearListaDeDetalles();
+        nuevaVenta.setVentaDetalles(detallesNuevaVenta);
+        save(nuevaVenta);
+    }
+
+     */
 
 
 }
