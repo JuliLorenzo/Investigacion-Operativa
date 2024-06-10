@@ -41,11 +41,11 @@ public class Articulo extends Base {
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
 
-    /*
+
     @Column(name = "modelo_inventario")
     @Enumerated(EnumType.STRING)
     private ModeloInventario modeloInventario;
-    */
+
 
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
