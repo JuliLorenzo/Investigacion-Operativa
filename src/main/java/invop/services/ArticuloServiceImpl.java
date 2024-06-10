@@ -1,7 +1,9 @@
 package invop.services;
 
 import invop.entities.Articulo;
+import invop.entities.Proveedor;
 import invop.entities.ProveedorArticulo;
+import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.VentaRepository;
@@ -30,14 +32,18 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private ProveedorArticuloService proveedorArticuloService;
 
     @Autowired
+    private ProveedorService proveedorService;
+
+    @Autowired
     private VentaRepository ventaRepository;
 
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService) {
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService, ProveedorService proveedorService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
         this.demandaHistoricaService = demandaHistoricaService;
         this.proveedorArticuloService = proveedorArticuloService;
+        this.proveedorService = proveedorService;
     }
 
     public Articulo findArticuloById(Long id) {
@@ -238,7 +244,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return 0;
     }
 
-    //METODO PARA LA GENERACION DE LA ORDEN COMPRA
+    //PARA CREAR ARTICULO
+
+
+    public Articulo crearArticulo(Long idProveedor, String nombreArticulo, ModeloInventario modeloInventario, Integer cantidadArticulo) throws Exception{
+      try{
+          Articulo articuloCreado = new Articulo();
+
+          articuloCreado.setProveedorPredeterminado(proveedorService.findById(idProveedor));
+          articuloCreado.setNombreArticulo(nombreArticulo);
+          articuloCreado.setModeloInventario(modeloInventario);
+          articuloCreado.setCantidadArticulo(cantidadArticulo);
+
+          articuloRepository.save(articuloCreado);
+
+          return articuloCreado;
+
+      }catch (Exception e ){
+          throw new Exception(e.getMessage());
+      }
+    }
 
 
 }
