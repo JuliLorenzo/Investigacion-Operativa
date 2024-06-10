@@ -4,18 +4,19 @@ import invop.entities.Articulo;
 import invop.entities.ProveedorArticulo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ArticuloService extends BaseService<Articulo, Long> {
     public Articulo findArticuloById(Long id);
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
 
     public void darDeBajaArticulo(Long idArticulo) throws Exception;
+    public List<Long> getArticulosSinStock(Map<Long, Integer> articulosDetalleVenta);
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception;
 
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception;
 
     //METODOS PARA EL EOQ
-    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception;
     public int calculoPuntoPedido(Long idArticulo) throws Exception;
     public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception;
     public int calculoStockSeguridad(Long idArticulo) throws Exception;

@@ -1,5 +1,6 @@
 package invop.services;
 
+import invop.dto.VentaDto;
 import invop.entities.Venta;
 
 import java.time.LocalDate;
@@ -12,5 +13,6 @@ public interface VentaService extends BaseService<Venta, Long> {
     List<Venta> findVentasByFechas(LocalDate fechaDesde, LocalDate fechaHasta) throws Exception;
 
     Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo);
+    Venta crearVenta(VentaDto ventaDto) throws Exception;
 
     }

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -62,6 +64,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
+    public List<Long> getArticulosSinStock(Map<Long, Integer> articulosDetalleVenta){
+        List<Long> articulosSinStock = new ArrayList<>();
+
+        for (Map.Entry<Long,Integer> item : articulosDetalleVenta.entrySet()) {
+            Long idArticulo = item.getKey();
+            Integer cantidad = item.getValue();
+
+            if (articuloRepository.getById(idArticulo).getCantidadArticulo() < cantidad) {
+                articulosSinStock.add(idArticulo);
+            }
+
+        }
+        return articulosSinStock;
+    }
+    public void disminuirStock(Articulo articulo, Integer cantVendida){
+        Integer nuevoStock = articulo.getCantidadArticulo() - cantVendida;
+        articulo.setCantidadArticulo(nuevoStock);
+        articuloRepository.save(articulo);
+    }
+
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
         try {
             Double costoCompra = precioArticulo * cantidadAComprar;
@@ -77,21 +99,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articuloRepository.save(Articulo);
 
     }
-
-    @Override
-    @Transactional
-    public int calculoLoteOptimo(int demandaAnual, double costoPedido, double costoAlmacenamiento) throws Exception {
-        //ESTE ES DEL METODO DE TAMAÑO FIJO DE LOTE
-        try{
-            int loteOptimo = 0;
-            loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
-            return loteOptimo;
-        }
-        catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }
-    }
-
 
     // METODO LOTE FIJO: Calculo Lote Optimo -> Dividirlo
     //Ver si mover el metodo a DemandaHistorica

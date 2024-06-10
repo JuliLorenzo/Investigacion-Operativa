@@ -1,7 +1,10 @@
 package invop.services;
 
+import invop.dto.VentaDto;
+import invop.entities.Articulo;
 import invop.entities.Venta;
 import invop.entities.VentaDetalle;
+import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +14,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements VentaService {
     @Autowired
     private VentaRepository ventaRepository;
-    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository){
+    @Autowired
+    private ArticuloService articuloService;
+
+    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository, ArticuloService articuloService){
         super(baseRepository);
         this.ventaRepository = ventaRepository;
+        this.articuloService = articuloService;
     }
 
     @Override
@@ -48,17 +56,21 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         }
         return cantidadTotalVendida;
     }
-    /*
-    //FALTA TERMINAR!! Crear una Venta
-    public void crearVenta() throws Exception {
+
+    //Crear una Venta
+    public Venta crearVenta(VentaDto ventaDto) throws Exception {
         Venta nuevaVenta = new Venta();
-        List<VentaDetalle> detallesNuevaVenta = nuevaVenta.getVentaDetalles().crearListaDeDetalles();
-        nuevaVenta.setVentaDetalles(detallesNuevaVenta);
-        save(nuevaVenta);
+        for (Map.Entry<Long,Integer> item : ventaDto.getArticulosDetalleVenta().entrySet()) {
+            Long idArticulo = item.getKey();
+            Integer cantidad = item.getValue();
+
+            Articulo articulo = articuloService.findById(idArticulo);
+            nuevaVenta.agregarDetalleVenta(new VentaDetalle(articulo, cantidad));
+        }
+        nuevaVenta.setFechaVenta(ventaDto.getFechaHora());
+        ventaRepository.save(nuevaVenta);
+        return nuevaVenta;
     }
-
-     */
-
 
 }
 

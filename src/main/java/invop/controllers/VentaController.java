@@ -1,5 +1,9 @@
 package invop.controllers;
 
+import invop.dto.VentaDto;
+import invop.services.ArticuloService;
+import invop.services.VentaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import invop.entities.Venta;
 import invop.services.VentaServiceImpl;
@@ -12,12 +16,19 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/ventas")
 public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>{
+
+    @Autowired
+    private ArticuloService articuloService;
+    @Autowired
+    private VentaService ventaService;
+
 
     @GetMapping("/findVentasByFechas")
     public ResponseEntity<?> findVentasByFechas(@RequestParam LocalDate desde, @RequestParam LocalDate hasta) {
@@ -30,4 +41,17 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+    @PostMapping("/crearVenta")
+    @ResponseBody
+    public Venta crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
+        List<Long> articulosSinStock = articuloService.getArticulosSinStock(ventaDTO.getArticulosDetalleVenta());
+
+        if (!articulosSinStock.isEmpty()) {
+            throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
+        }
+
+        Venta venta = ventaService.crearVenta(ventaDTO);
+        return venta;
+    }
+
 }
