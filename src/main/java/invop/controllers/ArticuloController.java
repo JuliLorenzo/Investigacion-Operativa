@@ -1,6 +1,7 @@
 package invop.controllers;
 
 import invop.entities.Articulo;
+import invop.enums.ModeloInventario;
 import invop.services.ArticuloService;
 import invop.services.ArticuloServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,13 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
+    @PostMapping("")
+    public ResponseEntity<?> crearArticulo(@RequestParam Long idProveedor, @RequestParam ModeloInventario modeloInventario, @RequestBody Articulo articulo) {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(articuloService.crearArticulo(idProveedor, articulo.getNombreArticulo(), modeloInventario, articulo.getCantidadArticulo()));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
 
 }

@@ -1,7 +1,9 @@
 package invop.services;
 
+import invop.entities.Articulo;
 import invop.entities.DemandaHistorica;
 import invop.repositories.ArticuloRepository;
+import invop.repositories.BaseRepository;
 import invop.repositories.DemandaHistoricaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,8 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     private VentaService ventaService;
 
 
-    public DemandaHistoricaServiceImpl(DemandaHistoricaRepository demandaHistoricaRepository, VentaService ventaService, ArticuloRepository articuloRepository){
-        super(demandaHistoricaRepository);
+    public DemandaHistoricaServiceImpl(BaseRepository<DemandaHistorica, Long> baseRepository, DemandaHistoricaRepository demandaHistoricaRepository, VentaService ventaService, ArticuloRepository articuloRepository){
+        super(baseRepository);
         this.demandaHistoricaRepository = demandaHistoricaRepository;
         this.ventaService = ventaService;
         this.articuloRepository = articuloRepository;
