@@ -43,7 +43,7 @@ public abstract class BaseControllerImpl <E extends Base, S extends BaseServiceI
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(servicio.update(id, entity));

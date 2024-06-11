@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${articulo.id}">
                                 <i class="fas fa-link"></i>
                             </a>
-                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${articulo.id}">
+                            <a href="#" class="btn btn-warning btn-circle btn-sm " id="modificar-articulo" data-id="${articulo.id}">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${articulo.id}">
@@ -153,3 +153,61 @@ $(document).ready(function() {
         }
     });
 });
+
+
+//PARA MODIFICACION DE ARTICULOS
+
+$(document).ready(function() {
+    $('#dataTable').DataTable();
+
+    // Enviar el formulario de modificacion de artículo
+    $('#guardarArticuloModificado').click(function () {
+        const articuloId = $(this).data('id');
+        var formData = {
+            nombreArticulo: $('#nombreParaModificar').val(),
+            proveedorPredeterminado: $('#proveedorParaModificar').val()  // Captura el valor del proveedor seleccionado
+        };
+
+        $.ajax({
+            type: 'PATCH',
+            url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                $('#modificarArticuloModal').modal('hide');
+                alert('Artículo modificado exitosamente');
+
+                // Cambiar el artículo modificado a la tabla
+                const tableBody = document.querySelector("#articulos-table tbody");
+                const rowToUpdate = $(`#articulos-table tbody tr[data-id="${response.id}"]`)
+                rowToUpdate.html(`
+                    <td>${response.id}</td>
+                    <td>${response.nombreArticulo}</td>
+                    <td>${response.proveedorPredeterminado}</td>
+                    <td>
+                        <div style="align-content: center">
+                            <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
+                                <i class="fas fa-link"></i>
+                            </a>
+                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${response.id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                `);
+
+                // Limpia el formulario después de enviar
+                $('#modificarArticuloForm')[0].reset();
+            },
+            error: function (error) {
+                // Manejar la respuesta de error
+                alert('Error al modificar el artículo');
+            }
+        });
+    });
+});
+
+
