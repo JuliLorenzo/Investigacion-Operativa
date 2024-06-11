@@ -19,9 +19,9 @@ public class Proveedor extends Base {
     @Column(name = "nombre_proveedor")
     private String nombreProveedor;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    /*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name="id_proveedor")
     @Builder.Default
     private List<ProveedorArticulo> proveedorArticuloList = new ArrayList<>();
-
+*/
 }

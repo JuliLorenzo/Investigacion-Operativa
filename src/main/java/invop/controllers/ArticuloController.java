@@ -39,7 +39,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }
-
+/*
     @PostMapping("")
     public ResponseEntity<?> crearArticulo(@RequestParam Long idProveedor, @RequestParam ModeloInventario modeloInventario, @RequestBody Articulo articulo) {
         try{
@@ -47,6 +47,6 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
-    }
+    }*/
 
 }

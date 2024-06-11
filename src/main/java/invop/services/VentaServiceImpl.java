@@ -58,6 +58,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 //    }
 
     //Crear una Venta
+
     public Venta crearVenta(VentaDto ventaDto) throws Exception {
         Venta nuevaVenta = new Venta();
         for (Map.Entry<Long,Integer> item : ventaDto.getArticulosDetalleVenta().entrySet()) {

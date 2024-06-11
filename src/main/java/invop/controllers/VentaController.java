@@ -41,6 +41,7 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+
     @PostMapping("/crearVenta")
     @ResponseBody
     public Venta crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
