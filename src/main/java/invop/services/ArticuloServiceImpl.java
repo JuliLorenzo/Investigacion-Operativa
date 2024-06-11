@@ -244,26 +244,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         return 0;
     }
 
-    //PARA CREAR ARTICULO
 
 
-    public Articulo crearArticulo(Long idProveedor, String nombreArticulo, ModeloInventario modeloInventario, Integer cantidadArticulo) throws Exception{
-      try{
-          Articulo articuloCreado = new Articulo();
 
-          articuloCreado.setProveedorPredeterminado(proveedorService.findById(idProveedor));
-          articuloCreado.setNombreArticulo(nombreArticulo);
-          articuloCreado.setModeloInventario(modeloInventario);
-          articuloCreado.setCantidadArticulo(cantidadArticulo);
 
-          articuloRepository.save(articuloCreado);
-
-          return articuloCreado;
-
-      }catch (Exception e ){
-          throw new Exception(e.getMessage());
-      }
-    }
 
 
 }

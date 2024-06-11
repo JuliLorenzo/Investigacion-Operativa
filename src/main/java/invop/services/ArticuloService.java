@@ -32,7 +32,4 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     //METODOS PARA EL MODELO INTERVALO FIJO
     public int metodoIntervaloFijo(Long idArticulo) throws Exception;
 
-    //CREAR UN ARTIULO Y DEJARLE SELECCIONAR PROVEEDOR Y MODELO
-
-    public Articulo crearArticulo(Long idProveedor, String nombreArticulo, ModeloInventario modeloInventario, Integer cantidadArticulo) throws Exception;
 }
