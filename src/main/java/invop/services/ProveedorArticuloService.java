@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProveedorArticuloService extends BaseService<ProveedorArticulo, Long> {
 
-    public List<Object> findProveedoresByArticulo(Long filtroArticulo) throws Exception;
+    public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception;
 
     public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception;
 

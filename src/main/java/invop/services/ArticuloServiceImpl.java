@@ -1,8 +1,6 @@
 package invop.services;
 
-import invop.entities.Articulo;
-import invop.entities.Proveedor;
-import invop.entities.ProveedorArticulo;
+import invop.entities.*;
 import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
@@ -151,9 +149,22 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
             int demandaAnual = calculoDemandaAnual(idArticulo);
-            double promedioDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado"));
+            Long idProveedorPredeterminado = articulo.getProveedorPredeterminado().getId();
+            List<ProveedorArticulo> todosProveedoresDelArticulo = proveedorArticuloService.findProveedoresByArticulo(idArticulo);
+            Double tiempoDemoraProv = 0.0;
 
-            int puntoPedido = demandaAnual * (int)Math.round(promedioDemoraProv);
+            for(ProveedorArticulo proveedorArticulo : todosProveedoresDelArticulo){
+                if(proveedorArticulo.getId().equals(idProveedorPredeterminado)){
+                    tiempoDemoraProv = proveedorArticulo.getTiempoDemoraArticulo();
+                    break;
+                }
+                if (tiempoDemoraProv == 0.0) {
+                    tiempoDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
+                }
+            }
+
+            int puntoPedido = demandaAnual * tiempoDemoraProv.intValue();
 
             return puntoPedido;
         } catch(Exception e ){

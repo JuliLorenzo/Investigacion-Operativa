@@ -18,7 +18,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
                     "WHERE pa.articulo_id = :filtroArticulo",
             nativeQuery = true
     )
-    List<Object> findProveedoresByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
+    List<ProveedorArticulo> findProveedoresByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
 
     @Query(
             value = "SELECT DISTINCT a.nombre_articulo " +

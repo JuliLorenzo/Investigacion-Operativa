@@ -21,7 +21,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
 
     @Override
     @Transactional
-    public List<Object> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
+    public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception{
         try {
             return proveedorArticuloRepository.findProveedoresByArticulo(filtroArticulo);
         } catch (Exception e){
