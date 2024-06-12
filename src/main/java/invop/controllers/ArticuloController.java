@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -37,6 +39,16 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+    @GetMapping("/faltantes")
+    public ResponseEntity<List<Articulo>> getArticulosFaltantes() {
+        try {
+            List<Articulo> articulosFaltantes = articuloService.listadoFaltantes();
+            return ResponseEntity.ok(articulosFaltantes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
