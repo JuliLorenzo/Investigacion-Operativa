@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${articulo.id}">
                                 <i class="fas fa-link"></i>
                             </a>
-                            <a href="#" class="btn btn-warning btn-circle btn-sm " id="modificar-articulo" data-id="${articulo.id}">
+                            <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" id="modificar-articulo" data-id="${articulo.id}">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${articulo.id}">
@@ -157,53 +157,95 @@ $(document).ready(function() {
 
 //PARA MODIFICACION DE ARTICULOS
 
-$(document).ready(function() {
-    $('#dataTable').DataTable();
 
-    // Enviar el formulario de modificacion de artículo
-    $('#guardarArticuloModificado').click(function () {
-        const articuloId = $(this).data('id');
+//fetch UN solo articulo
+async function obtenerArticuloSeleccionado(idArticulo) {
+    try {
+        const response = await fetch(`http://localhost:9090/api/v1/articulos/${idArticulo}`);
+        if (!response.ok) {
+            throw new Error('No se pudo obtener el artículo');
+        }
+        const articulo = await response.json();
+        return articulo;
+    } catch (error) {
+        console.error("Error al obtener el artículo:", error);
+        throw error; // Puedes relanzar el error para manejarlo en el contexto que llame a esta función
+    }
+}
+
+
+$(document).on('click', '.btn-modificar-articulo', function (event) {
+    event.preventDefault();
+    var articuloId = $(this).data('id');
+
+    $('#modificarArticuloModal').modal('show');
+
+    //Obtener la información del artículo
+    $.ajax({
+        type: 'GET',
+        url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
+        success: function(articulo) {
+            console.log('Artículo obtenido:', articulo);
+            // Rellena el formulario con la información del artículo
+            $('#nombreParaModificar').val(articulo.nombreArticulo);
+
+            // Obtener la lista de proveedores
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:9090/api/v1/proveedores',
+                success: function(proveedores) {
+                    console.log('Proveedores obtenidos:', proveedores);
+
+                    // Llena el menú desplegable de proveedores con las opciones obtenidas del servidor
+                    const proveedorSelect = $('#proveedorParaModificar');
+                    proveedores.forEach(function(proveedor) {
+                        const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
+                        if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
+                            option.attr('selected', 'selected');
+                        }
+                        proveedorSelect.append(option);
+                    });
+                },
+                error: function(error) {
+                    console.error('Error al obtener la lista de proveedores:', error);
+                }
+            });
+        },
+        error: function(error) {
+            console.error('Error al obtener la información del artículo:', error);
+        }
+    });
+
+    $('#guardarArticuloModificado').off('click').on('click', function() {
+        console.log('ID DEL ARTICULO:', articuloId);
         var formData = {
+            id: articuloId,
             nombreArticulo: $('#nombreParaModificar').val(),
-            proveedorPredeterminado: $('#proveedorParaModificar').val()  // Captura el valor del proveedor seleccionado
+            proveedorPredeterminado: {
+                id: $('#proveedorParaModificar').val()
+            }
         };
 
+        // Verificar el valor seleccionado del proveedor
+        console.log('ID del proveedor seleccionado:', $('#proveedorParaModificar').val());
+        console.log('Datos enviados:', formData);
+
+        //Realizar una solicitud PATCH al servidor para modificar el artículo
         $.ajax({
             type: 'PATCH',
             url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
             contentType: 'application/json',
             data: JSON.stringify(formData),
-            success: function (response) {
-                $('#modificarArticuloModal').modal('hide');
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                $('#modificarArticuloModal').modal('hide'); // Cierra el modal de modificación de artículo
                 alert('Artículo modificado exitosamente');
 
-                // Cambiar el artículo modificado a la tabla
-                const tableBody = document.querySelector("#articulos-table tbody");
-                const rowToUpdate = $(`#articulos-table tbody tr[data-id="${response.id}"]`)
-                rowToUpdate.html(`
-                    <td>${response.id}</td>
-                    <td>${response.nombreArticulo}</td>
-                    <td>${response.proveedorPredeterminado}</td>
-                    <td>
-                        <div style="align-content: center">
-                            <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
-                                <i class="fas fa-link"></i>
-                            </a>
-                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${response.id}">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                `);
+                // Agregar cualquier otra lógica necesaria para refrescar la tabla de artículos
 
-                // Limpia el formulario después de enviar
-                $('#modificarArticuloForm')[0].reset();
             },
-            error: function (error) {
-                // Manejar la respuesta de error
+            error: function(error) {
+                console.error('Error al modificar el artículo:', error);
                 alert('Error al modificar el artículo');
             }
         });
