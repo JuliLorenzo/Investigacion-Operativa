@@ -256,6 +256,39 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
+    public List<Articulo> listadoFaltantes() throws Exception{
+        try{
+            List<Articulo> todosArticulos = articuloRepository.findAll();
+            List<Articulo> articulosFaltantes = new ArrayList<Articulo>();
+
+            for(Articulo articulo : todosArticulos){
+                if(articulo.getCantidadArticulo() < articulo.getStockSeguridadArticulo()){
+                    articulosFaltantes.add(articulo);
+                }
+            }
+            return articulosFaltantes;
+        } catch (Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public List<Articulo> listadoAReponer() throws Exception{
+        try{
+            List<Articulo> todosArticulos = articuloRepository.findAll();
+            List<Articulo> articulosAReponer = new ArrayList<Articulo>();
+
+
+            for(Articulo articulo : todosArticulos){
+                boolean ordenActiva = ordenCompraService.articuloConOrdenActiva(articulo.getId());
+                if(articulo.getCantidadArticulo() < articulo.getPuntoPedidoArticulo() && !ordenActiva ){
+                    articulosAReponer.add(articulo);
+                }
+            }
+            return articulosAReponer;
+        } catch (Exception e ){
+            throw new Exception(e.getMessage());
+        }
+    }
 
 
 

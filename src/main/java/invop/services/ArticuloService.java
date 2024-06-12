@@ -32,4 +32,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     //METODOS PARA EL MODELO INTERVALO FIJO
     public int metodoIntervaloFijo(Long idArticulo) throws Exception;
 
+    public List<Articulo> listadoFaltantes() throws Exception;
+    public List<Articulo> listadoAReponer() throws Exception;
+
 }
