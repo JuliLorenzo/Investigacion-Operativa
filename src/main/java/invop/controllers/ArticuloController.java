@@ -1,5 +1,6 @@
 package invop.controllers;
 
+import invop.dto.ArticuloFaltanteDto;
 import invop.entities.Articulo;
 import invop.enums.ModeloInventario;
 import invop.services.ArticuloService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,10 +45,20 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
     }
 
     @GetMapping("/faltantes")
-    public ResponseEntity<List<Articulo>> getArticulosFaltantes() {
+    public ResponseEntity<List<ArticuloFaltanteDto>> getArticulosFaltantes() {
         try {
             List<Articulo> articulosFaltantes = articuloService.listadoFaltantes();
-            return ResponseEntity.ok(articulosFaltantes);
+            List<ArticuloFaltanteDto> faltantesFinal = new ArrayList<>();
+            for(Articulo articulo : articulosFaltantes){
+                ArticuloFaltanteDto faltante = new ArticuloFaltanteDto();
+                faltante.setIdArticulo(articulo.getId());
+                faltante.setNombreArticulo(articulo.getNombreArticulo());
+                faltante.setStockActualArticulo(articulo.getCantidadArticulo());
+                faltante.setStockSeguridad(articulo.getStockSeguridadArticulo());
+                faltante.setOrdenActiva(articuloService.controlOrdenCompraActiva(articulo.getId()));
+                faltantesFinal.add(faltante);
+            }
+            return ResponseEntity.ok(faltantesFinal);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
