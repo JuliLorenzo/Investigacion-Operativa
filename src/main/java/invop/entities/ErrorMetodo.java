@@ -1,4 +1,26 @@
 package invop.entities;
 
-public class ErrorMetodo {
+import jakarta.persistence.*;
+import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.annotations.NotFound;
+
+@Entity
+@Table(name = "errores")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+public class ErrorMetodo extends Base {
+
+    @NotNull
+    @Column(name = "error")
+    private Double error;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_prediccion_demanda")
+    private PrediccionDemanda prediccionDemanda;
+
 }
