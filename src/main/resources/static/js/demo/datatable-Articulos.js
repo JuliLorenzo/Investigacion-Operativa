@@ -159,7 +159,7 @@ $(document).ready(function() {
 
 
 //fetch UN solo articulo
-async function obtenerArticuloSeleccionado(idArticulo) {
+/*async function obtenerArticuloSeleccionado(idArticulo) {
     try {
         const response = await fetch(`http://localhost:9090/api/v1/articulos/${idArticulo}`);
         if (!response.ok) {
@@ -171,7 +171,7 @@ async function obtenerArticuloSeleccionado(idArticulo) {
         console.error("Error al obtener el artículo:", error);
         throw error; // Puedes relanzar el error para manejarlo en el contexto que llame a esta función
     }
-}
+}*/
 
 
 $(document).on('click', '.btn-modificar-articulo', function (event) {
@@ -242,7 +242,7 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
                 alert('Artículo modificado exitosamente');
 
                 // Agregar cualquier otra lógica necesaria para refrescar la tabla de artículos
-
+                location.reload();
             },
             error: function(error) {
                 console.error('Error al modificar el artículo:', error);
