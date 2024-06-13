@@ -1,5 +1,6 @@
 package invop.controllers;
 
+import invop.dto.ArticuloAReponerDto;
 import invop.dto.ArticuloFaltanteDto;
 import invop.entities.Articulo;
 import invop.enums.ModeloInventario;
@@ -59,6 +60,26 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                 faltantesFinal.add(faltante);
             }
             return ResponseEntity.ok(faltantesFinal);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/Reponer")
+    public ResponseEntity<List<ArticuloAReponerDto>> getArticulosAReponer() {
+        try {
+            List<Articulo> articulosAReponer = articuloService.listadoAReponer();
+            List<ArticuloAReponerDto> ReponerFinal = new ArrayList<>();
+            for(Articulo articulo : articulosAReponer){
+                ArticuloAReponerDto areponer = new ArticuloAReponerDto();
+                areponer.setIdArticulo(articulo.getId());
+                areponer.setNombreArticulo(articulo.getNombreArticulo());
+                areponer.setPuntoPedido(articulo.getPuntoPedidoArticulo());
+                areponer.setStockSeguridad(articulo.getStockSeguridadArticulo());
+                areponer.setOrdenActiva(articuloService.controlOrdenCompraActiva(articulo.getId()));
+                ReponerFinal.add(areponer);
+            }
+            return ResponseEntity.ok(ReponerFinal);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
