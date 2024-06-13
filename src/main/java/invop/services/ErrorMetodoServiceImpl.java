@@ -1,8 +1,6 @@
 package invop.services;
 
-import invop.entities.DemandaHistorica;
 import invop.entities.ErrorMetodo;
-import invop.repositories.BaseRepository;
 import invop.repositories.ErrorMetodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -187,9 +187,38 @@
                     <!-- Page Heading -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
                         <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Ventas</h1>
-                        <a href="#" class="btn btn-primary btn-icon-split">
+                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearVentaModal">
                             <span class="text">Crear venta</span>
                         </a>
+                    </div>
+                    <!-- Modal de Bootstrap para crear articulo-->
+                    <div class="modal fade" id="crearVentaModal" tabindex="-1" role="dialog" aria-labelledby="crearVentaModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="crearVentaModalLabel">Crear Nueva Venta</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="crearVentaForm">
+                                        <div class="form-group">
+                                            <label for="fecha">Fecha</label>
+                                            <input type="date" class="form-control" id="fecha" name="fecha" required>
+                                        </div>
+                                        <div id="detallesContainer">
+                                            <!-- Aquí se agregarán los detalles -->
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" id="agregarDetalleBtn">Agregar Detalle</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary" id="guardarVenta">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
