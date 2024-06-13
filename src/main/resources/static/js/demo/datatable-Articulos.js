@@ -5,12 +5,19 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             const tableBody = document.querySelector("#articulos-table tbody");
             data.forEach(articulo => {
+                //articulo.loteOptimoArticulo = articulo.loteOptimoArticulo;
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${articulo.id}</td>
                     <td>${articulo.nombreArticulo}</td>
                     <td>${articulo.cantidadArticulo}</td>
+                    <td>${articulo.modeloInventario}</td>
                     <td>${articulo.proveedorPredeterminado ? articulo.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                    <td>${articulo.loteOptimoArticulo}</td>
+                    <td>${articulo.puntoPedidoArticulo}</td>
+                    <td>${articulo.stockSeguridadArticulo}</td>
+                    <td>${articulo.cgiArticulo}</td>
+                    
                     <td>
                         <div style="align-content: center">
                             <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${articulo.id}">
