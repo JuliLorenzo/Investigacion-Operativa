@@ -99,7 +99,7 @@ $(document).ready(function() {
                             <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
                                 <i class="fas fa-link"></i>
                             </a>
-                            <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${response.id}">
+                            <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
