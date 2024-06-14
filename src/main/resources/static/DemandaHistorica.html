@@ -86,7 +86,7 @@
                     <h6 class="collapse-header">Tablas:</h6>
                     <a class="collapse-item" href="Articulos.html">Artículos</a>
                     <a class="collapse-item" href="Proveedores.html">Proveedores</a>
-                    <a class="collapse-item" href="">Demanda histórica</a>
+                    <a class="collapse-item" href="DemandaHistorica.html">Demanda histórica</a>
                     <a class="collapse-item" href="Ventas.html">Ventas</a>
                 </div>
             </div>
@@ -122,7 +122,7 @@
 
         <!-- Nav Item - Tables -->
         <!-- Nav Item - Articulos -->
-        <li class="nav-item active">
+        <li class="nav-item ">
             <a class="nav-link" href="Articulos.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Articulos</span></a>
@@ -136,7 +136,7 @@
         </li>
 
         <!-- Nav Item - Demanda Historica -->
-        <li class="nav-item ">
+        <li class="nav-item active">
             <a class="nav-link" href="DemandaHistorica.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Demanda Histórica</span></a>
@@ -186,103 +186,30 @@
 
                 <!-- Page Heading -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
-                    <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Artículos</h1>
-
-                    <a href="ArticulosFaltantes.html" class="btn btn-danger btn-icon-split">
-                        <span class="text">Ver faltantes</span>
-                    </a>
-
-                    <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearArticuloModal">
-                        <span class="text">Crear artículo</span>
+                    <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Demandas Historicas</h1>
+                    <a href="#" class="btn btn-danger btn-icon-split" data-toggle="modal" data-target="#crearDemandaHistoricaModal">
+                        <span class="text">Crear Demanda Historica</span>
                     </a>
                 </div>
-                <!-- Modal de Bootstrap para crear articulo-->
-                <div class="modal fade" id="crearArticuloModal" tabindex="-1" role="dialog" aria-labelledby="crearArticuloModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="crearArticuloModalLabel">Crear Nuevo Artículo</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="crearArticuloForm">
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre</label>
-                                        <input type="text" class="form-control" id="nombre" name="nombre" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cantidad">Cantidad</label>
-                                        <input type="text" class="form-control" id="cantidad" name="cantidad" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="proveedor">Proveedor Predeterminado</label>
-                                        <select class="form-control" id="proveedor" name="proveedor" required>
-                                            <option value="">Seleccione un proveedor</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" id="guardarArticulo">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Modal de Bootstrap para modificar articulo-->
-                <div class="modal fade" id="modificarArticuloModal" tabindex="-1" role="dialog" aria-labelledby="crearArticuloModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modificarArticuloModalLabel">Modificar un articulo existente</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="modificarArticuloForm">
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre</label>
-                                        <input type="text" class="form-control" id="nombreParaModificar" name="nombre">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="proveedor">Proveedor Predeterminado</label>
-                                        <select class="form-control" id="proveedorParaModificar" name="proveedor" >
-                                            <option value="">Seleccione un proveedor</option>
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" id="guardarArticuloModificado">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- DataTables Example -->
+
+
+                <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="articulos-table" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="demandahistorica-table" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Cantidad</th>
-                                    <th>Modelo Inventario</th>
-                                    <th>Proveedor Predeterminado</th>
-                                    <th>Lote Optimo</th>
-                                    <th>Punto Pedido</th>
-                                    <th>Stock Seguridad</th>
-                                    <th>CGI</th>
+                                    <th>Fecha Desde</th>
+                                    <th>Fecha Hasta</th>
+                                    <th>Cantidad </th>
+                                    <th>Articulo</th>
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tableBody">
-                                <!-- En datatable-Articulos.js se muestran dinámicamente las filas de la tabla -->
+                                <!-- En datatable-DemandaHsitorica.js se muestran dinámicamente las filas de la tabla -->
                                 </tbody>
 
                             </table>
