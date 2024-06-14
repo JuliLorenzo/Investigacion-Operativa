@@ -100,7 +100,12 @@ $(document).ready(function() {
                     <td>${response.id}</td>
                     <td>${response.nombreArticulo}</td>
                     <td>${response.cantidadArticulo}</td>
+                    <td>${response.modeloInventario}</td>
                     <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                    <td>${response.loteOptimoArticulo}</td>
+                    <td>${response.puntoPedidoArticulo}</td>
+                    <td>${response.stockSeguridadArticulo}</td>
+                    <td>${response.cgiArticulo}</td>
                     <td>
                         <div style="align-content: center">
                             <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
