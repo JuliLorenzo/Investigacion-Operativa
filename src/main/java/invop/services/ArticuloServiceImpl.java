@@ -68,11 +68,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
-    public List<Long> getArticulosSinStock(Map<Long, Integer> articulosDetalleVenta){
+    public List<Long> getArticulosSinStock(Map<String, Integer> articulosDetalleVenta){
         List<Long> articulosSinStock = new ArrayList<>();
 
-        for (Map.Entry<Long,Integer> item : articulosDetalleVenta.entrySet()) {
-            Long idArticulo = item.getKey();
+        for (Map.Entry<String,Integer> item : articulosDetalleVenta.entrySet()) {
+            String idArticuloStr = item.getKey();
+            Long   idArticulo = Long.parseLong(idArticuloStr);
             Integer cantidad = item.getValue();
 
             if (articuloRepository.getById(idArticulo).getCantidadArticulo() < cantidad) {
@@ -104,7 +105,20 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     }
 
-    // METODO LOTE FIJO: Calculo Lote Optimo -> Dividirlo
+    // METODO LOTE FIJO:
+    public void calculosModeloLoteFijo(Articulo articulo) throws Exception{
+        Long idArticulo = articulo.getId();
+        Integer loteOptimo = calculoDeLoteOptimo(idArticulo);
+        Integer puntoPedido = calculoPuntoPedido(idArticulo);
+        Integer stockSeguridad = calculoStockSeguridad(idArticulo);
+        puntoPedido += stockSeguridad;
+
+        articulo.setLoteOptimoArticulo(loteOptimo);
+        articulo.setPuntoPedidoArticulo(puntoPedido);
+        articulo.setStockSeguridadArticulo(stockSeguridad);
+
+    }
+
     //Ver si mover el metodo a DemandaHistorica
     @Override
     @Transactional
@@ -148,24 +162,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Transactional
     public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
+            Articulo articulo = findArticuloById(idArticulo);
             int demandaAnual = calculoDemandaAnual(idArticulo);
-            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado"));
-            Long idProveedorPredeterminado = articulo.getProveedorPredeterminado().getId();
-            List<ProveedorArticulo> todosProveedoresDelArticulo = proveedorArticuloService.findProveedoresByArticulo(idArticulo);
-            Double tiempoDemoraProv = 0.0;
+            Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
 
-            for(ProveedorArticulo proveedorArticulo : todosProveedoresDelArticulo){
-                if(proveedorArticulo.getId().equals(idProveedorPredeterminado)){
-                    tiempoDemoraProv = proveedorArticulo.getTiempoDemoraArticulo();
-                    break;
-                }
-                if (tiempoDemoraProv == 0.0) {
-                    tiempoDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo);
-                }
-            }
-
-            int puntoPedido = demandaAnual * tiempoDemoraProv.intValue();
-
+            int puntoPedido = demandaAnual * tiempoProveedor.intValue();
             return puntoPedido;
         } catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -183,18 +184,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public int calculoStockSeguridad(Long idArticulo) throws Exception{
         try {
             Articulo articulo = findArticuloById(idArticulo);
-
-            //Valor de Z -> Despues modificar
             Double valorNormalZ = 1.67;
 
-            Integer puntoPedido;
-            if (articulo.getPuntoPedidoArticulo() == null){
-                puntoPedido = calculoPuntoPedido(idArticulo);
-            } else {
-                puntoPedido = articulo.getPuntoPedidoArticulo();
-            }
+            Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
 
-            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(puntoPedido));
+            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(articulo.getTiempoRevisionArticulo() + tiempoProveedor));
             return stockSeguridad;
         }catch(Exception e ){
             throw new Exception(e.getMessage());

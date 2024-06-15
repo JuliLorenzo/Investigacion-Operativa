@@ -13,7 +13,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
 
     public void darDeBajaArticulo(Long idArticulo) throws Exception;
-    public List<Long> getArticulosSinStock(Map<Long, Integer> articulosDetalleVenta);
+    public List<Long> getArticulosSinStock(Map<String, Integer> articulosDetalleVenta);
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception;
 
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception;

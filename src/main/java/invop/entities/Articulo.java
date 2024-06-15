@@ -29,11 +29,8 @@ public class Articulo extends Base {
     @Column(name = "costo_almacenamiento")
     private Double costoAlmacenamientoArticulo;
 
-    @Column(name = "lote_optimo_articulo")
-    private Integer loteOptimoArticulo;
-
-    @Column(name = "punto_pedido_articulo")
-    private Integer puntoPedidoArticulo;
+    @Column(name = "costo_pedido")
+    private Double costoPedidoArticulo;
 
     @Column(name = "stock_seguridad_articulo")
     private Integer stockSeguridadArticulo;
@@ -41,10 +38,25 @@ public class Articulo extends Base {
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
 
-
     @Column(name = "modelo_inventario")
     @Enumerated(EnumType.STRING)
     private ModeloInventario modeloInventario;
+
+    //Para el Metodo Lote Fijo
+    @Column(name = "lote_optimo_articulo")
+    private Integer loteOptimoArticulo;
+
+    @Column(name = "punto_pedido_articulo")
+    private Integer puntoPedidoArticulo;
+
+    //Para el Metodo Intervalo Fijo
+    @Column(name = "cantidad_maxima")
+    private Double cantidadMaximaArticulo;
+
+    @Column(name = "tiempo_revision")
+    private Double tiempoRevisionArticulo;
+
+
 
 
     @ManyToOne()

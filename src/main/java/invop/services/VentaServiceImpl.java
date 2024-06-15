@@ -6,6 +6,7 @@ import invop.entities.Venta;
 import invop.entities.VentaDetalle;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
+import invop.repositories.VentaDetalleRepository;
 import invop.repositories.VentaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,15 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     @Autowired
     private ArticuloService articuloService;
 
-    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository, ArticuloService articuloService){
+    @Autowired
+    private VentaDetalleRepository ventaDetalleRepository;
+
+
+    public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository, ArticuloService articuloService, VentaDetalleRepository ventaDetalleRepository){
         super(baseRepository);
         this.ventaRepository = ventaRepository;
         this.articuloService = articuloService;
+        this.ventaDetalleRepository = ventaDetalleRepository;
     }
 
     @Override
@@ -61,14 +67,18 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 
     public Venta crearVenta(VentaDto ventaDto) throws Exception {
         Venta nuevaVenta = new Venta();
-        for (Map.Entry<Long,Integer> item : ventaDto.getArticulosDetalleVenta().entrySet()) {
-            Long idArticulo = item.getKey();
+        for (Map.Entry<String,Integer> item : ventaDto.getArticulosDetalleVenta().entrySet()) {
+            String idArticuloStr = item.getKey();
+            Long idArticulo = Long.parseLong(idArticuloStr);
             Integer cantidad = item.getValue();
 
             Articulo articulo = articuloService.findById(idArticulo);
-            nuevaVenta.agregarDetalleVenta(new VentaDetalle(articulo, cantidad));
+            VentaDetalle nuevoDetalle = new VentaDetalle(articulo, cantidad);
+            nuevaVenta.agregarDetalleVenta(nuevoDetalle);
+            ventaDetalleRepository.save(nuevoDetalle);
         }
         nuevaVenta.setFechaVenta(ventaDto.getFechaHora());
+
         ventaRepository.save(nuevaVenta);
         return nuevaVenta;
     }

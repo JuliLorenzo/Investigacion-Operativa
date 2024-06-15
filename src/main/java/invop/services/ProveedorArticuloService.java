@@ -13,8 +13,10 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
     //PROBAR Y ELEGIR UN CALCULO DE CP
     public Double findCostoPedido(Long idArticulo, Long idProveedor) throws Exception;
     public Double findCostoPedidoByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception;
+    public Double findTiempoDemoraArticuloByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception;
 
-    public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
+
+        public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
 
     //
     // COMENTO ESTOS MÉTODOS PARA QUE NO TIRE ERROR, PORQUE AÚN NO LOS IMPLEMENTAMOS

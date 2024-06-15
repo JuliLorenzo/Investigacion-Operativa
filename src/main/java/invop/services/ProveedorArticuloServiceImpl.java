@@ -51,6 +51,17 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
+    @Override
+    @Transactional
+    public Double findTiempoDemoraArticuloByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception{
+        try {
+            Double tiempoDemora = proveedorArticuloRepository.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, idProveedor);
+            return tiempoDemora;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
     //POSIBLE ELIMINACION -> REEMPLAZO CON UNA @QUERY
     //Busca el Costo de Pedido de un ProveedorArticulo.
     public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, Long idArticulo) throws Exception {
@@ -81,6 +92,7 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
+    //BORRAR: NO SE USA
     public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception {
         try {
             Double tiempoDemoraPromedioProveedores = proveedorArticuloRepository.obtenerTiempoDemoraPromedioProveedores(filtroArticulo);
@@ -89,5 +101,6 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
             throw new Exception(e.getMessage());
         }
     }
+
 
 }
