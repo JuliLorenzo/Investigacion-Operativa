@@ -1,7 +1,6 @@
 package invop.services;
 
 import invop.entities.*;
-import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.VentaRepository;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> implements ArticuloService {
@@ -28,10 +26,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private DemandaHistoricaService demandaHistoricaService;
     @Autowired
     private ProveedorArticuloService proveedorArticuloService;
-
     @Autowired
     private ProveedorService proveedorService;
-
     @Autowired
     private VentaRepository ventaRepository;
 
@@ -91,8 +87,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public Double calculoCGI(Double costoAlmacenamiento, Double costoPedido, Double precioArticulo, Double cantidadAComprar, Double demandaAnual) throws Exception {
         try {
             Double costoCompra = precioArticulo * cantidadAComprar;
-            Double cgi = costoCompra + costoAlmacenamiento * (cantidadAComprar/2) + costoPedido * (demandaAnual/cantidadAComprar);
-            return cgi;
+            return costoCompra + costoAlmacenamiento * (cantidadAComprar/2) + costoPedido * (demandaAnual/cantidadAComprar);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -123,16 +118,21 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Transactional
     public int calculoDemandaAnual(Long idArticulo) throws Exception {
         try {
-            //Obtener fecha actual y fecha de hace un año
+            // Obtener fecha actual y fecha de hace un año
             LocalDate fechaActual = LocalDate.now();
             LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
-            int demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual ,idArticulo);
+            Integer demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual,idArticulo);
+            // si el artículo recién se crea, se setea la demandaAnual = 30
+            if (demandaAnual == 0) {
+                demandaAnual = 30;
+            }
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            articulo.setDemandaAnualArticulo(demandaAnual);
             return demandaAnual;
         }
         catch (Exception e){
             throw new Exception(e.getMessage());
         }
-
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
 
     }
-    public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception{
+    public void guardarPuntoPedido(Integer valorPP, Articulo Articulo) throws Exception {
         Articulo.setPuntoPedidoArticulo(valorPP);
         articuloRepository.save(Articulo);
 
