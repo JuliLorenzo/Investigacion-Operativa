@@ -16,7 +16,13 @@ public class ErrorMetodo extends Base {
 
     @NotNull
     @Column(name = "error")
-    private Double error;
+    private Double PorcentajeError;
+
+
+    @ManyToOne
+    @Column(name = "demanda_real")
+    private DemandaHistorica demandaReal;
+
 
     @NotNull
     @ManyToOne()

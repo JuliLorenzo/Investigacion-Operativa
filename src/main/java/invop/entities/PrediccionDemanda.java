@@ -1,6 +1,7 @@
 package invop.entities;
 
 
+import invop.enums.NombreMetodoPrediccion;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -24,6 +25,9 @@ public class PrediccionDemanda extends Base{
     @ManyToOne
     @JoinColumn(name = "articulo_id")
     private Articulo articulo;
+
+    @Column(name = "nombre_metodo")
+    private NombreMetodoPrediccion nombreMetodoUsado;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(

@@ -264,6 +264,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
+
     @Override
     @Transactional
     public void modeloIntervaloFijo(Long idArticulo) throws Exception{
@@ -271,6 +272,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
             int cantidadAPedir = cantidadAPedir(articulo);
             // acá no sé cómo cerrar este método
+            //AGREGARLE LO DEL STOCK DE SEGURIDAD
         } catch (Exception e ){
             throw new Exception(e.getMessage());
         }
