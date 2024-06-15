@@ -19,8 +19,8 @@ public class ErrorMetodo extends Base {
     private Double PorcentajeError;
 
 
-    @ManyToOne
-    @Column(name = "demanda_real")
+    @ManyToOne()
+    @JoinColumn(name = "demanda_real")
     private DemandaHistorica demandaReal;
 
 

@@ -24,7 +24,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
 
     //promedio movil ponderado
-    public Integer promedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
+    public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
             //esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
             if(cantidadPeriodos != coeficientesPonderacion.size()){

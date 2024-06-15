@@ -8,5 +8,5 @@ import java.util.List;
 public interface PrediccionDemandaService extends BaseService<PrediccionDemanda, Long> {
     // Métodos específicos de Prediccion Demanda
 
-    public Integer promedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception;
+    public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception;
 }

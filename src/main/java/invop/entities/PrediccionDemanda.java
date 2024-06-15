@@ -27,7 +27,9 @@ public class PrediccionDemanda extends Base{
     private Articulo articulo;
 
     @Column(name = "nombre_metodo")
+    @Enumerated(EnumType.STRING)
     private NombreMetodoPrediccion nombreMetodoUsado;
+
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
