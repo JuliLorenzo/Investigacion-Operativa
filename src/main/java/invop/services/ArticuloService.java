@@ -1,9 +1,7 @@
 package invop.services;
 
 import invop.entities.Articulo;
-import invop.entities.Proveedor;
-import invop.entities.ProveedorArticulo;
-import invop.enums.ModeloInventario;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +24,15 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     public void metodoLoteFijo(Long idArticulo) throws Exception;
     public int calculoPuntoPedido(Long idArticulo) throws Exception;
-    public int calculoDemandaAnual(Long idArticulo) throws Exception;
+    public Integer calculoDemandaAnual(Long idArticulo) throws Exception;
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception;
 
     //METODOS PARA EL MODELO INTERVALO FIJO
-    public int metodoIntervaloFijo(Long idArticulo) throws Exception;
+
+    //METODOS PARA EL MODELO INTERVALO FIJO
+    Integer cantidadMaxima(Articulo articulo) throws Exception;
+    Integer cantidadAPedir(Articulo articulo) throws Exception;
+    public void modeloIntervaloFijo(Long idArticulo) throws Exception;
 
     public List<Articulo> listadoFaltantes() throws Exception;
     public List<Articulo> listadoAReponer() throws Exception;

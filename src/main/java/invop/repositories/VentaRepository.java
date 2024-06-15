@@ -31,5 +31,5 @@ public interface VentaRepository extends BaseRepository<Venta, Long> {
                     ") AS subquery",
             nativeQuery = true
     )
-    int calcularDemandaPromedioDiariaDeArticulo(@Param("filtroArticulo") Long filtroArticulo);
+    Integer calcularDemandaPromedioDiariaDeArticulo(@Param("filtroArticulo") Long filtroArticulo);
 }

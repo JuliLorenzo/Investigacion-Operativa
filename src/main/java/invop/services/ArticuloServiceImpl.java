@@ -9,11 +9,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 
 @Service
 public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> implements ArticuloService {
@@ -116,7 +115,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     //Ver si mover el metodo a DemandaHistorica
     @Override
     @Transactional
-    public int calculoDemandaAnual(Long idArticulo) throws Exception {
+    public Integer calculoDemandaAnual(Long idArticulo) throws Exception {
         try {
             // Obtener fecha actual y fecha de hace un año
             LocalDate fechaActual = LocalDate.now();
@@ -130,7 +129,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articulo.setDemandaAnualArticulo(demandaAnual);
             return demandaAnual;
         }
-        catch (Exception e){
+        catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
@@ -182,12 +181,17 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Transactional
     public int calculoStockSeguridad(Long idArticulo) throws Exception{
         try {
+            // Para unificar, usamos este método para SS de Lote Fijo y de Intervalo Fijo
             Articulo articulo = findArticuloById(idArticulo);
-            Double valorNormalZ = 1.67;
-
+            Double valorNormalZ = 1.64;
             Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
+            Integer tiempoRevision = articulo.getTiempoRevisionArticulo();
 
-            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(articulo.getTiempoRevisionArticulo() + tiempoProveedor));
+            // Si el artículo usa modelo de Lote Fijo, el tiempo de revisión o entre pedidos es null, por lo que lo tomamos como 0
+            if (tiempoRevision == null) {
+                tiempoRevision = 0;
+            }
+            int stockSeguridad = (int) (valorNormalZ * Math.sqrt(tiempoRevision + tiempoProveedor));
             return stockSeguridad;
         }catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -217,37 +221,55 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     //METODOS PARA EL MODELO INTERVALO FIJO
-
+    @Override
     @Transactional
-    public int cantidadAPedir(Articulo articulo) throws Exception{
+    public Integer cantidadMaxima(Articulo articulo) throws Exception {
         try {
-            // q = demandaPromedioDiaria * (TiempoEntrePedidos + TiempoDemoraProveedor) + Z * DesvEstandar(T+L) - InventarioActual
             Long idArticulo = articulo.getId();
-            int demandaPromedioDiaria = ventaRepository.calcularDemandaPromedioDiariaDeArticulo(idArticulo);
-            int tiempoEntrePedidos = 0; // !!! No es un atributo de cada Articulo?
-            double promedioDemoraProv = proveedorArticuloService.obtenerTiempoDemoraPromedioProveedores(idArticulo); // SE USA EL PROMEDIO?!
-            Double valorNormalZ = 1.67; //Valor de Z -> Despues intentar modificar/mejorar
-            Double desvEstandarTiempoPedidoYDemora = 0.0; // !!!
-            // desvEstandarTiempoPedidoYDemora = raiz(TiempoEntrePedidos+tiempoDemora)*desvEstandarDemandaDiaria
-            Integer inventarioActual = articulo.getCantidadArticulo();
 
-            Integer cantidadAPedir = (int) (demandaPromedioDiaria * (tiempoEntrePedidos + promedioDemoraProv) + valorNormalZ * desvEstandarTiempoPedidoYDemora - inventarioActual);
+            // Ya teníamos el método para calcular la demanda promedio diaria, no sé qué es mejor
+            // Si usamos ese método, tendríamos problema con los artículos sin ventas
+            // Acá suponemos que vendemos los 365 días del año
+            Integer demandaPromedioDiaria = calculoDemandaAnual(idArticulo) / 365;
+            Integer tiempoEntrePedidos = articulo.getTiempoRevisionArticulo();
+            Double tiempoDemoraProv = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
+            Double valorNormalZ = 1.64; //Valor de Z -> Deberíamos tenerlo en algún lado fijo y llamarlo, pero no sé dónde
+            Integer desvEstandarDemandaDiaria = 1;
+            Double desvEstandarTiempoPedidoYDemora = Math.sqrt(tiempoEntrePedidos + tiempoDemoraProv) * desvEstandarDemandaDiaria;
+
+            Integer cantidadMaxima = (int) (demandaPromedioDiaria * (tiempoEntrePedidos + tiempoDemoraProv) + valorNormalZ * desvEstandarTiempoPedidoYDemora);
+            articulo.setCantidadMaximaArticulo(cantidadMaxima);
+
+            return cantidadMaxima;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public Integer cantidadAPedir(Articulo articulo) throws Exception{
+        try {
+            Integer inventarioActual = articulo.getCantidadArticulo();
+            Integer cantidadAPedir = (cantidadMaxima(articulo)- inventarioActual);
             return cantidadAPedir;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    public int metodoIntervaloFijo(Long idArticulo) throws Exception{
+    @Override
+    @Transactional
+    public void modeloIntervaloFijo(Long idArticulo) throws Exception{
         try {
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
             int cantidadAPedir = cantidadAPedir(articulo);
+            // acá no sé cómo cerrar este método
         } catch (Exception e ){
             throw new Exception(e.getMessage());
         }
-        return 0;
-    }
 
+    }
 
     public List<Articulo> listadoFaltantes() throws Exception{
         try{

@@ -51,10 +51,10 @@ public class Articulo extends Base {
 
     //Para el Metodo Intervalo Fijo
     @Column(name = "cantidad_maxima")
-    private Double cantidadMaximaArticulo;
+    private Integer cantidadMaximaArticulo;
 
     @Column(name = "tiempo_revision")
-    private Double tiempoRevisionArticulo;
+    private Integer tiempoRevisionArticulo;
 
     @Column(name = "demanda_anual")
     private Integer demandaAnualArticulo;

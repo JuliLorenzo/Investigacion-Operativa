@@ -16,7 +16,7 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
     public Double findTiempoDemoraArticuloByArticuloAndProveedor(Long idArticulo, Long idProveedor) throws Exception;
 
 
-        public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
+    public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception;
 
     //
     // COMENTO ESTOS MÉTODOS PARA QUE NO TIRE ERROR, PORQUE AÚN NO LOS IMPLEMENTAMOS
