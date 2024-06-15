@@ -38,6 +38,7 @@ public class Articulo extends Base {
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
 
+    @NotNull
     @Column(name = "modelo_inventario")
     @Enumerated(EnumType.STRING)
     private ModeloInventario modeloInventario;
