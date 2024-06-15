@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class   ProveedorArticulo extends Base {
+public class ProveedorArticulo extends Base {
 
     @Column(name = "tiempo_demora_articulo")
     private Double tiempoDemoraArticulo;
