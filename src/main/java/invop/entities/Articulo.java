@@ -56,8 +56,8 @@ public class Articulo extends Base {
     @Column(name = "tiempo_revision")
     private Double tiempoRevisionArticulo;
 
-
-
+    @Column(name = "demanda_anual")
+    private Integer demandaAnualArticulo;
 
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")

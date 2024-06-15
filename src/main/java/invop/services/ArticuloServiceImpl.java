@@ -79,7 +79,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             if (articuloRepository.getById(idArticulo).getCantidadArticulo() < cantidad) {
                 articulosSinStock.add(idArticulo);
             }
-
         }
         return articulosSinStock;
     }
