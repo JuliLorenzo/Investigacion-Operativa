@@ -127,6 +127,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             }
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
             articulo.setDemandaAnualArticulo(demandaAnual);
+            articuloRepository.save(articulo);
             return demandaAnual;
         }
         catch (Exception e) {
@@ -192,6 +193,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 tiempoRevision = 0;
             }
             int stockSeguridad = (int) (valorNormalZ * Math.sqrt(tiempoRevision + tiempoProveedor));
+            articulo.setStockSeguridadArticulo(stockSeguridad);
+            articuloRepository.save(articulo);
+
             return stockSeguridad;
         }catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -214,6 +218,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             articulo.setLoteOptimoArticulo(loteOptimoCalculado);
             articulo.setPuntoPedidoArticulo(puntoPedidoCalculado);
+            articuloRepository.save(articulo);
 
         } catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -239,6 +244,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             Integer cantidadMaxima = (int) (demandaPromedioDiaria * (tiempoEntrePedidos + tiempoDemoraProv) + valorNormalZ * desvEstandarTiempoPedidoYDemora);
             articulo.setCantidadMaximaArticulo(cantidadMaxima);
+            articuloRepository.save(articulo);
 
             return cantidadMaxima;
         } catch (Exception e) {
