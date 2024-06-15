@@ -92,15 +92,4 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
-    //BORRAR: NO SE USA
-    public Double obtenerTiempoDemoraPromedioProveedores(Long filtroArticulo) throws Exception {
-        try {
-            Double tiempoDemoraPromedioProveedores = proveedorArticuloRepository.obtenerTiempoDemoraPromedioProveedores(filtroArticulo);
-            return tiempoDemoraPromedioProveedores;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-
 }

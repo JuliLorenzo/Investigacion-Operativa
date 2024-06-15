@@ -48,20 +48,24 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
 
     public Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
         List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
-
+        boolean existe = false;
         int cantidadTotalVendida = 0;
-
         //recorrer ventas y acumular la cantidad vendida del articulo
         for (Venta venta : ventas) {
             for (VentaDetalle detalle : venta.getVentaDetalles()) {
                 if (detalle.getArticulo().getId().equals(idArticulo)) {
                     cantidadTotalVendida = cantidadTotalVendida + detalle.getCantidadVendida();
-
+                    existe = true;
                 }
             }
         }
-        return cantidadTotalVendida;
+        if (existe) {
+            return cantidadTotalVendida;
+        } else {
+            return -1;
+        }
     }
+
     public void nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Integer cantidadTotal, LocalDateTime fechaAlta){
         DemandaHistorica demandaHistorica = new DemandaHistorica();
         demandaHistorica.setFechaDesde(fechaDesde);
