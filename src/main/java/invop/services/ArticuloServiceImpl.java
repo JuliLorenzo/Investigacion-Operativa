@@ -259,7 +259,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 Integer stockSeguridadArticulo = articulo.getStockSeguridadArticulo();
 
                 if(cantidadArticulo!= null && stockSeguridadArticulo != null){
-                    if(cantidadArticulo < stockSeguridadArticulo){
+                    if(cantidadArticulo <= stockSeguridadArticulo){
                         articulosFaltantes.add(articulo);
                     }
                 }
@@ -278,8 +278,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             for(Articulo articulo : todosArticulos){
                 boolean ordenActiva = ordenCompraService.articuloConOrdenActiva(articulo.getId());
-                if(articulo.getCantidadArticulo() < articulo.getPuntoPedidoArticulo() && !ordenActiva ){
-                    articulosAReponer.add(articulo);
+                if (articulo.getCantidadArticulo() != null && articulo.getPuntoPedidoArticulo() != null) {
+                    if (articulo.getCantidadArticulo() <= articulo.getPuntoPedidoArticulo() && !ordenActiva) {
+
+                        articulosAReponer.add(articulo);
+                    }
                 }
             }
             return articulosAReponer;
