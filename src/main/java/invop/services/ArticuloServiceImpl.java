@@ -105,11 +105,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         Integer puntoPedido = calculoPuntoPedido(idArticulo);
         Integer stockSeguridad = calculoStockSeguridad(idArticulo);
         puntoPedido += stockSeguridad;
+        //Falta CGI
 
         articulo.setLoteOptimoArticulo(loteOptimo);
         articulo.setPuntoPedidoArticulo(puntoPedido);
         articulo.setStockSeguridadArticulo(stockSeguridad);
-
+        //Falta llamar al repository
     }
 
     //Ver si mover el metodo a DemandaHistorica

@@ -42,6 +42,9 @@ public class Articulo extends Base {
     @Enumerated(EnumType.STRING)
     private ModeloInventario modeloInventario;
 
+    @Column(name = "demanda_anual")
+    private Integer demandaAnualArticulo;
+
     //Para el Metodo Lote Fijo
     @Column(name = "lote_optimo_articulo")
     private Integer loteOptimoArticulo;
@@ -56,21 +59,10 @@ public class Articulo extends Base {
     @Column(name = "tiempo_revision")
     private Integer tiempoRevisionArticulo;
 
-    @Column(name = "demanda_anual")
-    private Integer demandaAnualArticulo;
 
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedorPredeterminado;
 
-    /*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name="id_articulo")
-    @Builder.Default
-    private List<OrdenCompra> ordenesCompra = new ArrayList<>();
-
-
-    public void agregarOrdenCompra(OrdenCompra ordenCompra){
-        ordenesCompra.add(ordenCompra);
-    }*/
 
 }
