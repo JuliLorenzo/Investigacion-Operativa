@@ -4,15 +4,19 @@ import invop.entities.*;
 import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
+import invop.repositories.ProveedorArticuloRepository;
 import invop.repositories.VentaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.beans.PropertyDescriptor;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
 
 @Service
@@ -330,8 +334,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
-    //para cuando modifica un articulo
-
+    //METODOS PARA CUANDO MODIFICA UN ARTICULO
     public void sacarIntervaloFijo(Articulo articulo) throws Exception{
         try {
             articulo.setCantidadMaximaArticulo(null);
@@ -353,15 +356,16 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
-    public void modificarArticulo(Long idArticulo) throws Exception{
+
+    public void modificarModeloInventarioArticulo(Articulo articulo) throws Exception{
         try{
-            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_LOTE_FIJO)){
                 calculosModeloLoteFijo(articulo); //setea lote optimo, pp y ss
                 sacarIntervaloFijo(articulo);
             }
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_INTERVALO_FIJO)){
-                modeloIntervaloFijo(idArticulo); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
+                modeloIntervaloFijo(articulo.getId()); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
                 sacarLoteFijo(articulo);
             }
 
@@ -369,6 +373,56 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
+    public void modificarValoresSegunProveedor(Articulo articulo, Proveedor proveedor) throws Exception{
+        try{
+            ProveedorArticulo proveedorArticuloPred = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), proveedor.getId());
+            articulo.setCostoAlmacenamientoArticulo(proveedorArticuloPred.getCostoAlmacenamientoArticuloProveedor());
+            articulo.setCostoPedidoArticulo(proveedorArticuloPred.getCostoPedidoArticuloProveedor());
+            articuloRepository.save(articulo); //lo guardo primero para q despues con los calculos use esto
+
+            int loteOptimo = calculoDeLoteOptimo(articulo.getId());
+            int puntoPedido = calculoPuntoPedido(articulo.getId());
+            int stockSeguridad = calculoStockSeguridad(articulo.getId());
+            articulo.setLoteOptimoArticulo(loteOptimo);
+            articulo.setPuntoPedidoArticulo(puntoPedido);
+            articulo.setStockSeguridadArticulo(stockSeguridad);
+
+            //articulo.setCgiArticulo();
+            articuloRepository.save(articulo);
+        }catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+
+    public void modificarArticulo(Long idArticulo, Articulo nuevoArticulo) throws Exception{
+        try{
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            //verificar si cambio proveedor predeterminado
+            if(!nuevoArticulo.getProveedorPredeterminado().equals(articulo.getProveedorPredeterminado()) && nuevoArticulo.getProveedorPredeterminado() != null){
+                articulo.setProveedorPredeterminado(nuevoArticulo.getProveedorPredeterminado());
+                articuloRepository.save(articulo); //lo guardo antes para q tome el predeterminado nuevo
+
+                modificarValoresSegunProveedor(articulo, articulo.getProveedorPredeterminado());
+            }
+            if(!nuevoArticulo.getModeloInventario().equals(articulo.getModeloInventario()) && nuevoArticulo.getModeloInventario() != null){
+                    articulo.setModeloInventario(nuevoArticulo.getModeloInventario());
+                    articuloRepository.save(articulo);
+                    modificarModeloInventarioArticulo(articulo);
+            }
+            if(!nuevoArticulo.getNombreArticulo().equals(articulo.getNombreArticulo()) && nuevoArticulo.getModeloInventario() != null){
+                    articulo.setNombreArticulo(nuevoArticulo.getNombreArticulo());
+            }
+
+            articuloRepository.save(articulo); //esto creo q no es necesario pero lo puse por las dudas
+
+        }catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //FIN DE METODOS PARA CUANDO MODIFICA UN ARTICULO
 
 
 

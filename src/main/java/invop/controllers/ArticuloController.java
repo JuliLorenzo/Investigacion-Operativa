@@ -85,6 +85,19 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> modificarArticulo(@PathVariable Long id, @RequestBody Articulo articulo){
+        try{
+            articuloService.modificarArticulo(id, articulo);
+            return ResponseEntity.status(HttpStatus.OK).body(articuloService.update(id, articulo));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
 
 
 }
