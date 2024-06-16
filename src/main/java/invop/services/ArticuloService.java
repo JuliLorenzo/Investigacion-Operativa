@@ -41,6 +41,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void sacarIntervaloFijo(Articulo articulo) throws Exception;
     public void sacarLoteFijo(Articulo articulo) throws Exception;
     public void modificarArticulo(Long idArticulo,  Articulo nuevoArticulo) throws Exception;
+    public void modificarArticulo(Long idArticulo) throws Exception;
     //fin
 
 }
