@@ -21,7 +21,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
     List<ProveedorArticulo> findProveedoresByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
 
     @Query(
-            value = "SELECT * FROM proveedor_articulo pa WHERE pa.articulo_id = :filtroArticulo AND pa.proveedor_id = :filtroProveedor",
+            value = "SELECT * FROM proveedor_articulo WHERE articulo_id = :filtroArticulo AND proveedor_id = :filtroProveedor",
             nativeQuery = true
     )
     ProveedorArticulo findProveedorArticuloByAmbosIds(@PathVariable("filtroArticulo") Long filtroArticulo, @Param("filtroProveedor") Long filtroProveedor);

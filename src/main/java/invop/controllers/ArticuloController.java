@@ -85,12 +85,10 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> modificarArticulo(@PathVariable Long id, @RequestBody Articulo articulo){
+    @PatchMapping("/modificar/{idArticulo}")
+    public ResponseEntity<?> modificarArticulo(@PathVariable Long idArticulo, @RequestBody Articulo articulo){
         try{
-            articuloService.modificarArticulo(id, articulo);
-            return ResponseEntity.status(HttpStatus.OK).body(articuloService.update(id, articulo));
-
+            return ResponseEntity.status(HttpStatus.OK).body(articuloService.modificarArticulo(idArticulo, articulo));
         }
         catch (Exception e){
             e.printStackTrace();

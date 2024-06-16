@@ -396,33 +396,55 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
 
 
-    public void modificarArticulo(Long idArticulo, Articulo nuevoArticulo) throws Exception{
+    public Articulo modificarArticulo(Long idArticulo, Articulo nuevoArticulo) throws Exception{
         try{
-            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            Optional<Articulo> articuloOpcional = articuloRepository.findById(idArticulo);
+            Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + idArticulo));
+            BeanUtils.copyProperties(nuevoArticulo, articuloExistente, getNullPropertyNames(nuevoArticulo));
+            Articulo articuloModificado = articuloOpcional.get();
+
+
             //verificar si cambio proveedor predeterminado
-            if(!nuevoArticulo.getProveedorPredeterminado().equals(articulo.getProveedorPredeterminado()) && nuevoArticulo.getProveedorPredeterminado() != null){
-                articulo.setProveedorPredeterminado(nuevoArticulo.getProveedorPredeterminado());
-                articuloRepository.save(articulo); //lo guardo antes para q tome el predeterminado nuevo
+            if(!nuevoArticulo.getProveedorPredeterminado().equals(articuloModificado.getProveedorPredeterminado()) && nuevoArticulo.getProveedorPredeterminado() != null){
+                //articuloModificado.setProveedorPredeterminado(nuevoArticulo.getProveedorPredeterminado());
+                //articuloRepository.save(articuloModificado); //lo guardo antes para q tome el predeterminado nuevo
 
-                modificarValoresSegunProveedor(articulo, articulo.getProveedorPredeterminado());
+                modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
             }
-            if(!nuevoArticulo.getModeloInventario().equals(articulo.getModeloInventario()) && nuevoArticulo.getModeloInventario() != null){
-                    articulo.setModeloInventario(nuevoArticulo.getModeloInventario());
-                    articuloRepository.save(articulo);
-                    modificarModeloInventarioArticulo(articulo);
+            if(!nuevoArticulo.getModeloInventario().equals(articuloModificado.getModeloInventario()) && nuevoArticulo.getModeloInventario() != null){
+                modificarModeloInventarioArticulo(articuloModificado);
             }
-            if(!nuevoArticulo.getNombreArticulo().equals(articulo.getNombreArticulo()) && nuevoArticulo.getModeloInventario() != null){
-                    articulo.setNombreArticulo(nuevoArticulo.getNombreArticulo());
+            if(nuevoArticulo.getNombreArticulo() != null){
+                if(!nuevoArticulo.getNombreArticulo().equals(articuloModificado.getNombreArticulo())){
+                    articuloModificado.setNombreArticulo(nuevoArticulo.getNombreArticulo());
+                }
             }
 
-            articuloRepository.save(articulo); //esto creo q no es necesario pero lo puse por las dudas
+
+            return articuloRepository.save(articuloModificado); //esto creo q no es necesario pero lo puse por las dudas
 
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
     }
 
+
+    private String[] getNullPropertyNames(Articulo source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<>();
+        for (PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) {
+                emptyNames.add(pd.getName());
+            }
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
     //FIN DE METODOS PARA CUANDO MODIFICA UN ARTICULO
+
 
 
 
