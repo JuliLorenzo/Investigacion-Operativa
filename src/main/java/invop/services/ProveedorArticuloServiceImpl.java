@@ -29,6 +29,14 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
         }
     }
 
+    public ProveedorArticulo findProveedorArticuloByAmbosIds(Long filtroArticulo, Long filtroProveedor) throws Exception{
+        try{
+            return proveedorArticuloRepository.findProveedorArticuloByAmbosIds(filtroArticulo, filtroProveedor);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
     @Override
     @Transactional
     public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception {

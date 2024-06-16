@@ -8,6 +8,7 @@ public interface ProveedorArticuloService extends BaseService<ProveedorArticulo,
 
     public List<ProveedorArticulo> findProveedoresByArticulo(Long filtroArticulo) throws Exception;
 
+    public ProveedorArticulo findProveedorArticuloByAmbosIds(Long filtroArticulo, Long filtroProveedor) throws Exception;
     public List<ProveedorArticulo> findArticulosByProveedor(Long filtroProveedor) throws Exception;
 
     //PROBAR Y ELEGIR UN CALCULO DE CP
