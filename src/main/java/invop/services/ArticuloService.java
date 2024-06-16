@@ -43,7 +43,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void modificarModeloInventarioArticulo(Articulo articulo) throws Exception;
     public void sacarIntervaloFijo(Articulo articulo) throws Exception;
     public void sacarLoteFijo(Articulo articulo) throws Exception;
-    public void modificarArticulo(Long idArticulo,  Articulo nuevoArticulo) throws Exception;
+    public Articulo modificarArticulo(Long idArticulo,  Articulo nuevoArticulo) throws Exception;
     //fin
 
 }
