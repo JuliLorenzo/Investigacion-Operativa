@@ -37,4 +37,10 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public List<Articulo> listadoFaltantes() throws Exception;
     public List<Articulo> listadoAReponer() throws Exception;
 
+    //para cuando modifica un articulo
+    public void modificarArticulo(Long idArticulo) throws Exception;
+    public void sacarIntervaloFijo(Articulo articulo) throws Exception;
+    public void sacarLoteFijo(Articulo articulo) throws Exception;
+    //fin
+
 }

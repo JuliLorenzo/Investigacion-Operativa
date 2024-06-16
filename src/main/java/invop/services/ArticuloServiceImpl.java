@@ -1,6 +1,7 @@
 package invop.services;
 
 import invop.entities.*;
+import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.VentaRepository;
@@ -109,6 +110,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         articulo.setLoteOptimoArticulo(loteOptimo);
         articulo.setPuntoPedidoArticulo(puntoPedido);
         articulo.setStockSeguridadArticulo(stockSeguridad);
+        articuloRepository.save(articulo);
 
     }
 
@@ -260,7 +262,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public Integer cantidadAPedir(Articulo articulo) throws Exception{
         try {
             Integer inventarioActual = articulo.getCantidadArticulo();
-            Integer cantidadAPedir = (cantidadMaxima(articulo)- inventarioActual);
+            Integer cantidadAPedir = (articulo.getCantidadMaximaArticulo()- inventarioActual);
             return cantidadAPedir;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -274,6 +276,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         try {
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
             int cantidadAPedir = cantidadAPedir(articulo);
+
+            articulo.setCantidadMaximaArticulo(cantidadMaxima(articulo));
+            articuloRepository.save(articulo);
+
             // acá no sé cómo cerrar este método
             //AGREGARLE LO DEL STOCK DE SEGURIDAD
         } catch (Exception e ){
@@ -324,7 +330,45 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
+    //para cuando modifica un articulo
 
+    public void sacarIntervaloFijo(Articulo articulo) throws Exception{
+        try {
+            articulo.setCantidadMaximaArticulo(null);
+            articulo.setTiempoRevisionArticulo(null);
+            articulo.setModeloInventario(ModeloInventario.MODELO_LOTE_FIJO);
+            articuloRepository.save(articulo);
+        }catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void sacarLoteFijo(Articulo articulo) throws Exception{
+        try{
+            articulo.setModeloInventario(ModeloInventario.MODELO_INTERVALO_FIJO);
+            articulo.setLoteOptimoArticulo(null);
+            articulo.setPuntoPedidoArticulo(null);
+            articuloRepository.save(articulo);
+
+        }catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void modificarArticulo(Long idArticulo) throws Exception{
+        try{
+            Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
+            if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_LOTE_FIJO)){
+                calculosModeloLoteFijo(articulo); //setea lote optimo, pp y ss
+                sacarIntervaloFijo(articulo);
+            }
+            if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_INTERVALO_FIJO)){
+                modeloIntervaloFijo(idArticulo); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
+                sacarLoteFijo(articulo);
+            }
+
+        } catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
 
 
