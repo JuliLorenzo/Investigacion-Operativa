@@ -58,7 +58,7 @@ public class Articulo extends Base {
     private Integer cantidadMaximaArticulo;
 
     @Column(name = "tiempo_revision")
-    private Integer tiempoRevisionArticulo;
+    private Double tiempoRevisionArticulo;
 
 
     @ManyToOne()

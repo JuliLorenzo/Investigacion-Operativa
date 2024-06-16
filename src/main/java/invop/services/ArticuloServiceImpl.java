@@ -156,7 +156,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             int demandaAnual = calculoDemandaAnual(idArticulo);
             double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
-            double costoPedido = proveedorArticuloService.findCostoPedido(idArticulo, proveedorPredeterminado);
+            //double costoPedido = proveedorArticuloService.findCostoPedido(idArticulo, proveedorPredeterminado);
+            double costoPedido = articulo.getCostoPedidoArticulo();
 
             int loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
@@ -172,8 +173,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         try {
             Articulo articulo = findArticuloById(idArticulo);
             int demandaAnual = calculoDemandaAnual(idArticulo);
-            Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
-
+            Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             int puntoPedido = demandaAnual * tiempoProveedor.intValue();
             return puntoPedido;
         } catch(Exception e ){
@@ -194,12 +194,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             // Para unificar, usamos este método para SS de Lote Fijo y de Intervalo Fijo
             Articulo articulo = findArticuloById(idArticulo);
             Double valorNormalZ = 1.64;
-            Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
-            Integer tiempoRevision = articulo.getTiempoRevisionArticulo();
+            Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
+            Double tiempoRevision = articulo.getTiempoRevisionArticulo();
 
             // Si el artículo usa modelo de Lote Fijo, el tiempo de revisión o entre pedidos es null, por lo que lo tomamos como 0
             if (tiempoRevision == null) {
-                tiempoRevision = 0;
+                tiempoRevision = 0.0;
             }
             int stockSeguridad = (int) (valorNormalZ * Math.sqrt(tiempoRevision + tiempoProveedor));
             articulo.setStockSeguridadArticulo(stockSeguridad);
@@ -245,8 +245,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             // Si usamos ese método, tendríamos problema con los artículos sin ventas
             // Acá suponemos que vendemos los 365 días del año
             Integer demandaPromedioDiaria = calculoDemandaAnual(idArticulo) / 365;
-            Integer tiempoEntrePedidos = articulo.getTiempoRevisionArticulo();
-            Double tiempoDemoraProv = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(articulo.getId(), articulo.getProveedorPredeterminado().getId());
+            Double tiempoEntrePedidos = articulo.getTiempoRevisionArticulo();
+            Double tiempoDemoraProv = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             Double valorNormalZ = 1.64; //Valor de Z -> Deberíamos tenerlo en algún lado fijo y llamarlo, pero no sé dónde
             Integer desvEstandarDemandaDiaria = 1;
             Double desvEstandarTiempoPedidoYDemora = Math.sqrt(tiempoEntrePedidos + tiempoDemoraProv) * desvEstandarDemandaDiaria;
@@ -266,7 +266,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public Integer cantidadAPedir(Articulo articulo) throws Exception{
         try {
             Integer inventarioActual = articulo.getCantidadArticulo();
-            Integer cantidadAPedir = (articulo.getCantidadMaximaArticulo()- inventarioActual);
+            Integer cantidadAPedir = (cantidadMaxima(articulo)- inventarioActual);
             return cantidadAPedir;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -285,7 +285,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articuloRepository.save(articulo);
 
             // acá no sé cómo cerrar este método
-            //AGREGARLE LO DEL STOCK DE SEGURIDAD
+
         } catch (Exception e ){
             throw new Exception(e.getMessage());
         }
@@ -365,7 +365,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 sacarIntervaloFijo(articulo);
             }
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_INTERVALO_FIJO)){
-                modeloIntervaloFijo(articulo.getId()); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
+                cantidadMaxima(articulo); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
                 sacarLoteFijo(articulo);
             }
 
@@ -402,24 +402,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + idArticulo));
             BeanUtils.copyProperties(nuevoArticulo, articuloExistente, getNullPropertyNames(nuevoArticulo));
             Articulo articuloModificado = articuloOpcional.get();
+            articuloRepository.save(articuloModificado);
 
-
-            //verificar si cambio proveedor predeterminado
-            if(!nuevoArticulo.getProveedorPredeterminado().equals(articuloModificado.getProveedorPredeterminado()) && nuevoArticulo.getProveedorPredeterminado() != null){
-                //articuloModificado.setProveedorPredeterminado(nuevoArticulo.getProveedorPredeterminado());
-                //articuloRepository.save(articuloModificado); //lo guardo antes para q tome el predeterminado nuevo
-
-                modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
-            }
-            if(!nuevoArticulo.getModeloInventario().equals(articuloModificado.getModeloInventario()) && nuevoArticulo.getModeloInventario() != null){
-                modificarModeloInventarioArticulo(articuloModificado);
-            }
-            if(!nuevoArticulo.getNombreArticulo().equals(articuloModificado.getNombreArticulo()) && nuevoArticulo.getModeloInventario() != null){
-                articuloModificado.setNombreArticulo(nuevoArticulo.getNombreArticulo());
-            }
+            modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
+            modificarModeloInventarioArticulo(articuloModificado);
 
             return articuloRepository.save(articuloModificado); //esto creo q no es necesario pero lo puse por las dudas
-
 
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
