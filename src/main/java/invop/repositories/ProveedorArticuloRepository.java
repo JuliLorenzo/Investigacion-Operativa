@@ -54,4 +54,15 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
             nativeQuery = true
     )
     Double obtenerTiempoDemoraPromedioProveedores(@Param("filtroArticulo") Long filtroArticulo);
+
+    @Query(
+            value = "SELECT precio_articulo_proveedor " +
+                    "FROM proveedor_articulo pa " +
+                    "WHERE pa.articulo_id = :filtroArticulo" +
+                    "AND pa.id_proveedor = :filtroProveedor",
+            nativeQuery = true
+    )
+    Double findPrecioArticuloByArticuloAndProveedor(@Param("filtroArticulo") Long filtroArticulo, @Param("filtroProveedor") Long filtroProveedor);
+
+
 }
