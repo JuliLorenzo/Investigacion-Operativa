@@ -11,10 +11,10 @@ import java.util.List;
 
 @Repository
 public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArticulo, Long> {
+
     @Query(
-            value = "SELECT DISTINCT p.nombre_proveedor " +
-                    "FROM proveedores p " +
-                    "JOIN proveedor_articulo pa ON pa.id_proveedor = p.id " +
+            value = "SELECT * " +
+                    "FROM proveedor_articulo pa " +
                     "WHERE pa.articulo_id = :filtroArticulo",
             nativeQuery = true
     )

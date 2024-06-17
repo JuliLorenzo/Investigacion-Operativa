@@ -20,9 +20,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     <td>
                         <div style="align-content: center">
-                            <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${articulo.id}">
-                                <i class="fas fa-link"></i>
-                            </a>
                             <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" id="modificar-articulo" data-id="${articulo.id}">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -108,9 +105,6 @@ $(document).ready(function() {
                     <td>${response.cgiArticulo}</td>
                     <td>
                         <div style="align-content: center">
-                            <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
-                                <i class="fas fa-link"></i>
-                            </a>
                             <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -204,13 +198,20 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
             // Obtener la lista de proveedores
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:9090/api/v1/proveedores',
-                success: function(proveedores) {
-                    console.log('Proveedores obtenidos:', proveedores);
-
-                    // Llena el menú desplegable de proveedores con las opciones obtenidas del servidor
+                url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
+                success: function(proveedoresarticulos) {
+                    console.log('Proveedores obtenidos:', proveedoresarticulos);
                     const proveedorSelect = $('#proveedorParaModificar');
-                    proveedores.forEach(function(proveedor) {
+                    proveedorSelect.empty();
+                    const defaultOption = document.createElement("option");
+                    if (articulo.proveedorPredeterminado === null) {
+                        defaultOption.textContent = "Seleccione un proveedor";
+                    } else {
+                        defaultOption.textContent = articulo.proveedorPredeterminado.proveedor;
+                    }
+                    proveedorSelect.append(defaultOption);
+                    proveedoresarticulos.forEach(function(proveedorarticulo) {
+                        const proveedor = proveedorarticulo.proveedor;
                         const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
                         if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
                             option.attr('selected', 'selected');
