@@ -36,49 +36,62 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error al obtener los artículos:", error);
         });
 
-    // Fetch proveedores
-    function obtenerProveedores() {
+//Trae los proveedores cuando se crea
+    function cargarProveedores() {
         fetch("http://localhost:9090/api/v1/proveedores")
             .then(response => response.json())
             .then(data => {
-                const proveedorSelect = document.getElementById("proveedor");
-                // Limpiar cualquier opción previa
-                proveedorSelect.innerHTML = '';
-                // Agregar una opción por defecto
-                const defaultOption = document.createElement("option");
-                defaultOption.textContent = "Seleccione un proveedor";
-                proveedorSelect.appendChild(defaultOption);
-                // Agregar opciones para cada proveedor
+                const proveedorSelect = document.querySelector("#proveedor");
+                proveedorSelect.innerHTML = '<option value="">Seleccione un proveedor</option>';
                 data.forEach(proveedor => {
                     const option = document.createElement("option");
-                    option.value = proveedor.id; // Asignar el ID del proveedor como valor
                     option.textContent = proveedor.nombreProveedor;
+                    option.value = proveedor.id;
                     proveedorSelect.appendChild(option);
                 });
             })
             .catch(error => {
-                console.error("Error al obtener los proveedores:", error);
+                console.error('Error al obtener la lista de proveedores:', error);
             });
     }
 
-// Llamar a la función para obtener proveedores cuando se abra el modal para crear un nuevo artículo
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("crearArticuloModal").addEventListener("show.bs.modal", function (event) {
-            obtenerProveedores();
-        });
+    // Mostrar el modal y cargar proveedores al hacer clic en el botón para crear un artículo
+    $('#crearArticuloModal').on('show.bs.modal', function () {
+        cargarProveedores();
     });
-
-});
 
 $(document).ready(function() {
     $('#dataTable').DataTable();
 
+    //Si elige MODELO INTERVALO FIJO SE PIDE EL TIEMPO ENTRE PEDIDOS
+    $('#modelo').change(function() {
+        var modeloSeleccionado = $(this).val();
+
+        if (modeloSeleccionado === 'MODELO_INTERVALO_FIJO') {
+            $('#campoTiempoEntrePedidos').show(); // Muestra el campo de tiempo entre pedidos
+        } else {
+            $('#campoTiempoEntrePedidos').hide(); // Oculta el campo de tiempo entre pedidos
+        }
+    });
+    //SEGUN EL PROVEEDOR, SE LLLENAN LOS CAMPOS DE PROVEEDOR ARTICULO
+    $('#proveedor').change(function() {
+        var proveedorSeleccionado = $(this).val();
+
+        if (proveedorSeleccionado) {
+            $('#proveedorDetalles').show(); // Muestra los campos adicionales del proveedor
+        } else {
+            $('#proveedorDetalles').hide(); // Oculta los campos adicionales del proveedor
+        }
+    });
     // Enviar el formulario de creación de artículo
     $('#guardarArticulo').click(function() {
         var formData = {
             nombreArticulo: $('#nombre').val(),
             cantidadArticulo: $('#cantidad').val(),
-            proveedorPredeterminado: $('#proveedor').val()  // Captura el valor del proveedor seleccionado
+            proveedorPredeterminado: $('#proveedor').val(),  // Captura el valor del proveedor seleccionado
+            modeloinventario: $('#modelo').val(),
+            tiempoEntrePedidos: $('#tiempoEntrePedidos').val(),
+            demandaAnualArticulo: $('#demandaanual').val()
         };
 
         $.ajax({
@@ -263,6 +276,6 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
             }
         });
     });
-});
+});});
 
 

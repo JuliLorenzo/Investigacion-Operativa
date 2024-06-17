@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Articulos Faltantes</title>
+    <title>Articulos A Reponer</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -139,13 +139,13 @@
                 <span>Ventas</span></a>
         </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
 
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
 
     </ul>
     <!-- End of Sidebar -->
@@ -156,57 +156,56 @@
         <!-- Main Content -->
         <div id="content">
 
-    <!-- Topbar -->
-    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-        <!-- Sidebar Toggle (Topbar) -->
-        <form class="form-inline">
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
-        </form>
+                <!-- Sidebar Toggle (Topbar) -->
+                <form class="form-inline">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </form>
 
 
-    </nav>
-    <!-- End of Topbar -->
+            </nav>
+            <!-- End of Topbar -->
 
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <!-- Page Heading -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
-            <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Artículos FALTANTES</h1>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
-            <h7 style="margin: 0 !important; font-size: 0.875rem; color: #6c757d;" class="h3 mb-2 text-gray-800">Artículos con cantidad por debajo del stock de seguridad</h7>
-        </div>
-
-        <!-- DataTables Example -->
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="articulos-faltantes-table" width="100%" cellspacing="0">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Stock Actual</th>
-                            <th>Stock de seguridad</th>
-                            <th>¿Tiene orden ACTIVA?</th>
-                        </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        <!-- En datatable-Articulos.js se muestran dinámicamente las filas de la tabla -->
-                        </tbody>
-
-                    </table>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
+                    <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Artículos A Reponer</h1>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
+                    <h7 style="margin: 0 !important; font-size: 0.875rem; color: #6c757d;" class="h3 mb-2 text-gray-800">Artículos con cantidad por debajo del punto de pedido y sin una orden de compra</h7>
+                </div>
+                <!-- DataTables Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="articulos-areponer-table" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Stock Actual</th>
+                                    <th>Punto de Pedido</th>
+
+                                </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                <!-- En datatable-Articulos.js se muestran dinámicamente las filas de la tabla -->
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+
+
+
             </div>
-        </div>
-        <!-- /.container-fluid -->
-
-
-
-    </div>
             <!-- End of Main Content -->
 
 
@@ -230,7 +229,7 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/datatable-ArticulosFaltantes.js"></script>
+    <script src="js/demo/datatable-ArticulosAReponer.js"></script>
 
 </div></body>
 </html>

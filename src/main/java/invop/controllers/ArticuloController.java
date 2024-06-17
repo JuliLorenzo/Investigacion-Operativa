@@ -65,7 +65,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-    @GetMapping("/Reponer")
+    @GetMapping("/reponer")
     public ResponseEntity<List<ArticuloAReponerDto>> getArticulosAReponer() {
         try {
             List<Articulo> articulosAReponer = articuloService.listadoAReponer();
@@ -75,7 +75,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
                 areponer.setIdArticulo(articulo.getId());
                 areponer.setNombreArticulo(articulo.getNombreArticulo());
                 areponer.setPuntoPedido(articulo.getPuntoPedidoArticulo());
-                areponer.setStockSeguridad(articulo.getStockSeguridadArticulo());
+                areponer.setStockSeguridad(articulo.getPuntoPedidoArticulo());
                 areponer.setOrdenActiva(articuloService.controlOrdenCompraActiva(articulo.getId()));
                 ReponerFinal.add(areponer);
             }
