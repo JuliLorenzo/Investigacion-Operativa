@@ -44,15 +44,15 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
 
     @PostMapping("/crearVenta")
     @ResponseBody
-    public Venta crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
+    public ResponseEntity<Void> crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
         List<Long> articulosSinStock = articuloService.getArticulosSinStock(ventaDTO.getArticulosDetalleVenta());
 
         if (!articulosSinStock.isEmpty()) {
             throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
         }
+        ventaService.crearVenta(ventaDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
 
-        Venta venta = ventaService.crearVenta(ventaDTO);
-        return venta;
     }
 
 }
