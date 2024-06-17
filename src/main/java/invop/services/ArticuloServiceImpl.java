@@ -127,10 +127,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Integer puntoPedido = calculoPuntoPedido(idArticulo);
             Integer stockSeguridad = calculoStockSeguridad(idArticulo);
             puntoPedido += stockSeguridad;
+            Double cgi = calculoCGI(idArticulo);
 
             articulo.setLoteOptimoArticulo(loteOptimo);
             articulo.setPuntoPedidoArticulo(puntoPedido);
             articulo.setStockSeguridadArticulo(stockSeguridad);
+            articulo.setCgiArticulo(cgi);
             articuloRepository.save(articulo);
 
         }catch (Exception e ){
@@ -145,9 +147,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             Integer stockSeguridad = calculoStockSeguridad(idArticulo);
             Integer cantidadMaxima = cantidadMaxima(articulo);
+            Double cgi = calculoCGI(idArticulo);
 
             articulo.setStockSeguridadArticulo(stockSeguridad);
             articulo.setCantidadMaximaArticulo(cantidadMaxima);
+            articulo.setCgiArticulo(cgi);
             articuloRepository.save(articulo);
 
         } catch (Exception e) {
