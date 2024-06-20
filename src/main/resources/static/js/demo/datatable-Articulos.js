@@ -206,96 +206,112 @@ document.addEventListener("DOMContentLoaded", function() {
 }*/
 
 
-$(document).on('click', '.btn-modificar-articulo', function (event) {
-    event.preventDefault();
-    var articuloId = $(this).data('id');
-    $('#modificarArticuloModal').modal('show');
-    const modelosInventario = ['MODELO_INTERVALO_FIJO', 'MODELO_LOTE_FIJO'];
+    $(document).on('click', '.btn-modificar-articulo', function (event) {
+        event.preventDefault();
+        var articuloId = $(this).data('id');
+        $('#modificarArticuloModal').modal('show');
+        const modelosInventario = ['MODELO_INTERVALO_FIJO', 'MODELO_LOTE_FIJO'];
 
-    //Obtener la información del artículo
-    $.ajax({
-        type: 'GET',
-        url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
-        success: function(articulo) {
-            console.log('Artículo obtenido:', articulo);
-            // Rellena el formulario con la información del artículo
-            $('#nombreParaModificar').val(articulo.nombreArticulo);
-            const modeloSelect = $('#modeloParaModificar');
-            modeloSelect.empty();
-            modelosInventario.forEach(function (modelo){
-                const option = $('<option>').text(modelo).attr('value', modelo);
-                if (modelo === articulo.modeloInventario) {
-                    option.attr('selected', 'selected');
-                }
-                modeloSelect.append(option);
-            });
-            $.ajax({
-                type: 'GET',
-                url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
-                success: function(proveedoresarticulos) {
-                    console.log('Proveedores obtenidos:', proveedoresarticulos);
-                    const proveedorSelect = $('#proveedorParaModificar');
-                    proveedorSelect.empty();
-                    const defaultOption = document.createElement("option");
-                    if (articulo.proveedorPredeterminado === null) {
-                        defaultOption.textContent = "Seleccione un proveedor";
-                    } else {
-                        defaultOption.textContent = articulo.proveedorPredeterminado.proveedor;
-                    }
-                    proveedorSelect.append(defaultOption);
-                    proveedoresarticulos.forEach(function(proveedorarticulo) {
-                        const proveedor = proveedorarticulo.proveedor;
-                        const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
-                        if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
-                            option.attr('selected', 'selected');
-                        }
-                        proveedorSelect.append(option);
-                    });
-                },
-                error: function(error) {
-                    console.error('Error al obtener la lista de proveedores:', error);
-                }
-            });
-
-        },
-        error: function(error) {
-            console.error('Error al obtener la información del artículo:', error);
-        }
-    });
-
-    $('#guardarArticuloModificado').off('click').on('click', function() {
-        console.log('ID DEL ARTICULO:', articuloId);
-        var formData = {
-            id: articuloId,
-            nombreArticulo: $('#nombreParaModificar').val(),
-            modeloInventario: $('#modeloParaModificar').val(),
-            proveedorPredeterminado: {
-                id: $('#proveedorParaModificar').val()
-            }
-        };
-
-        // Verificar el valor seleccionado del proveedor
-        console.log('ID del proveedor seleccionado:', $('#proveedorParaModificar').val());
-        console.log('Datos enviados:', formData);
-
-        //Realizar una solicitud PATCH al servidor para modificar el artículo
+        // Obtener la información del artículo
         $.ajax({
-            type: 'PATCH',
-            url: `http://localhost:9090/api/v1/articulos/modificar/${articuloId}`,
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function(response) {
-                console.log('Respuesta del servidor:', response);
-                $('#modificarArticuloModal').modal('hide'); // Cierra el modal de modificación
-                alert('Artículo modificado exitosamente');
-                location.reload();
+            type: 'GET',
+            url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
+            success: function(articulo) {
+                console.log('Artículo obtenido:', articulo);
+                // Rellena el formulario con la información del artículo
+                $('#nombreParaModificar').val(articulo.nombreArticulo);
+                const modeloSelect = $('#modeloParaModificar');
+                modeloSelect.empty();
+                modelosInventario.forEach(function (modelo) {
+                    const option = $('<option>').text(modelo).attr('value', modelo);
+                    if (modelo === articulo.modeloInventario) {
+                        option.attr('selected', 'selected');
+                    }
+                    modeloSelect.append(option);
+                });
+                // Mostrar u ocultar el campo de tiempo entre pedidos basado en el modelo de inventario
+                toggleTiempoEntrePedidosModificacion(articulo.modeloInventario);
+
+                $.ajax({
+                    type: 'GET',
+                    url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
+                    success: function(proveedoresarticulos) {
+                        console.log('Proveedores obtenidos:', proveedoresarticulos);
+                        const proveedorSelect = $('#proveedorParaModificar');
+                        proveedorSelect.empty();
+                        const defaultOption = document.createElement("option");
+                        if (articulo.proveedorPredeterminado === null) {
+                            defaultOption.textContent = "Seleccione un proveedor";
+                        } else {
+                            defaultOption.textContent = articulo.proveedorPredeterminado.proveedor;
+                        }
+                        proveedorSelect.append(defaultOption);
+                        proveedoresarticulos.forEach(function(proveedorarticulo) {
+                            const proveedor = proveedorarticulo.proveedor;
+                            const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
+                            if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
+                                option.attr('selected', 'selected');
+                            }
+                            proveedorSelect.append(option);
+                        });
+                    },
+                    error: function(error) {
+                        console.error('Error al obtener la lista de proveedores:', error);
+                    }
+                });
+
             },
             error: function(error) {
-                console.error('Error al modificar el artículo:', error);
-                alert('Error al modificar el artículo');
+                console.error('Error al obtener la información del artículo:', error);
             }
         });
-    });
-});});
 
+        $('#modeloParaModificar').on('change', function() {
+            toggleTiempoEntrePedidosModificacion($(this).val());
+        });
+
+        $('#guardarArticuloModificado').off('click').on('click', function() {
+            console.log('ID DEL ARTICULO:', articuloId);
+            var formData = {
+                id: articuloId,
+                nombreArticulo: $('#nombreParaModificar').val(),
+                modeloInventario: $('#modeloParaModificar').val(),
+                proveedorPredeterminado: {
+                    id: $('#proveedorParaModificar').val()
+                },
+               // tiempoEntrePedidosModificacion: $('#tiempoEntrePedidosModificacion').val()
+            };
+
+            // Verificar el valor seleccionado del proveedor
+            console.log('ID del proveedor seleccionado:', $('#proveedorParaModificar').val());
+            console.log('Datos enviados:', formData);
+
+            // Realizar una solicitud PATCH al servidor para modificar el artículo
+            $.ajax({
+                type: 'PATCH',
+                url: `http://localhost:9090/api/v1/articulos/modificar/${articuloId}`,
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    console.log('Respuesta del servidor:', response);
+                    $('#modificarArticuloModal').modal('hide'); // Cierra el modal de modificación
+                    alert('Artículo modificado exitosamente');
+                    location.reload();
+                },
+                error: function(error) {
+                    console.error('Error al modificar el artículo:', error);
+                    alert('Error al modificar el artículo');
+                }
+            });
+        });
+    });
+
+    function toggleTiempoEntrePedidosModificacion(modelo) {
+        if (modelo === 'MODELO_INTERVALO_FIJO') {
+            $('#tiempoEntrePedidosModificacionGroup').show();
+        } else {
+            $('#tiempoEntrePedidosModificacionGroup').hide();
+        }
+    }
+})
 
