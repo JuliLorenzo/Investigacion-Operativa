@@ -214,7 +214,10 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             int demandaAnual = calculoDemandaAnual(idArticulo);
             Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             //Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
-            int puntoPedido = demandaAnual * tiempoProveedor.intValue();
+            double demandaDiaria = (double)demandaAnual/365;
+            int puntoPedido = (int)Math.ceil(demandaDiaria * tiempoProveedor);
+            //int puntoPedido = (int)(Math.ceil( demandaDiaria)* tiempoProveedor); PRUEBA, NO USAR ESTE
+            System.out.println(puntoPedido);
             //guardarPuntoPedido(puntoPedido, articulo);
 
             return puntoPedido;
