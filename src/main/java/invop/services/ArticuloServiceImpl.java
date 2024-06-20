@@ -89,7 +89,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public Double calculoCGI(Long idArticulo) throws Exception {
         try {
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
@@ -102,9 +102,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 cantidadAComprar = cantidadAPedir(articulo);
             }
 
-            Double costoCompra = precioArticulo * cantidadAComprar;
+            double costoCompra = precioArticulo * cantidadAComprar;
             Double CGI = costoCompra + articulo.getCostoAlmacenamientoArticulo() * (cantidadAComprar / 2) + articulo.getCostoPedidoArticulo() * (articulo.getDemandaAnualArticulo() / cantidadAComprar);
-            guardarValorCGI(CGI, articulo);
+            //guardarValorCGI(CGI, articulo);
 
             return CGI;
         } catch (Exception e) {
@@ -119,19 +119,20 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     // METODO LOTE FIJO:
     @Override
-    @Transactional
+    //@Transactional
     public void calculosModeloLoteFijo(Long idArticulo) throws Exception{
         try{
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
             Integer loteOptimo = calculoDeLoteOptimo(idArticulo);
-            Integer puntoPedido = calculoPuntoPedido(idArticulo);
-            Integer stockSeguridad = calculoStockSeguridad(idArticulo);
+            int puntoPedido = calculoPuntoPedido(idArticulo);
+            int stockSeguridad = calculoStockSeguridad(idArticulo);
             puntoPedido += stockSeguridad;
-            Double cgi = calculoCGI(idArticulo);
-
             articulo.setLoteOptimoArticulo(loteOptimo);
             articulo.setPuntoPedidoArticulo(puntoPedido);
             articulo.setStockSeguridadArticulo(stockSeguridad);
+            articuloRepository.save(articulo); //NO BORRAR ESTA LINEA
+            Double cgi = calculoCGI(idArticulo);
+
             articulo.setCgiArticulo(cgi);
             articuloRepository.save(articulo);
 
@@ -140,7 +141,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
     @Override
-    @Transactional
+    //@Transactional
     public void calculosModeloIntervaloFijo(Long idArticulo) throws Exception {
         try {
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
@@ -162,7 +163,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     //Ver si mover el metodo a DemandaHistorica
     @Override
-    @Transactional
+    //@Transactional
     public Integer calculoDemandaAnual(Long idArticulo) throws Exception {
         try {
             // Obtener fecha actual y fecha de hace un año
@@ -187,7 +188,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception {
         try{
             //Buscar el Articulo
@@ -206,13 +207,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
 
-    @Transactional
+    //@Transactional
     public int calculoPuntoPedido(Long idArticulo) throws Exception{
         try {
             Articulo articulo = findArticuloById(idArticulo);
             int demandaAnual = calculoDemandaAnual(idArticulo);
             Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
-            //Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
+            //Double tiempoProveedor = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
             int puntoPedido = demandaAnual * tiempoProveedor.intValue();
             //guardarPuntoPedido(puntoPedido, articulo);
 
@@ -230,12 +231,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public int calculoStockSeguridad(Long idArticulo) throws Exception{
         try {
             // Para unificar, usamos este método para SS de Lote Fijo y de Intervalo Fijo
             Articulo articulo = findArticuloById(idArticulo);
-            Double valorNormalZ = 1.64;
+            double valorNormalZ = 1.64;
             Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             Double tiempoRevision = articulo.getTiempoRevisionArticulo();
 
@@ -259,18 +260,18 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     //METODOS PARA EL MODELO INTERVALO FIJO
     @Override
-    @Transactional
+    //@Transactional
     public Integer cantidadMaxima(Articulo articulo) throws Exception {
         try {
             Long idArticulo = articulo.getId();
 
             // Acá suponemos que vendemos los 365 días del año
-            Integer demandaPromedioDiaria = calculoDemandaAnual(idArticulo) / 365;
+            int demandaPromedioDiaria = calculoDemandaAnual(idArticulo) / 365;
             Double tiempoEntrePedidos = articulo.getTiempoRevisionArticulo();
             Double tiempoDemoraProv = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
-            //Double tiempoDemoraProv = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
+            // Double tiempoDemoraProv = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
             Double valorNormalZ = 1.64;
-            Integer desvEstandarDemandaDiaria = 1;
+            int desvEstandarDemandaDiaria = 1;
 
             Double desvEstandarTiempoPedidoYDemora = Math.sqrt(tiempoEntrePedidos + tiempoDemoraProv) * desvEstandarDemandaDiaria;
 
@@ -280,12 +281,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             return cantidadMaxima;
         } catch (Exception e) {
+            System.out.println("Error en la cantidad maxima");
             throw new Exception(e.getMessage());
         }
     }
 
     @Override
-    @Transactional
     public Integer cantidadAPedir(Articulo articulo) throws Exception{
         try {
             Integer inventarioActual = articulo.getCantidadArticulo();
@@ -293,6 +294,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             return cantidadAPedir;
 
         } catch (Exception e) {
+            //System.out.println("Error en la cantidadAPedir");
             throw new Exception(e.getMessage());
         }
     }
@@ -362,20 +364,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
     }
 
+    //@Override
+    //@Transactional
     public void modificarModeloInventarioArticulo(Articulo articulo) throws Exception{
         try{
 
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_LOTE_FIJO)){
+
                 sacarIntervaloFijo(articulo); //deja en null lo del intervalo fijo
                 calculosModeloLoteFijo(articulo.getId()); //setea lote optimo, pp y ss, y lo guarda en bd
 
             }
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_INTERVALO_FIJO)){
+
                 sacarLoteFijo(articulo);
+
                 calculosModeloIntervaloFijo(articulo.getId());
             }
 
         } catch (Exception e ) {
+            System.out.println("ERROR ACA");
             throw new Exception(e.getMessage());
         }
     }
@@ -401,6 +409,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articuloRepository.save(articuloModificado); //aca lo guardo para que no se pierda lo que modifico
 
             modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
+            System.out.println("Modifico valores segun proveedor");
             modificarModeloInventarioArticulo(articuloModificado);
 
             return articuloModificado;

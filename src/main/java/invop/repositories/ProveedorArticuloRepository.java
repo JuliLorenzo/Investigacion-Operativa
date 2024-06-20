@@ -63,7 +63,7 @@ public interface ProveedorArticuloRepository extends BaseRepository<ProveedorArt
     @Query(
             value = "SELECT precio_articulo_proveedor " +
                     "FROM proveedor_articulo pa " +
-                    "WHERE pa.articulo_id = :filtroArticulo" +
+                    "WHERE pa.articulo_id = :filtroArticulo " +
                     "AND pa.id_proveedor = :filtroProveedor",
             nativeQuery = true
     )
