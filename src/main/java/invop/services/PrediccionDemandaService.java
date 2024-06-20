@@ -12,4 +12,5 @@ public interface PrediccionDemandaService extends BaseService<PrediccionDemanda,
 
     public Integer calculoPromedioMovilPonderadoSuavizado(Double alfa, LocalDate fechaPrediccion, Long idArticulo) throws Exception;
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception;
+    public Integer calcularRegresionLineal() throws Exception;
 }

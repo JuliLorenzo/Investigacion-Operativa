@@ -24,7 +24,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
 
-    //promedio movil ponderado
+    //PROMEDIO MOVIL PONDERADO
     public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
             //esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
@@ -76,6 +76,15 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (alfa * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
             return valorPrediccion;
 
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //PARA REGRESION LINEAL
+    public Integer calcularRegresionLineal() throws Exception{
+        try {
+            return 0;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
