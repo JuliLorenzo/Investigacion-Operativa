@@ -97,6 +97,12 @@
                 <i class="fas fa-fw fa-table"></i>
                 <span>Ventas</span></a>
         </li>
+        <!-- Nav Item - Orden de compra -->
+        <li class="nav-item active">
+            <a class="nav-link" href="OrdenesDeCompra.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Ordenes de Compra</span></a>
+        </li>
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
         <!-- Sidebar Toggler (Sidebar) -->
@@ -121,23 +127,24 @@
             <!-- End of Topbar -->
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Ordenes De Compra</h1>
-                <!-- DataTales Example -->
+                <h1 class="h3 mb-2 text-gray-800">Órdenes De Compra</h1>
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Ordenes De Compra</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Órdenes De Compra</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="proveedores-table" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="ordenesdecompra-table" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <th>id</th>
+                                    <th>Articulo</th>
                                     <th>Fecha</th>
                                     <th>Estado</th>
                                     <th>Total</th>
                                     <th>Proveedor</th>
+                                    <th>Detalle</th>
+                                    <th>Acciones</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -147,8 +154,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.container-fluid -->
             </div>
+
             <!-- End of Main Content -->
         </div>
         <!-- End of Content Wrapper -->
@@ -165,7 +172,7 @@
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <!-- Page level custom scripts -->
-    <script src="js/demo/datatable-Proveedores.js"></script>
+    <script src="js/demo/datatable-OrdenesDeCompra.js"></script>
 </div>
 </body>
 </html>
