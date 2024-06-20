@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${articulo.puntoPedidoArticulo}</td>
                     <td>${articulo.stockSeguridadArticulo}</td>
                     <td>${articulo.cgiArticulo}</td>
-                    
                     <td>
                         <div style="align-content: center">
                             <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" id="modificar-articulo" data-id="${articulo.id}">
@@ -196,8 +195,8 @@ $(document).ready(function() {
 $(document).on('click', '.btn-modificar-articulo', function (event) {
     event.preventDefault();
     var articuloId = $(this).data('id');
-
     $('#modificarArticuloModal').modal('show');
+    const modelosInventario = ['MODELO_INTERVALO_FIJO', 'MODELO_LOTE_FIJO'];
 
     //Obtener la información del artículo
     $.ajax({
@@ -207,8 +206,15 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
             console.log('Artículo obtenido:', articulo);
             // Rellena el formulario con la información del artículo
             $('#nombreParaModificar').val(articulo.nombreArticulo);
-
-            // Obtener la lista de proveedores
+            const modeloSelect = $('#modeloParaModificar');
+            modeloSelect.empty();
+            modelosInventario.forEach(function (modelo){
+                const option = $('<option>').text(modelo).attr('value', modelo);
+                if (modelo === articulo.modeloInventario) {
+                    option.attr('selected', 'selected');
+                }
+                modeloSelect.append(option);
+            });
             $.ajax({
                 type: 'GET',
                 url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
@@ -236,6 +242,7 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
                     console.error('Error al obtener la lista de proveedores:', error);
                 }
             });
+
         },
         error: function(error) {
             console.error('Error al obtener la información del artículo:', error);
@@ -247,6 +254,7 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
         var formData = {
             id: articuloId,
             nombreArticulo: $('#nombreParaModificar').val(),
+            modeloInventario: $('#modeloParaModificar').val(),
             proveedorPredeterminado: {
                 id: $('#proveedorParaModificar').val()
             }
@@ -259,15 +267,13 @@ $(document).on('click', '.btn-modificar-articulo', function (event) {
         //Realizar una solicitud PATCH al servidor para modificar el artículo
         $.ajax({
             type: 'PATCH',
-            url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
+            url: `http://localhost:9090/api/v1/articulos/modificar/${articuloId}`,
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                $('#modificarArticuloModal').modal('hide'); // Cierra el modal de modificación de artículo
+                $('#modificarArticuloModal').modal('hide'); // Cierra el modal de modificación
                 alert('Artículo modificado exitosamente');
-
-                // Agregar cualquier otra lógica necesaria para refrescar la tabla de artículos
                 location.reload();
             },
             error: function(error) {
