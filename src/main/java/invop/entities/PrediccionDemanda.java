@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,9 @@ import java.util.List;
 @Setter
 @Builder
 public class PrediccionDemanda extends Base{
+
+    @Column(name = "fecha_prediccion")
+    private LocalDate fechaPrediccion;
 
     @NotNull
     @Column(name = "valor_prediccion")
