@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Ordenes De Compra</title>
+    <title>Órdenes De Compra</title>
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -101,7 +101,7 @@
         <li class="nav-item active">
             <a class="nav-link" href="OrdenesDeCompra.html">
                 <i class="fas fa-fw fa-table"></i>
-                <span>Ordenes de Compra</span></a>
+                <span>Órdenes de Compra</span></a>
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
@@ -127,7 +127,65 @@
             <!-- End of Topbar -->
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <h1 class="h3 mb-2 text-gray-800">Órdenes De Compra</h1>
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Órdenes De Compra</h1>
+                    <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearOrdenDeCompraModal">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                        <span class="text">Generar Orden de Compra</span>
+                    </a>
+
+                </div>
+                <!-- Modal Crear Orden de Compra -->
+                <div class="modal fade" id="crearOrdenDeCompraModal" tabindex="-1" role="dialog" aria-labelledby="crearOrdenDeCompraModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="crearOrdenDeCompraModalLabel">Crear Orden de Compra</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="articulo">Articulo</label>
+                                        <select class="form-control" id="articulo" name="articulo" required>
+                                            <option value="">Seleccione un Articulo</option>
+                                            <!-- Opciones cargadas dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proveedor">Proveedor Predeterminado</label>
+                                        <select class="form-control" id="proveedor" name="proveedor" required>
+                                            <option value="">Seleccione un proveedor</option>
+                                            <!-- Opciones cargadas dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="cantidadorden">Cantidad a pedir</label>
+                                            <input type="number" class="form-control" id="cantidadorden" name="cantidadorden" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="totalorden">Total</label>
+                                            <input type="number" class="form-control" id="totalorden" name="totalorden" required>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary">Guardar Orden de Compra</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Content Row -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Órdenes De Compra</h6>
@@ -137,7 +195,7 @@
                             <table class="table table-bordered" id="ordenesdecompra-table" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
-                                    <th>id</th>
+                                    <th>ID</th>
                                     <th>Articulo</th>
                                     <th>Fecha</th>
                                     <th>Estado</th>
@@ -155,7 +213,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- End of Main Content -->
         </div>
         <!-- End of Content Wrapper -->
