@@ -89,24 +89,45 @@ document.addEventListener("DOMContentLoaded", function() {
             var modeloSeleccionado = $('#modelo').val();
             var tiempoEntrePedidos = modeloSeleccionado === 'MODELO_INTERVALO_FIJO' ? $('#tiempoEntrePedidos').val() : null;
 
+            var proveedorId = parseInt($('#proveedor').val());
+            var proveedorNombre = $('#proveedor option:selected').text();
+
             var formData = {
-                nombreArticulo: $('#nombre').val(),
-                cantidadArticulo: $('#cantidad').val(),
-                proveedorPredeterminado: {
-                    id: $('#proveedor').val()
+                articulo: {
+                    nombreArticulo: $('#nombre').val(),
+                    cantidadArticulo: parseInt($('#cantidad').val()), // Convertir a número
+                    costoAlmacenamientoArticulo: null,
+                    costoPedidoArticulo: null,
+                    stockSeguridadArticulo: null,
+                    cgiArticulo: null,
+                    modeloInventario: modeloSeleccionado,
+                    demandaAnualArticulo: parseInt($('#demandaanual').val()), // Convertir a número
+                    loteOptimoArticulo: null,
+                    puntoPedidoArticulo: null,
+                    cantidadMaximaArticulo: null,
+                    tiempoRevisionArticulo: tiempoEntrePedidos ? parseInt(tiempoEntrePedidos) : null, // Convertir a número si no es nulo
+                    proveedorPredeterminado: {
+                        id: proveedorId,
+                        nombreProveedor: proveedorNombre
+                    }
                 },
-                modeloInventario: modeloSeleccionado,
-                tiempoRevisionArticulo: tiempoEntrePedidos,
-                demandaAnualArticulo: $('#demandaanual').val(),
-                loteOptimoArticulo: null,
-                puntoPedidoArticulo: null,
-                stockSeguridadArticulo: null,
-                cgiArticulo: null
+                proveedorArticulo: {
+                    tiempoDemoraArticulo: parseFloat($('#tiempoDemora').val()), // Convertir a número
+                    precioArticuloProveedor: parseFloat($('#precio').val()), // Convertir a número
+                    costoPedidoArticuloProveedor: parseFloat($('#costoPedido').val()), // Convertir a número
+                    costoAlmacenamientoArticuloProveedor: parseFloat($('#costoAlmacenamiento').val()), // Convertir a número
+                    proveedor: {
+                        id: proveedorId,
+                        nombreProveedor: proveedorNombre
+                    }
+                }
             };
+
+            console.log('Enviando datos:', JSON.stringify(formData)); // Depuración
 
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:9090/api/v1/articulos',
+                url: 'http://localhost:9090/api/v1/articulos/crear',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
@@ -117,42 +138,43 @@ document.addEventListener("DOMContentLoaded", function() {
                     const tableBody = document.querySelector("#articulos-table tbody");
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${response.id}</td>
-                        <td>${response.nombreArticulo}</td>
-                        <td>${response.cantidadArticulo}</td>
-                        <td>${response.modeloInventario}</td>
-                        <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
-                        <td>${response.demandaAnualArticulo}</td>
-                        <td>${response.tiempoRevisionArticulo}</td>
-                        <td>${response.loteOptimoArticulo}</td>
-                        <td>${response.puntoPedidoArticulo}</td>
-                        <td>${response.stockSeguridadArticulo}</td>
-                        <td>${response.cgiArticulo}</td>
-                        <td>
-                            <div style="align-content: center">
-                                <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    `;
+                    <td>${response.id}</td>
+                    <td>${response.nombreArticulo}</td>
+                    <td>${response.cantidadArticulo}</td>
+                    <td>${response.modeloInventario}</td>
+                    <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                    <td>${response.demandaAnualArticulo}</td>
+                    <td>${response.tiempoRevisionArticulo}</td>
+                    <td>${response.loteOptimoArticulo}</td>
+                    <td>${response.puntoPedidoArticulo}</td>
+                    <td>${response.stockSeguridadArticulo}</td>
+                    <td>${response.cgiArticulo}</td>
+                    <td>
+                        <div style="align-content: center">
+                            <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                `;
                     tableBody.appendChild(row);
 
                     // Limpia el formulario después de enviar
                     $('#crearArticuloForm')[0].reset();
                 },
-                error: function(error) {
-                    console.error('Error al crear el artículo:', error);
-                    alert('Error al crear el artículo: ' + (error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'Desconocido'));
+                error: function(xhr, status, error) {
+                    console.error('Error al crear el artículo:', xhr.responseText);
+                    alert('Error al crear el artículo: ' + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Desconocido'));
                 }
             });
         });
 
 
-    // Manejar clic en el botón de eliminación
+
+        // Manejar clic en el botón de eliminación
     $(document).on('click', '.borrar-articulo', function(event) {
         event.preventDefault();
         const articuloId = $(this).data('id');
