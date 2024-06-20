@@ -5,6 +5,8 @@ import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.NotFound;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "errores")
 @NoArgsConstructor
@@ -28,5 +30,17 @@ public class ErrorMetodo extends Base {
     @ManyToOne()
     @JoinColumn(name = "id_prediccion_demanda")
     private PrediccionDemanda prediccionDemanda;
+
+    @ManyToOne()
+    @JoinColumn(name = "id_articulo")
+    private Articulo articulo;
+
+    @Column(name = "fecha_desde")
+    private LocalDate fechaDesde;
+
+    @Column(name = "fecha_hasta")
+    private LocalDate fechaHasta;
+
+
 
 }
