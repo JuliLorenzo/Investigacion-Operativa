@@ -3,6 +3,7 @@ package invop.services;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,7 +31,6 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             if(cantidadPeriodos != coeficientesPonderacion.size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
             }
-            Integer prediccionCalculada = 0;
             double sumaValorYCoef = 0.0;
             double sumaCoef = 0.0;
             int i = 0;
@@ -46,6 +46,36 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             //revisar el casteo a int !!!!!!!!!!!!!!!!!!!!!!!!!!
             Integer valorPrediccion = (int)sumaValorYCoef/(int)sumaCoef;
             return valorPrediccion;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //PARA PROMEDIO MOVIL PONDERADO SUAVIZADO EXPONENCIALMENTE
+    //calculo promedio movil a usar
+    public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception{
+        try{
+            LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
+            LocalDate fechaHasta = fechaPrediccion.plusMonths(12).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
+            int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+
+            Integer valorPrediccion = demandaHistorica/12; //porque usa la anual pero ver si usamos otra
+            return valorPrediccion;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+    public Integer calculoPromedioMovilPonderadoSuavizado(Double alfa, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
+        try{
+            LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
+            LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
+            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+
+            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(idArticulo, fechaPrediccion.minusMonths(1));
+
+            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (alfa * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
+            return valorPrediccion;
+
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
