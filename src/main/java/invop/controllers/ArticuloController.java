@@ -2,7 +2,9 @@ package invop.controllers;
 
 import invop.dto.ArticuloAReponerDto;
 import invop.dto.ArticuloFaltanteDto;
+import invop.dto.CrearArticuloDto;
 import invop.entities.Articulo;
+import invop.entities.ProveedorArticulo;
 import invop.enums.ModeloInventario;
 import invop.services.ArticuloService;
 import invop.services.ArticuloServiceImpl;
@@ -92,6 +94,17 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
         catch (Exception e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearArticulo(@RequestBody CrearArticuloDto crearArticuloDto){
+        try {
+            Articulo articulo = crearArticuloDto.getArticulo();
+            ProveedorArticulo proveedorArticulo = crearArticuloDto.getProveedorArticulo();
+            return ResponseEntity.status(HttpStatus.OK).body(articuloService.crearArticulo(articulo, proveedorArticulo));
+        }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }

@@ -451,6 +451,19 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
     //FIN DE METODOS PARA CUANDO MODIFICA UN ARTICULO
 
+    public Articulo crearArticulo(Articulo articuloCreado, ProveedorArticulo proveedorArticulo) throws Exception{
+        try {
+            articuloRepository.save(articuloCreado);
 
+            proveedorArticulo.setArticulo(articuloCreado);
+            proveedorArticuloService.save(proveedorArticulo);
+            modificarValoresSegunProveedor(articuloCreado, articuloCreado.getProveedorPredeterminado());
+            modificarModeloInventarioArticulo(articuloCreado);
+
+            return articuloCreado;
+        }catch (Exception e ) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
 }

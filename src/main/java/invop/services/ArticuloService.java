@@ -2,6 +2,7 @@ package invop.services;
 
 import invop.entities.Articulo;
 import invop.entities.Proveedor;
+import invop.entities.ProveedorArticulo;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -44,5 +45,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void sacarLoteFijo(Articulo articulo) throws Exception;
     public Articulo modificarArticulo(Long idArticulo,  Articulo nuevoArticulo) throws Exception;
     //fin
+
+    public Articulo crearArticulo(Articulo articuloCreado, ProveedorArticulo proveedorArticulo) throws Exception;
 
 }
