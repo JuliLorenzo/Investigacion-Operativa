@@ -102,6 +102,14 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 cantidadAComprar = cantidadAPedir(articulo);
             }
 
+            /*System.out.println("El precio del articulo es");
+            System.out.println(precioArticulo);
+            System.out.println("El Ca:");
+            System.out.println(articulo.getCostoAlmacenamientoArticulo());
+            System.out.println("El Cp");
+            System.out.println(articulo.getCostoPedidoArticulo());*/
+            System.out.println("Demanda anual");
+            System.out.println(articulo.getDemandaAnualArticulo());
             double costoCompra = precioArticulo * cantidadAComprar;
             Double CGI = costoCompra + articulo.getCostoAlmacenamientoArticulo() * (cantidadAComprar / 2) + articulo.getCostoPedidoArticulo() * (articulo.getDemandaAnualArticulo() / cantidadAComprar);
             //guardarValorCGI(CGI, articulo);
@@ -268,7 +276,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Long idArticulo = articulo.getId();
 
             // Acá suponemos que vendemos los 365 días del año
-            int demandaPromedioDiaria = calculoDemandaAnual(idArticulo) / 365;
+            int demandaAnual = calculoDemandaAnual(idArticulo);
             Double tiempoEntrePedidos = articulo.getTiempoRevisionArticulo();
             Double tiempoDemoraProv = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             // Double tiempoDemoraProv = proveedorArticuloService.findTiempoDemoraArticuloByArticuloAndProveedor(idArticulo, articulo.getProveedorPredeterminado().getId());
@@ -276,6 +284,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             int desvEstandarDemandaDiaria = 1;
 
             Double desvEstandarTiempoPedidoYDemora = Math.sqrt(tiempoEntrePedidos + tiempoDemoraProv) * desvEstandarDemandaDiaria;
+
+            double demandaPromedioDiaria = (double)demandaAnual/365;
 
             Integer cantidadMaxima = (int) (demandaPromedioDiaria * (tiempoEntrePedidos + tiempoDemoraProv) + valorNormalZ * desvEstandarTiempoPedidoYDemora);
             articulo.setCantidadMaximaArticulo(cantidadMaxima);
@@ -293,6 +303,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         try {
             Integer inventarioActual = articulo.getCantidadArticulo();
             Integer cantidadAPedir = articulo.getCantidadMaximaArticulo()- inventarioActual;
+            /*if (cantidadAPedir < 0 || cantidadAPedir == null ){
+                cantidadAPedir = 1;
+            }*/
             return cantidadAPedir;
 
         } catch (Exception e) {
