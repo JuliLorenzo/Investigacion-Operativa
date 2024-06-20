@@ -254,7 +254,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public void guardarStockSeguridad(Integer valorSS, Articulo Articulo) throws Exception{
         Articulo.setStockSeguridadArticulo(valorSS);
         articuloRepository.save(Articulo);
-
     }
 
     //METODOS PARA EL MODELO INTERVALO FIJO
@@ -343,6 +342,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     //METODOS PARA CUANDO MODIFICA UN ARTICULO
     public void sacarIntervaloFijo(Articulo articulo) throws Exception{
         try {
+            // si se quiere sacar el intervalo fijo del articulo
+            // QMax y T ya no se van a usar
             articulo.setCantidadMaximaArticulo(null);
             articulo.setTiempoRevisionArticulo(null);
             articulo.setModeloInventario(ModeloInventario.MODELO_LOTE_FIJO);
@@ -353,6 +354,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
     public void sacarLoteFijo(Articulo articulo) throws Exception{
         try{
+            // si se quiere sacar el lote fijo del articulo
+            // EOQ y PP ya no se van a usar
             articulo.setModeloInventario(ModeloInventario.MODELO_INTERVALO_FIJO);
             articulo.setLoteOptimoArticulo(null);
             articulo.setPuntoPedidoArticulo(null);
@@ -399,8 +402,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             throw new Exception(e.getMessage());
         }
     }
-
-
 
     public Articulo modificarArticulo(Long idArticulo, Articulo nuevoArticulo) throws Exception{
         try{
