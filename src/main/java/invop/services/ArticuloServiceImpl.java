@@ -280,7 +280,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
             return cantidadMaxima;
         } catch (Exception e) {
-            System.out.println("Error en la cantidad maxima");
+
             throw new Exception(e.getMessage());
         }
     }
@@ -293,7 +293,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             return cantidadAPedir;
 
         } catch (Exception e) {
-            //System.out.println("Error en la cantidadAPedir");
+
             throw new Exception(e.getMessage());
         }
     }
@@ -386,7 +386,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             }
 
         } catch (Exception e ) {
-            System.out.println("ERROR ACA");
             throw new Exception(e.getMessage());
         }
     }
@@ -410,7 +409,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articuloRepository.save(articuloModificado); //aca lo guardo para que no se pierda lo que modifico
 
             modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
-            System.out.println("Modifico valores segun proveedor");
             modificarModeloInventarioArticulo(articuloModificado);
 
             return articuloModificado;
