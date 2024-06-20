@@ -76,6 +76,8 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
             VentaDetalle nuevoDetalle = new VentaDetalle(articulo, cantidad);
             nuevaVenta.agregarDetalleVenta(nuevoDetalle);
             ventaDetalleRepository.save(nuevoDetalle);
+
+            articuloService.disminuirStock(articulo, cantidad);
         }
         nuevaVenta.setFechaVenta(ventaDto.getFechaHora());
 

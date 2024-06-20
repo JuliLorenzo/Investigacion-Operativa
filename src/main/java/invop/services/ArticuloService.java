@@ -14,6 +14,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     public void darDeBajaArticulo(Long idArticulo) throws Exception;
     public List<Long> getArticulosSinStock(Map<String, Integer> articulosDetalleVenta);
+    public void disminuirStock(Articulo articulo, Integer cantVendida);
     public Double calculoCGI(Long idArticulo) throws Exception;
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception;
 

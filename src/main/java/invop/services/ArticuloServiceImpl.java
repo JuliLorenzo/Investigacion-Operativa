@@ -117,7 +117,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             return CGI;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
-        }P
+        }
     }
 
     public void guardarValorCGI(Double valorCGI, Articulo Articulo) throws Exception{
