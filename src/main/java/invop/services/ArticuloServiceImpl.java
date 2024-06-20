@@ -245,7 +245,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             }
             int stockSeguridad = (int) (valorNormalZ * Math.sqrt(tiempoRevision + tiempoProveedor));
 
-            guardarStockSeguridad(stockSeguridad, articulo);
+            //guardarStockSeguridad(stockSeguridad, articulo);
             return stockSeguridad;
         }catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -346,7 +346,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articulo.setCantidadMaximaArticulo(null);
             articulo.setTiempoRevisionArticulo(null);
             articulo.setModeloInventario(ModeloInventario.MODELO_LOTE_FIJO);
-            articuloRepository.save(articulo);
+            articuloRepository.save(articulo); //se guarda para que los metodos de lote fijo lean esto en null
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
@@ -356,8 +356,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articulo.setModeloInventario(ModeloInventario.MODELO_INTERVALO_FIJO);
             articulo.setLoteOptimoArticulo(null);
             articulo.setPuntoPedidoArticulo(null);
-            articuloRepository.save(articulo);
-
+            articuloRepository.save(articulo); //se guarda para que los metodos de intervalo fijo lean esto en null
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
@@ -367,12 +366,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         try{
 
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_LOTE_FIJO)){
-                calculosModeloLoteFijo(articulo.getId()); //setea lote optimo, pp y ss
-                sacarIntervaloFijo(articulo);
+                sacarIntervaloFijo(articulo); //deja en null lo del intervalo fijo
+                calculosModeloLoteFijo(articulo.getId()); //setea lote optimo, pp y ss, y lo guarda en bd
+
             }
             if(articulo.getModeloInventario().equals(ModeloInventario.MODELO_INTERVALO_FIJO)){
-                cantidadMaxima(articulo); //CUIDADO!!!!! VER LO Q HACE ESTE METODO Q INVOCAMOS
                 sacarLoteFijo(articulo);
+                calculosModeloIntervaloFijo(articulo.getId());
             }
 
         } catch (Exception e ) {
@@ -385,16 +385,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articulo.setCostoAlmacenamientoArticulo(proveedorArticuloPred.getCostoAlmacenamientoArticuloProveedor());
             articulo.setCostoPedidoArticulo(proveedorArticuloPred.getCostoPedidoArticuloProveedor());
             articuloRepository.save(articulo); //lo guardo primero para q despues con los calculos use esto
-
-            int loteOptimo = calculoDeLoteOptimo(articulo.getId());
-            int puntoPedido = calculoPuntoPedido(articulo.getId());
-            int stockSeguridad = calculoStockSeguridad(articulo.getId());
-            articulo.setLoteOptimoArticulo(loteOptimo);
-            articulo.setPuntoPedidoArticulo(puntoPedido);
-            articulo.setStockSeguridadArticulo(stockSeguridad);
-
-            //articulo.setCgiArticulo();
-            articuloRepository.save(articulo);
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
@@ -408,12 +398,12 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + idArticulo));
             BeanUtils.copyProperties(nuevoArticulo, articuloExistente, getNullPropertyNames(nuevoArticulo));
             Articulo articuloModificado = articuloOpcional.get();
-            articuloRepository.save(articuloModificado);
+            articuloRepository.save(articuloModificado); //aca lo guardo para que no se pierda lo que modifico
 
             modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
             modificarModeloInventarioArticulo(articuloModificado);
 
-            return articuloRepository.save(articuloModificado); //esto creo q no es necesario pero lo puse por las dudas
+            return articuloModificado;
 
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
@@ -435,8 +425,6 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
     }
-    //FIN DE METODOS PARA CUANDO MODIFICA UN ARTICULO
-
     //FIN DE METODOS PARA CUANDO MODIFICA UN ARTICULO
 
 
