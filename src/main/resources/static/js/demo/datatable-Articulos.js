@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Enviar el formulario de creación de artículo
         $('#guardarArticulo').click(function() {
+            event.preventDefault();
             var modeloSeleccionado = $('#modelo').val();
             var tiempoEntrePedidos = modeloSeleccionado === 'MODELO_INTERVALO_FIJO' ? $('#tiempoEntrePedidos').val() : null;
 
@@ -113,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 proveedorArticulo: {
                     tiempoDemoraArticulo: parseFloat($('#tiempoDemora').val()), // Convertir a número
-                    precioArticuloProveedor: parseFloat($('#precio').val()), // Convertir a número
+                    precioArticuloProveedor: parseFloat($('#precioArticuloProveedor').val()), // Convertir a número
                     costoPedidoArticuloProveedor: parseFloat($('#costoPedido').val()), // Convertir a número
                     costoAlmacenamientoArticuloProveedor: parseFloat($('#costoAlmacenamiento').val()), // Convertir a número
                     proveedor: {
@@ -131,11 +132,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
+                    console.log("Articulo creado correctamente: ", response); //para encontrar error
                     $('#crearArticuloModal').modal('hide');
                     alert('Artículo creado exitosamente');
 
                     // Agregar el nuevo artículo a la tabla
-                    const tableBody = document.querySelector("#articulos-table tbody");
+                    const tableBody = $('#articulos-table tbody');
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${response.id}</td>
@@ -160,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </div>
                     </td>
                 `;
-                    tableBody.appendChild(row);
+                    tableBody.append(row);
 
                     // Limpia el formulario después de enviar
                     $('#crearArticuloForm')[0].reset();
