@@ -218,7 +218,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="cantidad">Cantidad</label>
-                                        <input type="text" class="form-control" id="cantidad" name="cantidad" required>
+                                        <input type="number" class="form-control" id="cantidad" name="cantidad" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="proveedor">Proveedor Predeterminado</label>
@@ -230,15 +230,19 @@
                                     <div id="proveedorDetalles" style="display: none;">
                                         <div class="form-group">
                                             <label for="costoPedido">Costo de pedido</label>
-                                            <input type="text" class="form-control" id="costoPedido" name="costoPedido">
+                                            <input type="number" class="form-control" id="costoPedido" name="costoPedido">
                                         </div>
                                         <div class="form-group">
                                             <label for="costoAlmacenamiento">Costo de almacenamiento</label>
-                                            <input type="text" class="form-control" id="costoAlmacenamiento" name="costoAlmacenamiento">
+                                            <input type="number" class="form-control" id="costoAlmacenamiento" name="costoAlmacenamiento">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="precioArticuloProveedor">Precio Articulo Proveedor</label>
+                                            <input type="number" class="form-control" id="precioArticuloProveedor" name="precioArticuloProveedorc">
                                         </div>
                                         <div class="form-group">
                                             <label for="tiempoDemora">Tiempo de demora artículo proveedor</label>
-                                            <input type="text" class="form-control" id="tiempoDemora" name="tiempoDemora">
+                                            <input type="number" class="form-control" id="tiempoDemora" name="tiempoDemora">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -248,13 +252,14 @@
                                             <option value="MODELO_INTERVALO_FIJO">Modelo Intervalo Fijo</option>
                                         </select>
                                     </div>
-                                    <div class="form-group" id="campoTiempoEntrePedidos" style="display: none;">
+                                    <div id="campoTiempoEntrePedidos" style="display: none;">
                                         <label for="tiempoEntrePedidos">Tiempo entre pedidos</label>
-                                        <input type="text" class="form-control" id="tiempoEntrePedidos" name="tiempoEntrePedidos">
+                                        <input type="number" id="tiempoEntrePedidos" name="tiempoEntrePedidos" class="form-control">
                                     </div>
+
                                     <div class="form-group">
                                         <label for="cantidad">Demanda Anual</label>
-                                        <input type="text" class="form-control" id="demandaanual" name="demandaanual" required>
+                                        <input type="number" class="form-control" id="demandaanual" name="demandaanual" required>
                                     </div>
 
                                 </form>
@@ -316,6 +321,8 @@
                                     <th>Cantidad</th>
                                     <th>Modelo Inventario</th>
                                     <th>Proveedor Predeterminado</th>
+                                    <th>Demanda Anual</th>
+                                    <th>Tiempo Revisión</th>
                                     <th>Lote Optimo</th>
                                     <th>Punto Pedido</th>
                                     <th>Stock Seguridad</th>

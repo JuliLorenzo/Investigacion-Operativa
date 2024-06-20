@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${articulo.cantidadArticulo}</td>
                     <td>${articulo.modeloInventario}</td>
                     <td>${articulo.proveedorPredeterminado ? articulo.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                    <td>${articulo.demandaAnualArticulo}</td>
+                    <td>${articulo.tiempoRevisionArticulo}</td>
                     <td>${articulo.loteOptimoArticulo}</td>
                     <td>${articulo.puntoPedidoArticulo}</td>
                     <td>${articulo.stockSeguridadArticulo}</td>
@@ -59,84 +61,96 @@ document.addEventListener("DOMContentLoaded", function() {
         cargarProveedores();
     });
 
-$(document).ready(function() {
-    $('#dataTable').DataTable();
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
 
-    //Si elige MODELO INTERVALO FIJO SE PIDE EL TIEMPO ENTRE PEDIDOS
-    $('#modelo').change(function() {
-        var modeloSeleccionado = $(this).val();
-
-        if (modeloSeleccionado === 'MODELO_INTERVALO_FIJO') {
-            $('#campoTiempoEntrePedidos').show(); // Muestra el campo de tiempo entre pedidos
-        } else {
-            $('#campoTiempoEntrePedidos').hide(); // Oculta el campo de tiempo entre pedidos
-        }
-    });
-    //SEGUN EL PROVEEDOR, SE LLLENAN LOS CAMPOS DE PROVEEDOR ARTICULO
-    $('#proveedor').change(function() {
-        var proveedorSeleccionado = $(this).val();
-
-        if (proveedorSeleccionado) {
-            $('#proveedorDetalles').show(); // Muestra los campos adicionales del proveedor
-        } else {
-            $('#proveedorDetalles').hide(); // Oculta los campos adicionales del proveedor
-        }
-    });
-    // Enviar el formulario de creación de artículo
-    $('#guardarArticulo').click(function() {
-        var formData = {
-            nombreArticulo: $('#nombre').val(),
-            cantidadArticulo: $('#cantidad').val(),
-            proveedorPredeterminado: $('#proveedor').val(),  // Captura el valor del proveedor seleccionado
-            modeloinventario: $('#modelo').val(),
-            tiempoEntrePedidos: $('#tiempoEntrePedidos').val(),
-            demandaAnualArticulo: $('#demandaanual').val()
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: 'http://localhost:9090/api/v1/articulos',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function(response) {
-                $('#crearArticuloModal').modal('hide');
-                alert('Artículo creado exitosamente');
-
-                // Agregar el nuevo artículo a la tabla
-                const tableBody = document.querySelector("#articulos-table tbody");
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${response.id}</td>
-                    <td>${response.nombreArticulo}</td>
-                    <td>${response.cantidadArticulo}</td>
-                    <td>${response.modeloInventario}</td>
-                    <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
-                    <td>${response.loteOptimoArticulo}</td>
-                    <td>${response.puntoPedidoArticulo}</td>
-                    <td>${response.stockSeguridadArticulo}</td>
-                    <td>${response.cgiArticulo}</td>
-                    <td>
-                        <div style="align-content: center">
-                            <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-
-                // Limpia el formulario después de enviar
-                $('#crearArticuloForm')[0].reset();
-            },
-            error: function(error) {
-                // Manejar la respuesta de error
-                alert('Error al crear el artículo');
+        // Mostrar/Ocultar campo de tiempo entre pedidos según el modelo seleccionado
+        $('#modelo').change(function() {
+            var modeloSeleccionado = $(this).val();
+            if (modeloSeleccionado === 'MODELO_INTERVALO_FIJO') {
+                $('#campoTiempoEntrePedidos').show();
+            } else {
+                $('#campoTiempoEntrePedidos').hide();
             }
         });
-    });
+
+        // Mostrar/Ocultar detalles del proveedor según el proveedor seleccionado
+        $('#proveedor').change(function() {
+            var proveedorSeleccionado = $(this).val();
+            if (proveedorSeleccionado) {
+                $('#proveedorDetalles').show();
+            } else {
+                $('#proveedorDetalles').hide();
+            }
+        });
+
+        // Enviar el formulario de creación de artículo
+        $('#guardarArticulo').click(function() {
+            var modeloSeleccionado = $('#modelo').val();
+            var tiempoEntrePedidos = modeloSeleccionado === 'MODELO_INTERVALO_FIJO' ? $('#tiempoEntrePedidos').val() : null;
+
+            var formData = {
+                nombreArticulo: $('#nombre').val(),
+                cantidadArticulo: $('#cantidad').val(),
+                proveedorPredeterminado: {
+                    id: $('#proveedor').val()
+                },
+                modeloInventario: modeloSeleccionado,
+                tiempoRevisionArticulo: tiempoEntrePedidos,
+                demandaAnualArticulo: $('#demandaanual').val(),
+                loteOptimoArticulo: null,
+                puntoPedidoArticulo: null,
+                stockSeguridadArticulo: null,
+                cgiArticulo: null
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:9090/api/v1/articulos',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    $('#crearArticuloModal').modal('hide');
+                    alert('Artículo creado exitosamente');
+
+                    // Agregar el nuevo artículo a la tabla
+                    const tableBody = document.querySelector("#articulos-table tbody");
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${response.id}</td>
+                        <td>${response.nombreArticulo}</td>
+                        <td>${response.cantidadArticulo}</td>
+                        <td>${response.modeloInventario}</td>
+                        <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
+                        <td>${response.demandaAnualArticulo}</td>
+                        <td>${response.tiempoRevisionArticulo}</td>
+                        <td>${response.loteOptimoArticulo}</td>
+                        <td>${response.puntoPedidoArticulo}</td>
+                        <td>${response.stockSeguridadArticulo}</td>
+                        <td>${response.cgiArticulo}</td>
+                        <td>
+                            <div style="align-content: center">
+                                <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-articulo" data-id="${response.id}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="btn btn-danger btn-circle btn-sm borrar-articulo" data-id="${response.id}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+
+                    // Limpia el formulario después de enviar
+                    $('#crearArticuloForm')[0].reset();
+                },
+                error: function(error) {
+                    console.error('Error al crear el artículo:', error);
+                    alert('Error al crear el artículo: ' + (error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'Desconocido'));
+                }
+            });
+        });
+
 
     // Manejar clic en el botón de eliminación
     $(document).on('click', '.borrar-articulo', function(event) {
