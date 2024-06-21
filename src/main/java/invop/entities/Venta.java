@@ -34,5 +34,4 @@ public class Venta extends Base{
         ventaDetalles.add(ventaDetalle);
     }
 
-
 }

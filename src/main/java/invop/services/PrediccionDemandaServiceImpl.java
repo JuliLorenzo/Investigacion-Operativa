@@ -3,12 +3,17 @@ package invop.services;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
+import static java.time.LocalDate.of;
 
 @Service
 public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDemanda, Long> implements PrediccionDemandaService {
@@ -17,17 +22,21 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     private DemandaHistoricaService demandaHistoricaService;
     @Autowired
     private PrediccionDemandaRepository prediccionDemandaRepository;
-    public PrediccionDemandaServiceImpl(PrediccionDemandaRepository prediccionDemandaRepository, DemandaHistoricaService demandaHistoricaService){
+    @Autowired
+    private ArticuloService articuloService;
+
+    public PrediccionDemandaServiceImpl(PrediccionDemandaRepository prediccionDemandaRepository, DemandaHistoricaService demandaHistoricaService, ArticuloService articuloService){
         super(prediccionDemandaRepository);
         this.prediccionDemandaRepository = prediccionDemandaRepository;
         this.demandaHistoricaService = demandaHistoricaService;
+        this.articuloService = articuloService;
     }
 
 
-    //PROMEDIO MOVIL PONDERADO
+    // PROMEDIO MOVIL PONDERADO
     public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
-            //esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
+            // esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
             if(cantidadPeriodos != coeficientesPonderacion.size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
             }
@@ -81,7 +90,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }
     }
 
-    //PARA REGRESION LINEAL
+    // PARA REGRESION LINEAL
     public Integer calcularRegresionLineal() throws Exception{
         try {
             return 0;
@@ -89,4 +98,73 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             throw new Exception(e.getMessage());
         }
     }
+
+    // PARA ESTACIONAL
+    @Override
+    public List<Integer> calcularEstacional(Long idArticulo, Integer cantidadDemandaAnualTotal, Integer anioAPredecir) throws Exception {
+        //ArrayList<Integer> prediccionDemandaMensual = new ArrayList<Integer>();
+        int cantidadMeses = 12;
+        ArrayList<Integer> prediccionDemandaMensual = new ArrayList<Integer>(Collections.nCopies(cantidadMeses, 0));
+        try {
+            // cantidadDemandaAnualTotal la ingresa el usuario
+            System.out.println();
+            // int anioAPredecir = LocalDate.now().getYear();
+            System.out.println("Año a predecir: " + anioAPredecir);
+            int anioActual = 0;
+            int cantidadAnios = 3;
+            Integer[][] demandaAnios = new Integer[cantidadAnios][cantidadMeses];
+            Integer sumatoria = 0;
+            for (int i = 0; i < cantidadAnios; i++) {
+                anioActual = anioAPredecir - (i + 1);
+                for (int j = 0; j < cantidadMeses; j++) {
+                    System.out.println(j);
+                    int mes = j + 1;
+                    LocalDate fechaDesde = LocalDate.of(anioActual, mes, 1);
+                    LocalDate fechaHasta = LocalDate.of(anioActual, mes, fechaDesde.lengthOfMonth());
+                    Integer demandaMesActual = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+                    if (demandaMesActual < 0) {
+                        demandaMesActual = 0;
+                    }
+                    System.out.println("La demanda del Mes: " + mes + " Año: " + anioActual + " fue: " + demandaMesActual);
+                    demandaAnios[i][j] = demandaMesActual;
+                    sumatoria = sumatoria + demandaMesActual;
+                }
+            }
+            ;
+            System.out.println("La sumatoria dio " + sumatoria);
+
+            Integer[] demandaAnualPromedio = new Integer[cantidadMeses];
+            Arrays.fill(demandaAnualPromedio, 0); // llena con 0
+            Integer demandaMensualPromedio = (int) Math.ceil((double) sumatoria / (cantidadAnios * cantidadMeses));
+            System.out.println("Demanda Mensual Promedio: " + demandaMensualPromedio);
+            for (int k = 0; k < cantidadAnios; k++) {
+                Integer sumaMes = 0;
+                for (int t = 0; t < cantidadMeses; t++) {
+                    sumaMes = sumaMes + demandaAnios[k][t];
+                    System.out.println("Llegué hasta acá, mes: " + t + ", año: " + k);
+                }
+                demandaAnualPromedio[k] = (int) Math.ceil((double) sumaMes / cantidadAnios);
+            }
+
+            Double[] indiceEstacionalMensual = new Double[cantidadMeses];
+            for (int t = 0; t < cantidadMeses; t++) {
+                int mes = t + 1;
+                indiceEstacionalMensual[t] = (double) (demandaAnualPromedio[t] / demandaMensualPromedio);
+                prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * cantidadDemandaAnualTotal));
+                PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+                prediccionDemanda.setArticulo(articuloService.findById(idArticulo));
+                prediccionDemanda.setValorPrediccion(prediccionDemandaMensual.get(t));
+                prediccionDemanda.setFechaPrediccion(LocalDate.of(anioAPredecir, mes, 1));
+                prediccionDemanda.setNombreMetodoUsado(ESTACIONALIDAD);
+                prediccionDemandaRepository.save(prediccionDemanda);
+                System.out.println("Llegué a guardar");
+            }
+            System.out.println(Arrays.toString(indiceEstacionalMensual));
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+        return prediccionDemandaMensual;
+    }
+
 }
