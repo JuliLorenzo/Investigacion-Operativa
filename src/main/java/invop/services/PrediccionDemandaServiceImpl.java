@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
 import static java.time.LocalDate.of;
@@ -93,6 +90,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     // PARA REGRESION LINEAL
     public Integer calcularRegresionLineal(int cantPeriodosHistoricos, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
         try {
+            int mesAPredecir = fechaPrediccion.getMonthValue();
+
             int sumaPeriodos = 0;
             int sumaDemandas = 0;
             int sumaXY = 0;
@@ -103,13 +102,17 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             for(int i = 0; i < cantPeriodosHistoricos; i++) {
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
+
+                int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
+
                 int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
 
-                sumaXY += (i * demandaHistoricaMes);
-                sumaX2 += Math.pow(i, 2);
+                sumaXY += (nroMes * demandaHistoricaMes);
+                sumaX2 += Math.pow(nroMes, 2);
                 sumaDemandas += demandaHistoricaMes;
-                sumaPeriodos += (i+1);
+                sumaPeriodos += (nroMes);
             }
+
             int promedioPeriodos = sumaPeriodos/cantPeriodosHistoricos; // esto seria Tp o x con barrita
             int promedioDemandas = sumaDemandas/cantPeriodosHistoricos; // esto seria Yp o y con barrita
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
@@ -117,9 +120,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             b = (sumaXY - (cantPeriodosHistoricos * promedioPeriodos * promedioDemandas)) / (sumaX2 - (cantPeriodosHistoricos * promPeriodosCuadrado));
             a = promedioDemandas - (b * promedioPeriodos);
 
+            int valorPrediccion = (int)(a + (b * mesAPredecir));
 
-
-                return 0; //PONGO ESTO PARA Q NO TIRE ERROR, HAY Q SACARLO
+                return valorPrediccion;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
