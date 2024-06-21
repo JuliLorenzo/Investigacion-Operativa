@@ -91,9 +91,35 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     // PARA REGRESION LINEAL
-    public Integer calcularRegresionLineal() throws Exception{
+    public Integer calcularRegresionLineal(int cantPeriodosHistoricos, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
         try {
-            return 0;
+            int sumaPeriodos = 0;
+            int sumaDemandas = 0;
+            int sumaXY = 0;
+            double sumaX2 = 0;
+            double a = 0.0;
+            double b = 0.0;
+
+            for(int i = 0; i < cantPeriodosHistoricos; i++) {
+                LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
+                LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
+                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+
+                sumaXY += (i * demandaHistoricaMes);
+                sumaX2 += Math.pow(i, 2);
+                sumaDemandas += demandaHistoricaMes;
+                sumaPeriodos += (i+1);
+            }
+            int promedioPeriodos = sumaPeriodos/cantPeriodosHistoricos; // esto seria Tp o x con barrita
+            int promedioDemandas = sumaDemandas/cantPeriodosHistoricos; // esto seria Yp o y con barrita
+            double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
+
+            b = (sumaXY - (cantPeriodosHistoricos * promedioPeriodos * promedioDemandas)) / (sumaX2 - (cantPeriodosHistoricos * promPeriodosCuadrado));
+            a = promedioDemandas - (b * promedioPeriodos);
+
+
+
+                return 0; //PONGO ESTO PARA Q NO TIRE ERROR, HAY Q SACARLO
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
