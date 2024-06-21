@@ -38,7 +38,4 @@ public class OrdenCompra extends Base{
     private Proveedor proveedor;
 
 
-    public void agregarDetalleOrdenCompra(OrdenCompraDetalle ordenCompraDetalle){
-        ordenCompraDetalles.add(ordenCompraDetalle);
-    }
 }

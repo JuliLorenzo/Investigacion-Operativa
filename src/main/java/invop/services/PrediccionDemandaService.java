@@ -2,6 +2,7 @@ package invop.services;
 
 import invop.dto.DatosPMPDto;
 import invop.dto.DatosPMPSuavizadoDto;
+import invop.dto.DatosRegresionLinealDto;
 import invop.entities.PrediccionDemanda;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ public interface PrediccionDemandaService extends BaseService<PrediccionDemanda,
 
     public Integer calculoPromedioMovilPonderadoSuavizado(DatosPMPSuavizadoDto datosPMPS) throws Exception;
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception;
-    public Integer calcularRegresionLineal(int cantPeriodosHistoricos, LocalDate fechaPrediccion, Long idArticulo) throws Exception;
+    public Integer calcularRegresionLineal(DatosRegresionLinealDto datosRL) throws Exception;
 
     public List<Integer> calcularEstacional(Long idArticulo, Integer cantidadDemandaAnualTotal, Integer anioAPredecir) throws Exception;
 }

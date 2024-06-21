@@ -2,6 +2,7 @@ package invop.controllers;
 
 import invop.dto.DatosPMPDto;
 import invop.dto.DatosPMPSuavizadoDto;
+import invop.dto.DatosRegresionLinealDto;
 import invop.entities.PrediccionDemanda;
 import invop.services.PrediccionDemandaServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -44,4 +45,14 @@ public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDe
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+
+    @PostMapping("/rl")
+    public ResponseEntity<?> calcularRegresionLineal(@RequestBody DatosRegresionLinealDto datosRL) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularRegresionLineal(datosRL));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+        }
+    }
+
 }

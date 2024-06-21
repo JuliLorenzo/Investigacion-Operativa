@@ -2,6 +2,7 @@ package invop.services;
 
 import invop.dto.DatosPMPDto;
 import invop.dto.DatosPMPSuavizadoDto;
+import invop.dto.DatosRegresionLinealDto;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +102,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     // PARA REGRESION LINEAL
-    public Integer calcularRegresionLineal(int cantPeriodosHistoricos, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
+    public Integer calcularRegresionLineal(DatosRegresionLinealDto datosRL) throws Exception{
         try {
-            int mesAPredecir = fechaPrediccion.getMonthValue();
+            int mesAPredecir = datosRL.getMesAPredecir();
 
             int sumaPeriodos = 0;
             int sumaDemandas = 0;
@@ -112,13 +113,14 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             double a = 0.0;
             double b = 0.0;
 
-            for(int i = 0; i < cantPeriodosHistoricos; i++) {
+            for(int i = 0; i < datosRL.getCantPeriodosHistoricos(); i++) {
+                LocalDate fechaPrediccion = LocalDate.of(datosRL.getAnioAPredecir(), datosRL.getMesAPredecir(), 1);
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
 
                 int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
 
-                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosRL.getIdArticulo());
 
                 sumaXY += (nroMes * demandaHistoricaMes);
                 sumaX2 += Math.pow(nroMes, 2);
@@ -126,11 +128,11 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 sumaPeriodos += (nroMes);
             }
 
-            int promedioPeriodos = sumaPeriodos/cantPeriodosHistoricos; // esto seria Tp o x con barrita
-            int promedioDemandas = sumaDemandas/cantPeriodosHistoricos; // esto seria Yp o y con barrita
+            int promedioPeriodos = sumaPeriodos / datosRL.getCantPeriodosHistoricos(); // esto seria Tp o x con barrita
+            int promedioDemandas = sumaDemandas / datosRL.getCantPeriodosHistoricos(); // esto seria Yp o y con barrita
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
 
-            b = (sumaXY - (cantPeriodosHistoricos * promedioPeriodos * promedioDemandas)) / (sumaX2 - (cantPeriodosHistoricos * promPeriodosCuadrado));
+            b = (sumaXY - (datosRL.getCantPeriodosHistoricos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosRL.getCantPeriodosHistoricos() * promPeriodosCuadrado));
             a = promedioDemandas - (b * promedioPeriodos);
 
             int valorPrediccion = (int)(a + (b * mesAPredecir));
