@@ -12,6 +12,10 @@ public class DatosPMPDto {
 
     private Long idArticulo;
 
-    private LocalDate fechaPrediccion;
+    //private LocalDate fechaPrediccion;
+
+    private int mesAPredecir;
+
+    private int anioAPredecir;
 
 }

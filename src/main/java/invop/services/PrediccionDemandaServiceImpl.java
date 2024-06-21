@@ -34,8 +34,6 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     // PROMEDIO MOVIL PONDERADO
     public Integer calculoPromedioMovilPonderado(DatosPMPDto datosPMP) throws Exception{
         try{
-            //int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion
-
             // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
             if(datosPMP.getCantidadPeriodos() != datosPMP.getCoeficientesPonderacion().size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
@@ -43,7 +41,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             double sumaValorYCoef = 0.0;
             double sumaCoef = 0.0;
             int i = 0;
-            LocalDate fechaPrediccion = datosPMP.getFechaPrediccion();
+
+            LocalDate fechaPrediccion = LocalDate.of(datosPMP.getAnioAPredecir(), datosPMP.getMesAPredecir(), 1);
 
             for(Double factorPonderacion : datosPMP.getCoeficientesPonderacion() ){
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
