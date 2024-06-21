@@ -1,6 +1,7 @@
 package invop.controllers;
 
 import invop.dto.DatosPMPDto;
+import invop.dto.DatosPMPSuavizadoDto;
 import invop.entities.PrediccionDemanda;
 import invop.services.PrediccionDemandaServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -35,4 +36,12 @@ public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDe
         }
     }
 
+    @PostMapping("/pmpsuav")
+    public ResponseEntity<?> calcularPromedioMovilPonderadoSuavizado(@RequestBody DatosPMPSuavizadoDto datosPMPS) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderadoSuavizado(datosPMPS));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+        }
+    }
 }

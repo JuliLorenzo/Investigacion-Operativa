@@ -1,6 +1,7 @@
 package invop.services;
 
 import invop.dto.DatosPMPDto;
+import invop.dto.DatosPMPSuavizadoDto;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
 
     // PROMEDIO MOVIL PONDERADO
+    //tener en cuenta q la ponderacion es el primero de la lista con el mes mas cercano
     public Integer calculoPromedioMovilPonderado(DatosPMPDto datosPMP) throws Exception{
         try{
             // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
@@ -64,7 +66,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     //PARA PROMEDIO MOVIL PONDERADO SUAVIZADO EXPONENCIALMENTE
-    //calculo promedio movil a usar
+    //calculo promedio movil a usar en el suavizado --> usa 12 meses siempre
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
@@ -77,15 +79,16 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             throw new Exception(e.getMessage());
         }
     }
-    public Integer calculoPromedioMovilPonderadoSuavizado(Double alfa, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
+    public Integer calculoPromedioMovilPonderadoSuavizado(DatosPMPSuavizadoDto datosPMPS) throws Exception{
         try{
+            LocalDate fechaPrediccion = LocalDate.of(datosPMPS.getAnioAPredecir(), datosPMPS.getMesAPredecir(), 1);
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
-            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMPS.getIdArticulo());
 
-            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(idArticulo, fechaPrediccion.minusMonths(1));
+            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPMPS.getIdArticulo(), fechaPrediccion.minusMonths(1));
 
-            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (alfa * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
+            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPMPS.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
             return valorPrediccion;
 
         }catch(Exception e){
