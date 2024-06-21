@@ -72,7 +72,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.plusMonths(12).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
             int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
-
+            if(demandaHistorica <0){
+                demandaHistorica = 0;
+            }
             Integer valorPrediccion = demandaHistorica/12; //porque usa la anual pero ver si usamos otra
             return valorPrediccion;
         }catch(Exception e){
@@ -85,7 +87,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
             int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMPS.getIdArticulo());
-
+            if (demandaHistoricaMesAnterior < 0){
+                demandaHistoricaMesAnterior = 0;
+            }
             Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPMPS.getIdArticulo(), fechaPrediccion.minusMonths(1));
 
             Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPMPS.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
