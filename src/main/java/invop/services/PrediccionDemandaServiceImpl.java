@@ -1,5 +1,6 @@
 package invop.services;
 
+import invop.dto.DatosPMPDto;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +32,30 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
 
     // PROMEDIO MOVIL PONDERADO
-    public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
+    public Integer calculoPromedioMovilPonderado(DatosPMPDto datosPMP) throws Exception{
         try{
-            // esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
-            if(cantidadPeriodos != coeficientesPonderacion.size()){
+            //int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion
+
+            // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
+            if(datosPMP.getCantidadPeriodos() != datosPMP.getCoeficientesPonderacion().size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
             }
             double sumaValorYCoef = 0.0;
             double sumaCoef = 0.0;
             int i = 0;
-            for(Double factorPonderacion : coeficientesPonderacion ){
+            LocalDate fechaPrediccion = datosPMP.getFechaPrediccion();
+
+            for(Double factorPonderacion : datosPMP.getCoeficientesPonderacion() ){
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
-                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMP.getIdArticulo());
 
                 sumaValorYCoef = sumaValorYCoef + (factorPonderacion*demandaHistorica);
                 sumaCoef = sumaCoef + factorPonderacion;
                 i++;
             }
             //revisar el casteo a int !!!!!!!!!!!!!!!!!!!!!!!!!!
-            Integer valorPrediccion = (int)sumaValorYCoef/(int)sumaCoef;
+            Integer valorPrediccion = (int)(Math.ceil(sumaValorYCoef)/sumaCoef);
             return valorPrediccion;
         }catch(Exception e){
             throw new Exception(e.getMessage());
@@ -195,5 +200,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }
         return prediccionDemandaMensual;
     }
+
+
+    //CREAR PREDICCION SEGUN EL METODO
+
 
 }
