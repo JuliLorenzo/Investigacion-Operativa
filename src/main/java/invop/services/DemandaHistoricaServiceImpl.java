@@ -71,6 +71,9 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
         demandaHistorica.setFechaDesde(fechaDesde);
         demandaHistorica.setFechaHasta(fechaHasta);
         //demandaHistorica.setFechaAlta(fechaAlta);
+        if(cantidadTotal < 0){
+            cantidadTotal = 0;
+        }
         demandaHistorica.setCantidadVendida(cantidadTotal);
         demandaHistorica.setArticulo(articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado")));
         demandaHistoricaRepository.save(demandaHistorica);

@@ -49,7 +49,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
                 int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMP.getIdArticulo());
-
+                if (demandaHistorica < 0){
+                    demandaHistorica = 0;
+                }
                 sumaValorYCoef = sumaValorYCoef + (factorPonderacion*demandaHistorica);
                 sumaCoef = sumaCoef + factorPonderacion;
                 i++;
