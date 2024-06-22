@@ -40,8 +40,7 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
             Integer sumaPredicciones = 0;
             for (int i = 0; i < 12; i++) {
-
-                LocalDate fechaInicioMes = datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1);
+                datosError.setMesAPredecir((datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1)).getMonthValue());
 
                 int pronosticoDemanda = 0;
                 switch (datosError.getNombreMetodoPrediccion()) {
@@ -113,9 +112,6 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
         try{
 
             ErrorMetodo errorCalculado = new ErrorMetodo();
-            errorCalculado.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
-            errorCalculado.setFechaDesde(datosError.getFechaDesde());
-            errorCalculado.setFechaHasta(datosError.getFechaHasta());
 
             int mes = datosError.getFechaDesde().getMonthValue();
             datosError.setMesAPredecir(mes);
@@ -128,16 +124,15 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
             errorCalculado.setValorDemandaReal(demandaHistorica);
 
-
-
             Integer prediccionDemanda = calcularSumaPredicciones(datosError);
             errorCalculado.setValorPrediccionDemanda(prediccionDemanda);
-
 
             Double valorError = calculoError(datosError);
             errorCalculado.setPorcentajeError(valorError);
 
-
+            errorCalculado.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
+            errorCalculado.setFechaDesde(datosError.getFechaDesde());
+            errorCalculado.setFechaHasta(datosError.getFechaHasta());
             errorMetodoRepository.save(errorCalculado);
 
             return errorCalculado;
