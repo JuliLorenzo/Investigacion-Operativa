@@ -188,7 +188,6 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     System.out.println("Llegué hasta acá, mes: " + t + ", año: " + k);
                 }
                 demandaAnualPromedio[k] = (int) Math.ceil((double) sumaMes / cantidadAnios);
-|
             }
             System.out.println("demandaAnualPromedio:"+Arrays.toString(demandaAnualPromedio));
             Double[] indiceEstacionalMensual = new Double[cantidadMeses];
