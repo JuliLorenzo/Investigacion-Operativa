@@ -55,6 +55,11 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             return ordenActiva;
     }
 
+    public void listadodearticulossinordenactiva() throws Exception{
+        List<Long> articulossinordenactiva = new ArrayList<>();
+
+    }
+
     //Borrar articulo si no hay orden de compra activa
     public void darDeBajaArticulo(Long idArticulo) throws Exception{
         boolean ordenActiva = controlOrdenCompraActiva(idArticulo);
@@ -464,6 +469,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public Proveedor obtenerProveedorPredeterminado(Long articuloId) {
+        Articulo articulo = articuloRepository.findById(articuloId)
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado"));
+        return articulo.getProveedorPredeterminado();
     }
 
 }

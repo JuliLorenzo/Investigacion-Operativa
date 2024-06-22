@@ -4,6 +4,7 @@ import invop.dto.ArticuloAReponerDto;
 import invop.dto.ArticuloFaltanteDto;
 import invop.dto.CrearArticuloDto;
 import invop.entities.Articulo;
+import invop.entities.Proveedor;
 import invop.entities.ProveedorArticulo;
 import invop.enums.ModeloInventario;
 import invop.services.ArticuloService;
@@ -109,6 +110,10 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         }
     }
 
-
+    @GetMapping("/{articuloId}/proveedor-predeterminado")
+    public ResponseEntity<Proveedor> obtenerProveedorPredeterminado(@PathVariable Long articuloId) {
+        Proveedor proveedor = articuloService.obtenerProveedorPredeterminado(articuloId);
+        return ResponseEntity.ok(proveedor);
+    }
 
 }
