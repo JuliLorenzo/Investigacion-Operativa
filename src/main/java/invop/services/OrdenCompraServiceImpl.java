@@ -1,9 +1,9 @@
 package invop.services;
 
-import invop.entities.OrdenCompra;
-import invop.entities.OrdenCompraDetalle;
+import invop.entities.*;
 import invop.repositories.OrdenCompraRepository;
 import jakarta.transaction.Transactional;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -65,5 +65,8 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         return false;
 
         }
+
+
+
 
 }
