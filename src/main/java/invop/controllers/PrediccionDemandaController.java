@@ -1,18 +1,11 @@
 package invop.controllers;
 
-import invop.dto.DatosPMPDto;
-import invop.dto.DatosPMPSuavizadoDto;
-import invop.dto.DatosRegresionLinealDto;
+import invop.dto.DatosPrediccionDTO;
 import invop.entities.PrediccionDemanda;
 import invop.services.PrediccionDemandaServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -20,36 +13,36 @@ import java.util.List;
 public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDemanda, PrediccionDemandaServiceImpl>{
 
     @PostMapping("/estacionalidad")
-    public ResponseEntity<?> calcularEstacionalidad(@RequestParam Long idArticulo, @RequestParam Integer cantidadDemandaAnualTotal, @RequestParam Integer anioAPredecir) {
+    public ResponseEntity<?> calcularEstacionalidad(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularEstacional(idArticulo, cantidadDemandaAnualTotal, anioAPredecir));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularEstacional(datosPrediccionDTO));
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
 
     @PostMapping("/pmp")
-    public ResponseEntity<?> calcularPromedioMovilPonderado(@RequestBody DatosPMPDto datosPMP) {
+    public ResponseEntity<?> calcularPromedioMovilPonderado(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderado(datosPMP));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderado(datosPrediccionDTO));
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
 
     @PostMapping("/pmpsuav")
-    public ResponseEntity<?> calcularPromedioMovilPonderadoSuavizado(@RequestBody DatosPMPSuavizadoDto datosPMPS) {
+    public ResponseEntity<?> calcularPromedioMovilPonderadoSuavizado(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderadoSuavizado(datosPMPS));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderadoSuavizado(datosPrediccionDTO));
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
 
     @PostMapping("/rl")
-    public ResponseEntity<?> calcularRegresionLineal(@RequestBody DatosRegresionLinealDto datosRL) {
+    public ResponseEntity<?> calcularRegresionLineal(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularRegresionLineal(datosRL));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularRegresionLineal(datosPrediccionDTO));
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }

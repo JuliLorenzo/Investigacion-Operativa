@@ -1,15 +1,13 @@
 package invop.services;
 
-import invop.dto.DatosPMPDto;
-import invop.dto.DatosPMPSuavizadoDto;
-import invop.dto.DatosRegresionLinealDto;
+import invop.dto.DatosPrediccionDTO;
+import invop.entities.Articulo;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
 import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
@@ -33,24 +31,69 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
 
+    //CREAR PREDICCION
+    public List<PrediccionDemanda> crearPredicciones(DatosPrediccionDTO datosPrediccion) throws Exception{
+        try{
+            Articulo articulo = articuloService.findArticuloById(datosPrediccion.getIdArticulo());
+            List<PrediccionDemanda> listaPredicciones = new ArrayList<>();
+
+            for(int i = 0 ; i < datosPrediccion.getCantidadPeriodos(); i++){
+                int valorPrediccion = 0;
+                switch (datosPrediccion.getNombreMetodoPrediccion()){
+                    case PROMEDIO_MOVIL_PONDERADO -> {
+                        valorPrediccion = calculoPromedioMovilPonderado(datosPrediccion);
+                    }
+                    case PROMEDIO_MOVIL_SUAVIZADO -> {
+                        valorPrediccion = calculoPromedioMovilPonderadoSuavizado(datosPrediccion);
+                    }
+                    case REGRESION_LINEAL -> {
+                        valorPrediccion = calcularRegresionLineal(datosPrediccion);
+                    }
+                    case ESTACIONALIDAD -> {
+                        valorPrediccion = calcularEstacional(datosPrediccion);
+                    }
+                }
+                int mes = datosPrediccion.getMesAPredecir()+i;
+                LocalDate fechaDesde = LocalDate.of(datosPrediccion.getAnioAPredecir(), mes, 1);
+                //LocalDate fechaHasta = LocalDate.of(datosPrediccion.getAnioAPredecir(), mes, fechaDesde.lengthOfMonth());
+
+                PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+                prediccionDemanda.setValorPrediccion(valorPrediccion);
+                prediccionDemanda.setFechaPrediccion(fechaDesde);
+                prediccionDemanda.setArticulo(articulo);
+                prediccionDemanda.setNombreMetodoUsado(datosPrediccion.getNombreMetodoPrediccion());
+                prediccionDemandaRepository.save(prediccionDemanda);
+
+                listaPredicciones.add(prediccionDemanda);
+            }
+            return listaPredicciones;
+
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+
+
     // PROMEDIO MOVIL PONDERADO
     //tener en cuenta q la ponderacion es el primero de la lista con el mes mas cercano
-    public Integer calculoPromedioMovilPonderado(DatosPMPDto datosPMP) throws Exception{
+    public Integer calculoPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
             // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
-            if(datosPMP.getCantidadPeriodos() != datosPMP.getCoeficientesPonderacion().size()){
+            if(datosPrediccionDTO.getCantidadPeriodos() != datosPrediccionDTO.getCoeficientesPonderacion().size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
             }
             double sumaValorYCoef = 0.0;
             double sumaCoef = 0.0;
             int i = 0;
 
-            LocalDate fechaPrediccion = LocalDate.of(datosPMP.getAnioAPredecir(), datosPMP.getMesAPredecir(), 1);
+            LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
 
-            for(Double factorPonderacion : datosPMP.getCoeficientesPonderacion() ){
+            for(Double factorPonderacion : datosPrediccionDTO.getCoeficientesPonderacion() ){
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
-                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMP.getIdArticulo());
+                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
                 if (demandaHistorica < 0){
                     demandaHistorica = 0;
                 }
@@ -82,18 +125,18 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             throw new Exception(e.getMessage());
         }
     }
-    public Integer calculoPromedioMovilPonderadoSuavizado(DatosPMPSuavizadoDto datosPMPS) throws Exception{
+    public Integer calculoPromedioMovilPonderadoSuavizado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
-            LocalDate fechaPrediccion = LocalDate.of(datosPMPS.getAnioAPredecir(), datosPMPS.getMesAPredecir(), 1);
+            LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
-            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMPS.getIdArticulo());
+            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
             if (demandaHistoricaMesAnterior < 0){
                 demandaHistoricaMesAnterior = 0;
             }
-            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPMPS.getIdArticulo(), fechaPrediccion.minusMonths(1));
+            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPrediccionDTO.getIdArticulo(), fechaPrediccion.minusMonths(1));
 
-            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPMPS.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
+            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPrediccionDTO.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
             return valorPrediccion;
 
         }catch(Exception e){
@@ -102,9 +145,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     // PARA REGRESION LINEAL
-    public Integer calcularRegresionLineal(DatosRegresionLinealDto datosRL) throws Exception{
+    public Integer calcularRegresionLineal(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try {
-            int mesAPredecir = datosRL.getMesAPredecir();
+            int mesAPredecir = datosPrediccionDTO.getMesAPredecir();
 
             int sumaPeriodos = 0;
             int sumaDemandas = 0;
@@ -113,14 +156,14 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             double a = 0.0;
             double b = 0.0;
 
-            for(int i = 0; i < datosRL.getCantPeriodosHistoricos(); i++) {
-                LocalDate fechaPrediccion = LocalDate.of(datosRL.getAnioAPredecir(), datosRL.getMesAPredecir(), 1);
+            for(int i = 0; i < datosPrediccionDTO.getCantidadPeriodos(); i++) {
+                LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
 
                 int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
 
-                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosRL.getIdArticulo());
+                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
 
                 sumaXY += (nroMes * demandaHistoricaMes);
                 sumaX2 += Math.pow(nroMes, 2);
@@ -128,11 +171,11 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 sumaPeriodos += (nroMes);
             }
 
-            int promedioPeriodos = sumaPeriodos / datosRL.getCantPeriodosHistoricos(); // esto seria Tp o x con barrita
-            int promedioDemandas = sumaDemandas / datosRL.getCantPeriodosHistoricos(); // esto seria Yp o y con barrita
+            int promedioPeriodos = sumaPeriodos / datosPrediccionDTO.getCantidadPeriodos(); // esto seria Tp o x con barrita
+            int promedioDemandas = sumaDemandas / datosPrediccionDTO.getCantidadPeriodos(); // esto seria Yp o y con barrita
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
 
-            b = (sumaXY - (datosRL.getCantPeriodosHistoricos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosRL.getCantPeriodosHistoricos() * promPeriodosCuadrado));
+            b = (sumaXY - (datosPrediccionDTO.getCantidadPeriodos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosPrediccionDTO.getCantidadPeriodos() * promPeriodosCuadrado));
             a = promedioDemandas - (b * promedioPeriodos);
 
             int valorPrediccion = (int)(a + (b * mesAPredecir));
@@ -145,7 +188,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
     // PARA ESTACIONAL
     @Override
-    public List<Integer> calcularEstacional(Long idArticulo, Integer cantidadDemandaAnualTotal, Integer anioAPredecir) throws Exception {
+    public Integer calcularEstacional(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
         //ArrayList<Integer> prediccionDemandaMensual = new ArrayList<Integer>();
         int cantidadMeses = 12;
         ArrayList<Integer> prediccionDemandaMensual = new ArrayList<Integer>(Collections.nCopies(cantidadMeses, 0));
@@ -153,19 +196,19 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             // cantidadDemandaAnualTotal la ingresa el usuario
             System.out.println();
             // int anioAPredecir = LocalDate.now().getYear();
-            System.out.println("Año a predecir: " + anioAPredecir);
+            System.out.println("Año a predecir: " + datosPrediccionDTO.getAnioAPredecir());
             int anioActual = 0;
             int cantidadAnios = 3;
             Integer[][] demandaAnios = new Integer[cantidadAnios][cantidadMeses];
             Integer sumatoria = 0;
             for (int i = 0; i < cantidadAnios; i++) {
-                anioActual = anioAPredecir - (i + 1);
+                anioActual = datosPrediccionDTO.getAnioAPredecir() - (i + 1);
                 for (int j = 0; j < cantidadMeses; j++) {
                     System.out.println(j);
                     int mes = j + 1;
                     LocalDate fechaDesde = LocalDate.of(anioActual, mes, 1);
                     LocalDate fechaHasta = LocalDate.of(anioActual, mes, fechaDesde.lengthOfMonth());
-                    Integer demandaMesActual = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+                    Integer demandaMesActual = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
                     if (demandaMesActual < 0) {
                         demandaMesActual = 0;
                     }
@@ -194,11 +237,11 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             for (int t = 0; t < cantidadMeses; t++) {
                 int mes = t + 1;
                 indiceEstacionalMensual[t] = (double) (demandaAnualPromedio[t] / demandaMensualPromedio);
-                prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * cantidadDemandaAnualTotal));
+                prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * datosPrediccionDTO.getCantidadDemandaAnualTotal()));
                 PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
-                prediccionDemanda.setArticulo(articuloService.findById(idArticulo));
+                prediccionDemanda.setArticulo(articuloService.findById(datosPrediccionDTO.getIdArticulo()));
                 prediccionDemanda.setValorPrediccion(prediccionDemandaMensual.get(t));
-                prediccionDemanda.setFechaPrediccion(LocalDate.of(anioAPredecir, mes, 1));
+                prediccionDemanda.setFechaPrediccion(LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), mes, 1));
                 prediccionDemanda.setNombreMetodoUsado(ESTACIONALIDAD);
                 prediccionDemandaRepository.save(prediccionDemanda);
                 System.out.println("Llegué a guardar");
@@ -208,7 +251,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-        return prediccionDemandaMensual;
+        //return prediccionDemandaMensual;
+        return prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir());
     }
 
 

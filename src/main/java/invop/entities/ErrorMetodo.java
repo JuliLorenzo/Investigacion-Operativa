@@ -21,7 +21,7 @@ public class ErrorMetodo extends Base {
     @Column(name = "error")
     private Double PorcentajeError;
 
-    @ManyToOne()
+    /*@ManyToOne()
     @JoinColumn(name = "demanda_real")
     private DemandaHistorica demandaReal;
 
@@ -29,6 +29,12 @@ public class ErrorMetodo extends Base {
     @ManyToOne()
     @JoinColumn(name = "id_prediccion_demanda")
     private PrediccionDemanda prediccionDemanda;
+*/
+    @Column(name = "valor_demanda_real")
+    private Integer valorDemandaReal;
+
+    @Column(name = "valor_prediccion_demanda")
+    private Integer valorPrediccionDemanda;
 
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
