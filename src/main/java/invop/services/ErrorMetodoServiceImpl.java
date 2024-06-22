@@ -159,5 +159,16 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
     }
 
 
+    public List<ErrorMetodo> buscarErroresSegunArticulo(Long filtroArticulo) throws Exception{
+        try{
+            List<ErrorMetodo> listaErrores = errorMetodoRepository.findErroresByArticulo(filtroArticulo);
+            return listaErrores;
+
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
 }
 

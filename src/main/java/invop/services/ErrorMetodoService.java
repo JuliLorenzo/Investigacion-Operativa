@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ErrorMetodoService extends BaseService<ErrorMetodo, Long> {
 
+    public List<ErrorMetodo> buscarErroresSegunArticulo(Long filtroArticulo) throws Exception;
     public ErrorMetodo crearErrorMetodo(DatosPrediccionDTO datosError) throws Exception;
     public Double calculoError(DatosPrediccionDTO datosError) throws Exception;
 
