@@ -37,6 +37,7 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public Integer calcularSumaPredicciones(DatosPrediccionDTO datosError) throws Exception {
         try{
+
             Integer sumaPredicciones = 0;
             for (int i = 0; i < 12; i++) {
 
@@ -110,10 +111,16 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public ErrorMetodo crearErrorMetodo(DatosPrediccionDTO datosError) throws Exception {
         try{
+
             ErrorMetodo errorCalculado = new ErrorMetodo();
             errorCalculado.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
             errorCalculado.setFechaDesde(datosError.getFechaDesde());
             errorCalculado.setFechaHasta(datosError.getFechaHasta());
+
+            int mes = datosError.getFechaDesde().getMonthValue();
+            datosError.setMesAPredecir(mes);
+            int anio = datosError.getFechaDesde().getYear();
+            datosError.setAnioAPredecir(anio);
 
             Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
             errorCalculado.setArticulo(articulo);
@@ -121,14 +128,15 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
             errorCalculado.setValorDemandaReal(demandaHistorica);
 
-            Double porcentajeError = calculoError(datosError);
-            errorCalculado.setPorcentajeError(porcentajeError);
+
 
             Integer prediccionDemanda = calcularSumaPredicciones(datosError);
             errorCalculado.setValorPrediccionDemanda(prediccionDemanda);
 
+
             Double valorError = calculoError(datosError);
             errorCalculado.setPorcentajeError(valorError);
+
 
             errorMetodoRepository.save(errorCalculado);
 
