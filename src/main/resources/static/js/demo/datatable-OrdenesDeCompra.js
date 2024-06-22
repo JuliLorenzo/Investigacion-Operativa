@@ -51,11 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 });
 
-
-
-
-//Trae los articulos
-
+// Función para cargar artículos
 function cargararticulos() {
     $.ajax({
         type: 'GET',
@@ -76,7 +72,7 @@ function cargararticulos() {
                     cargarproveedores(selectedArticuloId);
                     cargarproveedorpredeterminado(selectedArticuloId);
                 } else {
-                    const proveedorSelect = $('#proveedorParaModificar');
+                    const proveedorSelect = $('#proveedor');
                     proveedorSelect.empty();
                     proveedorSelect.append('<option value="">Seleccione un Proveedor</option>');
                     const proveedorpredeterminadoElement = $('#proveedorpredeterminado');
@@ -90,7 +86,7 @@ function cargararticulos() {
     });
 }
 
-// Trae los proveedores para un artículo específico
+// Función para cargar proveedores para un artículo específico
 function cargarproveedores(articuloId) {
     $.ajax({
         type: 'GET',
@@ -118,8 +114,7 @@ function cargarproveedores(articuloId) {
     });
 }
 
-
-// Trae el proveedor predeterminado para un artículo específico
+// Función para cargar el proveedor predeterminado para un artículo específico
 function cargarproveedorpredeterminado(articuloId) {
     $.ajax({
         type: 'GET',
@@ -140,3 +135,59 @@ $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
     cargararticulos();
 });
 
+// Función para guardar la orden de compra
+function guardarOrdenDeCompra() {
+    const fechaOrdenCompra = new Date().toISOString().split('T')[0];
+    const estadoOrdenCompra = 'pendiente';
+    const proveedorId = $('#proveedor').val();
+    const proveedorNombre = $('#proveedor option:selected').text();
+    const totalOrdenCompra = $('#totalorden').val();
+    const cantidadAComprar  = $('#cantidadorden').val();
+    const articuloId = $('#articulo').val();
+    const articuloNombre = $('#articulo option:selected').text();
+
+    if (!proveedorId || !totalOrdenCompra || !articuloId || !cantidadAComprar) {
+        alert('Por favor, complete todos los campos requeridos.');
+        return;
+    }
+
+    const ordenDeCompra = {
+        fechaOrdenCompra: fechaOrdenCompra,
+        estadoOrdenCompra: estadoOrdenCompra,
+        totalOrdenCompra: parseFloat(totalOrdenCompra),
+        ordenCompraDetalles: [{
+            cantidadAComprar: parseInt(cantidadAComprar), // Ensure quantity is an integer
+            articulo: {
+                id: parseInt(articuloId), // Ensure articuloId is an integer
+                nombreArticulo: articuloNombre
+            }
+        }],
+        proveedor: {
+            id: parseInt(proveedorId), // Ensure proveedorId is an integer
+            nombreProveedor: proveedorNombre
+        }
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:9090/api/v1/ordenescompras',
+        contentType: 'application/json',
+        data: JSON.stringify(ordenDeCompra),
+        success: function(response) {
+            alert('Orden de Compra guardada con éxito!');
+            $('#crearOrdenDeCompraModal').modal('hide');
+            // Clear the form
+            $('#proveedor').val('');
+            $('#totalorden').val('');
+            $('#cantidadorden').val('');
+            $('#articulo').val('');
+        },
+        error: function(error) {
+            console.error('Error al guardar la Orden de Compra:', error);
+            alert('Error al guardar la Orden de Compra.');
+        }
+    });
+}
+
+// Bind the guardarOrdenDeCompra function to the button click event
+$('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);

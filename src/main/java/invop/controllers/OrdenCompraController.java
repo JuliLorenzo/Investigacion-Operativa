@@ -1,6 +1,10 @@
 package invop.controllers;
 
+import invop.dto.CrearArticuloDto;
+import invop.entities.Articulo;
 import invop.entities.OrdenCompra;
+import invop.entities.OrdenCompraDetalle;
+import invop.entities.ProveedorArticulo;
 import invop.services.OrdenCompraServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +24,6 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
     }
+
+
 }
