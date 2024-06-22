@@ -80,19 +80,15 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
                 switch (datosError.getNombreMetodoPrediccion()) {
                     case PROMEDIO_MOVIL_SUAVIZADO -> {
                         pronosticoDemanda = prediccionDemandaService.calculoPromedioMovilPonderadoSuavizado(datosError);
-
                     }
                     case PROMEDIO_MOVIL_PONDERADO -> {
                         pronosticoDemanda = prediccionDemandaService.calculoPromedioMovilPonderado(datosError);
-
                     }
                     case REGRESION_LINEAL -> {
                         pronosticoDemanda = prediccionDemandaService.calcularRegresionLineal(datosError);
-
                     }
                     case ESTACIONALIDAD -> {
                         pronosticoDemanda = prediccionDemandaService.calcularEstacional(datosError);
-
                     }
                     default -> throw new IllegalArgumentException("Metodo de predicción no válido: " + datosError.getNombreMetodoPrediccion());
                 }
