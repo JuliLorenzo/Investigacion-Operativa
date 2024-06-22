@@ -1,6 +1,7 @@
 package invop.entities;
 
 import invop.enums.ModeloInventario;
+import invop.enums.NombreMetodoPrediccion;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -59,6 +60,9 @@ public class Articulo extends Base {
 
     @Column(name = "tiempo_revision")
     private Double tiempoRevisionArticulo;
+
+    @Column(name = "nombre_metodo_prediccion")
+    private NombreMetodoPrediccion metodoPrediccionPredeterminado;
 
 
     @ManyToOne()

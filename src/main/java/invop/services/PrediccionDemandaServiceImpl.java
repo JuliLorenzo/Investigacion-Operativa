@@ -1,5 +1,8 @@
 package invop.services;
 
+import invop.dto.DatosPMPDto;
+import invop.dto.DatosPMPSuavizadoDto;
+import invop.dto.DatosRegresionLinealDto;
 import invop.entities.PrediccionDemanda;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
 import static java.time.LocalDate.of;
@@ -34,26 +34,32 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
 
     // PROMEDIO MOVIL PONDERADO
-    public Integer calculoPromedioMovilPonderado(int cantidadPeriodos, List<Double> coeficientesPonderacion, Long idArticulo, LocalDate fechaPrediccion) throws Exception{
+    //tener en cuenta q la ponderacion es el primero de la lista con el mes mas cercano
+    public Integer calculoPromedioMovilPonderado(DatosPMPDto datosPMP) throws Exception{
         try{
-            // esto pq tienen q coincidir la cantidad de periodos con el factor de ponderacion
-            if(cantidadPeriodos != coeficientesPonderacion.size()){
+            // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
+            if(datosPMP.getCantidadPeriodos() != datosPMP.getCoeficientesPonderacion().size()){
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
             }
             double sumaValorYCoef = 0.0;
             double sumaCoef = 0.0;
             int i = 0;
-            for(Double factorPonderacion : coeficientesPonderacion ){
+
+            LocalDate fechaPrediccion = LocalDate.of(datosPMP.getAnioAPredecir(), datosPMP.getMesAPredecir(), 1);
+
+            for(Double factorPonderacion : datosPMP.getCoeficientesPonderacion() ){
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
-                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
-
+                int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMP.getIdArticulo());
+                if (demandaHistorica < 0){
+                    demandaHistorica = 0;
+                }
                 sumaValorYCoef = sumaValorYCoef + (factorPonderacion*demandaHistorica);
                 sumaCoef = sumaCoef + factorPonderacion;
                 i++;
             }
             //revisar el casteo a int !!!!!!!!!!!!!!!!!!!!!!!!!!
-            Integer valorPrediccion = (int)sumaValorYCoef/(int)sumaCoef;
+            Integer valorPrediccion = (int)(Math.ceil(sumaValorYCoef)/sumaCoef);
             return valorPrediccion;
         }catch(Exception e){
             throw new Exception(e.getMessage());
@@ -61,28 +67,33 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     //PARA PROMEDIO MOVIL PONDERADO SUAVIZADO EXPONENCIALMENTE
-    //calculo promedio movil a usar
+    //calculo promedio movil a usar en el suavizado --> usa 12 meses siempre
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.plusMonths(12).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
             int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
-
+            if(demandaHistorica <0){
+                demandaHistorica = 0;
+            }
             Integer valorPrediccion = demandaHistorica/12; //porque usa la anual pero ver si usamos otra
             return valorPrediccion;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
     }
-    public Integer calculoPromedioMovilPonderadoSuavizado(Double alfa, LocalDate fechaPrediccion, Long idArticulo) throws Exception{
+    public Integer calculoPromedioMovilPonderadoSuavizado(DatosPMPSuavizadoDto datosPMPS) throws Exception{
         try{
+            LocalDate fechaPrediccion = LocalDate.of(datosPMPS.getAnioAPredecir(), datosPMPS.getMesAPredecir(), 1);
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
             LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
-            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
+            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPMPS.getIdArticulo());
+            if (demandaHistoricaMesAnterior < 0){
+                demandaHistoricaMesAnterior = 0;
+            }
+            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPMPS.getIdArticulo(), fechaPrediccion.minusMonths(1));
 
-            Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(idArticulo, fechaPrediccion.minusMonths(1));
-
-            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (alfa * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
+            Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPMPS.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
             return valorPrediccion;
 
         }catch(Exception e){
@@ -91,9 +102,42 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     // PARA REGRESION LINEAL
-    public Integer calcularRegresionLineal() throws Exception{
+    public Integer calcularRegresionLineal(DatosRegresionLinealDto datosRL) throws Exception{
         try {
-            return 0;
+            int mesAPredecir = datosRL.getMesAPredecir();
+
+            int sumaPeriodos = 0;
+            int sumaDemandas = 0;
+            int sumaXY = 0;
+            double sumaX2 = 0;
+            double a = 0.0;
+            double b = 0.0;
+
+            for(int i = 0; i < datosRL.getCantPeriodosHistoricos(); i++) {
+                LocalDate fechaPrediccion = LocalDate.of(datosRL.getAnioAPredecir(), datosRL.getMesAPredecir(), 1);
+                LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
+                LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
+
+                int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
+
+                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosRL.getIdArticulo());
+
+                sumaXY += (nroMes * demandaHistoricaMes);
+                sumaX2 += Math.pow(nroMes, 2);
+                sumaDemandas += demandaHistoricaMes;
+                sumaPeriodos += (nroMes);
+            }
+
+            int promedioPeriodos = sumaPeriodos / datosRL.getCantPeriodosHistoricos(); // esto seria Tp o x con barrita
+            int promedioDemandas = sumaDemandas / datosRL.getCantPeriodosHistoricos(); // esto seria Yp o y con barrita
+            double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
+
+            b = (sumaXY - (datosRL.getCantPeriodosHistoricos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosRL.getCantPeriodosHistoricos() * promPeriodosCuadrado));
+            a = promedioDemandas - (b * promedioPeriodos);
+
+            int valorPrediccion = (int)(a + (b * mesAPredecir));
+
+                return valorPrediccion;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
@@ -167,5 +211,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }
         return prediccionDemandaMensual;
     }
+
+
+    //CREAR PREDICCION SEGUN EL METODO
+
 
 }

@@ -151,17 +151,19 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="articulo">Articulo</label>
+                                        <label for="articulo">Artículo</label>
                                         <select class="form-control" id="articulo" name="articulo" required>
-                                            <option value="">Seleccione un Articulo</option>
-                                            <!-- Opciones cargadas dinámicamente -->
+                                            <option value="">Seleccione un Artículo</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="proveedor">Proveedor Predeterminado</label>
+                                        <label for="proveedorpredeterminado">Proveedor predeterminado</label>
+                                        <div id="proveedorpredeterminado" class="form-control-static"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proveedor">Proveedor</label>
                                         <select class="form-control" id="proveedor" name="proveedor" required>
-                                            <option value="">Seleccione un proveedor</option>
-                                            <!-- Opciones cargadas dinámicamente -->
+                                            <option value="">Seleccione un Proveedor</option>
                                         </select>
                                     </div>
                                     <div class="form-row">
@@ -176,6 +178,7 @@
                                     </div>
                                 </form>
                             </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="button" class="btn btn-primary">Guardar Orden de Compra</button>

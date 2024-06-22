@@ -49,4 +49,6 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
 
     public Articulo crearArticulo(Articulo articuloCreado, ProveedorArticulo proveedorArticulo) throws Exception;
 
+    Proveedor obtenerProveedorPredeterminado(Long articuloId);
+
 }
