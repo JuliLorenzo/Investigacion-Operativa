@@ -95,4 +95,52 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Error al obtener los artículos:", error);
             });
     }
+
+    document.getElementById('guardarVenta').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const detallesContainer = document.getElementById('detallesContainer');
+        const detalles = detallesContainer.querySelectorAll('.detalle-item');
+
+        // Obtener la fecha de venta del input de tipo "date"
+        const fechaVentaInput = document.getElementById('fecha').value;
+
+        // Convertir la fecha a un objeto Date para incluir la hora
+        const fechaHora = new Date(fechaVentaInput);
+        fechaHora.setHours(new Date().getHours());
+        fechaHora.setMinutes(new Date().getMinutes());
+        fechaHora.setSeconds(new Date().getSeconds());
+
+        const articulosDetalleVenta = {};
+        detalles.forEach((detalle, index) => {
+            const articuloId = detalle.querySelector(`select`).value;
+            const cantidad = detalle.querySelector(`input[type="number"]`).value;
+            articulosDetalleVenta[articuloId] = parseInt(cantidad, 10);
+        });
+
+        const ventaDto = {
+            fechaHora: fechaHora.toISOString(),
+            articulosDetalleVenta: articulosDetalleVenta
+        };
+
+        fetch("http://localhost:9090/api/v1/ventas/crearVenta", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(ventaDto)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Venta creada exitosamente");
+                    location.reload(); // Recargar para ver nueva venta
+                } else {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+            })
+            .catch(error => {
+                console.error("Error al enviar la venta:", error);
+                alert(`Error al crear la venta: ${error.message}`);
+            });
+    });
 });

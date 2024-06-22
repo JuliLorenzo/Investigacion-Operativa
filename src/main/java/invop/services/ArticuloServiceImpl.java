@@ -78,7 +78,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
         for (Map.Entry<String,Integer> item : articulosDetalleVenta.entrySet()) {
             String idArticuloStr = item.getKey();
-            Long   idArticulo = Long.parseLong(idArticuloStr);
+            Long idArticulo = Long.parseLong(idArticuloStr);
             Integer cantidad = item.getValue();
 
             if (articuloRepository.getById(idArticulo).getCantidadArticulo() < cantidad) {

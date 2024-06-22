@@ -47,8 +47,14 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
     public ResponseEntity<Void> crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
         List<Long> articulosSinStock = articuloService.getArticulosSinStock(ventaDTO.getArticulosDetalleVenta());
         if (!articulosSinStock.isEmpty()) {
-            throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
+            for (int i = 0; i < articulosSinStock.size(); i++) {
+                String nombreArticulo = articuloService.findById(articulosSinStock.get(i)).getNombreArticulo();
+                throw new RuntimeException(String.format("El articulo no tiene stock suficiente: " + nombreArticulo));
+            }
         }
+
+        // if (!articulosSinStock.isEmpty()) {
+        // throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
         ventaService.crearVenta(ventaDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
