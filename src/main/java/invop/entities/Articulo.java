@@ -62,8 +62,8 @@ public class Articulo extends Base {
     private Double tiempoRevisionArticulo;
 
     @Column(name = "nombre_metodo_prediccion")
+    @Enumerated(EnumType.STRING)
     private NombreMetodoPrediccion metodoPrediccionPredeterminado;
-
 
     @ManyToOne()
     @JoinColumn(name = "id_proveedor")
