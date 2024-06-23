@@ -1,15 +1,19 @@
 package invop.services;
 
 import invop.entities.*;
+import invop.enums.EstadoOrdenCompra;
 import invop.repositories.OrdenCompraRepository;
 import jakarta.transaction.Transactional;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -44,7 +48,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         ordenesActivas.addAll(ordenesEnCurso);
         return ordenesActivas;
     }
-    //Metodo para una CARGA MANUAL de una Orden de Compra
+
     public boolean articuloConOrdenActiva(Long articuloId) throws Exception{
         try {
             List<OrdenCompra> ordenesActivas = findOrdenCompraActiva();
@@ -66,7 +70,67 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
 
         }
 
+    //CREAR ORDEN DE COMPRA AUTOMATICA
 
+    @Override
+    @Transactional
+    public OrdenCompra crearOrdenCompraAutomatica(Articulo articulo) throws Exception{
+        try {
+            OrdenCompra ordenAutomatica = new OrdenCompra();
 
+            ordenAutomatica.setFechaOrdenCompra(LocalDate.now());
+            ordenAutomatica.setEstadoOrdenCompra(EstadoOrdenCompra.PENDIENTE);
+            ordenAutomatica.setProveedor(articulo.getProveedorPredeterminado());
+
+            OrdenCompraDetalle detalle = new OrdenCompraDetalle();
+            detalle.setArticulo(articulo);
+            detalle.setCantidadAComprar(articulo.getLoteOptimoArticulo());
+
+            List<OrdenCompraDetalle> listaDetalle = new ArrayList<>();
+            listaDetalle.add(detalle);
+
+            ordenAutomatica.setOrdenCompraDetalles(listaDetalle);
+
+            ordenCompraRepository.save(ordenAutomatica);
+            return ordenAutomatica;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+    public OrdenCompra confirmarOrdenCompra(Long ordenCompraId) {
+        Optional<OrdenCompra> optionalOrdenCompra = ordenCompraRepository.findById(ordenCompraId);
+        if (optionalOrdenCompra.isPresent()) {
+            OrdenCompra ordenCompra = optionalOrdenCompra.get();
+            ordenCompra.setEstadoOrdenCompra(EstadoOrdenCompra.EN_CURSO);
+            ordenCompraRepository.save(ordenCompra);
+            return ordenCompra;
+        } else {
+            throw new RuntimeException("Orden de compra no encontrada");
+        }
+    }
+
+    public OrdenCompra cancelarOrdenCompra(Long ordenCompraId) {
+        Optional<OrdenCompra> optionalOrdenCompra = ordenCompraRepository.findById(ordenCompraId);
+        if (optionalOrdenCompra.isPresent()) {
+            OrdenCompra ordenCompra = optionalOrdenCompra.get();
+            ordenCompra.setEstadoOrdenCompra(EstadoOrdenCompra.CANCELADA);
+            ordenCompraRepository.save(ordenCompra);
+            return ordenCompra;
+        } else {
+            throw new RuntimeException("Orden de compra no encontrada");
+        }
+    }
+    public OrdenCompra finalizarOrdenCompra(Long ordenCompraId) {
+        Optional<OrdenCompra> optionalOrdenCompra = ordenCompraRepository.findById(ordenCompraId);
+        if (optionalOrdenCompra.isPresent()) {
+            OrdenCompra ordenCompra = optionalOrdenCompra.get();
+            ordenCompra.setEstadoOrdenCompra(EstadoOrdenCompra.FINALIZADA);
+            ordenCompraRepository.save(ordenCompra);
+            return ordenCompra;
+        } else {
+            throw new RuntimeException("Orden de compra no encontrada");
+        }
+    }
 
 }

@@ -27,6 +27,17 @@ public class Articulo extends Base {
     @Column(name = "cantidad_articulo")
     private Integer cantidadArticulo;
 
+    @NotNull
+    @Column(name = "modelo_inventario")
+    @Enumerated(EnumType.STRING)
+    private ModeloInventario modeloInventario;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedorPredeterminado;
+
+
     @Column(name = "costo_almacenamiento")
     private Double costoAlmacenamientoArticulo;
 
@@ -39,10 +50,6 @@ public class Articulo extends Base {
     @Column(name = "cgi_articulo")
     private Double cgiArticulo;
 
-    @NotNull
-    @Column(name = "modelo_inventario")
-    @Enumerated(EnumType.STRING)
-    private ModeloInventario modeloInventario;
 
     @Column(name = "demanda_anual")
     private Integer demandaAnualArticulo;
@@ -63,11 +70,6 @@ public class Articulo extends Base {
 
     @Column(name = "nombre_metodo_prediccion")
     private NombreMetodoPrediccion metodoPrediccionPredeterminado;
-
-
-    @ManyToOne()
-    @JoinColumn(name = "id_proveedor")
-    private Proveedor proveedorPredeterminado;
 
 
 }
