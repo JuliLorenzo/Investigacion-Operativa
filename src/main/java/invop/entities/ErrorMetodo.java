@@ -16,19 +16,13 @@ import java.time.LocalDate;
 @Builder
 public class ErrorMetodo extends Base {
 
-    @NotNull
-    @Column(name = "error")
+
+    @Column(name = "sumatoria_error")
     private Double porcentajeError;
 
-    /*@ManyToOne()
-    @JoinColumn(name = "demanda_real")
-    private DemandaHistorica demandaReal;
+    @Column(name = "error_total")
+    private Double errorTotal;
 
-    @NotNull
-    @ManyToOne()
-    @JoinColumn(name = "id_prediccion_demanda")
-    private PrediccionDemanda prediccionDemanda;
-*/
     @Column(name = "valor_demanda_real")
     private Integer valorDemandaReal;
 

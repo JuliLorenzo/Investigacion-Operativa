@@ -63,12 +63,11 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
                     }
                 }
             }
-        } catch(Exception e){
+        } catch(Exception e) {
             throw new Exception(e.getMessage());
-            }
-        return false;
-
         }
+        return false;
+    }
 
     //CREAR ORDEN DE COMPRA AUTOMATICA
 

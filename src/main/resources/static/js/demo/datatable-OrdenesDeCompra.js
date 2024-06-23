@@ -29,7 +29,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <i class="fas fa-check"></i>
                         </a>
                         <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${ordenesdecompras.id}">
-                                        <i class="fa fa-arrows-h" ></i>
+                                        <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                         
                     </div>
@@ -139,7 +142,7 @@ $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
 // Función para guardar la orden de compra
 function guardarOrdenDeCompra() {
     const fechaOrdenCompra = new Date().toISOString().split('T')[0];
-    const estadoOrdenCompra = 'Pendiente';
+    const estadoOrdenCompra = 'PENDIENTE';
     const proveedorId = $('#proveedor').val();
     const proveedorNombre = $('#proveedor option:selected').text();
     const totalOrdenCompra = $('#totalorden').val();
@@ -152,10 +155,10 @@ function guardarOrdenDeCompra() {
         return;
     }
 
-    // Check if the article has an active order
+    // ver si tiene orden
     $.ajax({
         type: 'GET',
-        url: `http://localhost:9090/api/v1/articuloconordenactiva?articuloId=${articuloId}`,
+        url: `http://localhost:9090/api/v1/ordenescompras/articuloconordenactiva?articuloId=${articuloId}`,
         success: function(response) {
             if (response) {
                 alert('El artículo ya tiene una orden de compra activa.');
@@ -204,8 +207,10 @@ function guardarOrdenDeCompra() {
             alert('Error al verificar la orden de compra activa.');
         }
     });
+
+
 }
 
-// Bind the guardarOrdenDeCompra function to the button click event
+// guardar
 $('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
 
