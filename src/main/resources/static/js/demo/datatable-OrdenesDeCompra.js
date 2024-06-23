@@ -29,7 +29,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <i class="fas fa-check"></i>
                         </a>
                         <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${ordenesdecompras.id}">
-                                        <i class="fa fa-arrows-h" ></i>
+                                        <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-circle btn-sm">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                         
                     </div>
