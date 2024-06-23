@@ -74,6 +74,7 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
                 LocalDate fechaInicioMes = datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1);
                 LocalDate fechaFinMes = fechaInicioMes.withDayOfMonth(fechaInicioMes.lengthOfMonth());
                 datosError.setMesAPredecir(datosError.getFechaDesde().plusMonths(i).getMonthValue());
+                datosError.setAnioAPredecir(datosError.getAnioAPredecir());
 
                 //calcular pronostico demanda
                 int pronosticoDemanda = 0;
