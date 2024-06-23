@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
@@ -113,12 +115,16 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     //calculo promedio movil a usar en el suavizado --> usa 12 meses siempre
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception{
         try{
-            LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
-            LocalDate fechaHasta = fechaPrediccion.plusMonths(12).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
+            //System.out.println(" fecha prediccion mes anterior con pm: "+ fechaPrediccion);
+            LocalDate fechaDesde = fechaPrediccion.minusMonths(12).withDayOfMonth(1);
+            //System.out.println("la desde (pm): " + fechaDesde);
+            LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
+            //System.out.println("La hasta (pm): " + fechaHasta);
             int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
             if(demandaHistorica <0){
                 demandaHistorica = 0;
             }
+            //System.out.println("la demanda historica para el PM es: "+ demandaHistorica);
             Integer valorPrediccion = demandaHistorica/12; //porque usa la anual pero ver si usamos otra
             return valorPrediccion;
         }catch(Exception e){
@@ -128,8 +134,20 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     public Integer calculoPromedioMovilPonderadoSuavizado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
             LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
+            //System.out.println("Fecha de prediccion a tomar: " + fechaPrediccion);
             LocalDate fechaDesde = fechaPrediccion.minusMonths(1).withDayOfMonth(1);
+            //System.out.println("Fecha desde a tomar (pmps): " + fechaDesde);
+            //LocalDate fechaHasta = fechaPrediccion.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
             LocalDate fechaHasta = fechaPrediccion.minusMonths(1).withDayOfMonth(fechaPrediccion.minusMonths(1).lengthOfMonth());
+            //System.out.println("Fecha hasta a tomar (pmps): " + fechaHasta);
+            /*LocalDate fechaHasta = fechaPrediccion.minusMonths(1);
+
+            if(fechaHasta.getMonthValue() == 2 && !fechaHasta.isLeapYear()){
+                fechaHasta = fechaHasta.withDayOfMonth(28);
+            } else {
+                fechaHasta = fechaHasta.withDayOfMonth(fechaHasta.lengthOfMonth());
+            }*/
+
             int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
             if (demandaHistoricaMesAnterior < 0){
                 demandaHistoricaMesAnterior = 0;
@@ -164,7 +182,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
 
                 int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-
+                if(demandaHistoricaMes < 0 ){
+                    demandaHistoricaMes = 0;
+                }
                 sumaXY += (nroMes * demandaHistoricaMes);
                 sumaX2 += Math.pow(nroMes, 2);
                 sumaDemandas += demandaHistoricaMes;
@@ -176,7 +196,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
 
             b = (sumaXY - (datosPrediccionDTO.getCantidadPeriodos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosPrediccionDTO.getCantidadPeriodos() * promPeriodosCuadrado));
+            System.out.println("VALOR DE b: " + b);
             a = promedioDemandas - (b * promedioPeriodos);
+            System.out.println("VALOR DE a: " + a);
 
             int valorPrediccion = (int)(a + (b * mesAPredecir));
 
