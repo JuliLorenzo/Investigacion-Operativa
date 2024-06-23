@@ -73,6 +73,7 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
                 LocalDate fechaInicioMes = datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1);
                 LocalDate fechaFinMes = fechaInicioMes.withDayOfMonth(fechaInicioMes.lengthOfMonth());
+                datosError.setMesAPredecir(datosError.getFechaDesde().plusMonths(i).getMonthValue());
 
                 //calcular pronostico demanda
                 int pronosticoDemanda = 0;
@@ -93,6 +94,12 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
                 }
 
                 int demandaReal = listaDemandasHistoricas.get(i);
+                if (demandaReal < 0 ){
+                    demandaReal = 1;
+                }
+                //System.out.println("Demanda real del mes "+ (i+1) + ": " + demandaReal);
+
+                //System.out.println("Demanda predecida del mes "+ (i+1) + ": " + pronosticoDemanda);
 
                 double errorAbsoluto = ((double)Math.abs(demandaReal - pronosticoDemanda)) / demandaReal;
 
