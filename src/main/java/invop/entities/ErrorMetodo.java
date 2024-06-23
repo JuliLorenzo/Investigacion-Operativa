@@ -40,8 +40,7 @@ public class ErrorMetodo extends Base {
     private LocalDate fechaHasta;
 
     @Column(name = "nombre_metodo")
+    @Enumerated(EnumType.STRING)
     private NombreMetodoPrediccion nombreMetodoUsado;
-
-
 
 }

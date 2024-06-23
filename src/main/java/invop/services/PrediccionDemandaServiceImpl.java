@@ -168,31 +168,42 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             int mesAPredecir = datosPrediccionDTO.getMesAPredecir();
 
             int sumaPeriodos = 0;
-            int sumaDemandas = 0;
+            Double sumaDemandas = 0.0;
             int sumaXY = 0;
             double sumaX2 = 0;
             double a = 0.0;
             double b = 0.0;
+            LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
 
             for(int i = 0; i < datosPrediccionDTO.getCantidadPeriodos(); i++) {
-                LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
 
-                int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
+                int nroMes = datosPrediccionDTO.getCantidadPeriodos() - i;
+                System.out.println("Numero Mes: " + nroMes);
 
                 int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
+
                 if(demandaHistoricaMes < 0 ){
                     demandaHistoricaMes = 0;
                 }
+
+                System.out.println("Demanda: " + demandaHistoricaMes);
                 sumaXY += (nroMes * demandaHistoricaMes);
+
                 sumaX2 += Math.pow(nroMes, 2);
+
                 sumaDemandas += demandaHistoricaMes;
                 sumaPeriodos += (nroMes);
             }
-
-            int promedioPeriodos = sumaPeriodos / datosPrediccionDTO.getCantidadPeriodos(); // esto seria Tp o x con barrita
-            int promedioDemandas = sumaDemandas / datosPrediccionDTO.getCantidadPeriodos(); // esto seria Yp o y con barrita
+            System.out.println("suma x2:" + sumaX2);
+            System.out.println("suma xy: " + sumaXY);
+            Double promedioPeriodos = (double) (sumaPeriodos / datosPrediccionDTO.getCantidadPeriodos()); // esto seria Tp o x con barrita
+            System.out.println("suma de períodos (x):" + sumaPeriodos);
+            System.out.println("promedio de periodos: " + promedioPeriodos);
+            Double promedioDemandas =  (sumaDemandas / datosPrediccionDTO.getCantidadPeriodos()); // esto seria Yp o y con barrita
+            System.out.println("suma de demandas (y):" + sumaDemandas);
+            System.out.println("promedio de demandas: " + promedioDemandas);
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
 
             b = (sumaXY - (datosPrediccionDTO.getCantidadPeriodos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosPrediccionDTO.getCantidadPeriodos() * promPeriodosCuadrado));
@@ -200,10 +211,10 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             a = promedioDemandas - (b * promedioPeriodos);
             System.out.println("VALOR DE a: " + a);
 
-            int valorPrediccion = (int)(a + (b * mesAPredecir));
+            Integer valorPrediccion = (int)(a + (b * (datosPrediccionDTO.getCantidadPeriodos()+1)));
 
-                return valorPrediccion;
-        }catch(Exception e){
+            return valorPrediccion;
+        } catch(Exception e){
             throw new Exception(e.getMessage());
         }
     }
