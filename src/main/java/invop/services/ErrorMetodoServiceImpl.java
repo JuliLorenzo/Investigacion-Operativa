@@ -2,7 +2,6 @@ package invop.services;
 
 import invop.dto.DatosPrediccionDTO;
 import invop.entities.Articulo;
-import invop.entities.DemandaHistorica;
 import invop.entities.ErrorMetodo;
 import invop.repositories.ErrorMetodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;

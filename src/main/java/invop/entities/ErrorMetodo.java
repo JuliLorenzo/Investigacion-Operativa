@@ -4,7 +4,6 @@ import invop.enums.NombreMetodoPrediccion;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.hibernate.annotations.NotFound;
 
 import java.time.LocalDate;
 
@@ -19,7 +18,7 @@ public class ErrorMetodo extends Base {
 
     @NotNull
     @Column(name = "error")
-    private Double PorcentajeError;
+    private Double porcentajeError;
 
     /*@ManyToOne()
     @JoinColumn(name = "demanda_real")
