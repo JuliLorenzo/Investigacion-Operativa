@@ -208,6 +208,6 @@ function guardarOrdenDeCompra() {
 
 }
 
-// Bind the guardarOrdenDeCompra function to the button click event
+// guardar
 $('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
 
