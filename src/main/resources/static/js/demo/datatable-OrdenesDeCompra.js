@@ -25,12 +25,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 </td>
                 <td>
                     <div style="text-align: center">
+                        <a href="#" class="btn btn-success btn-circle btn-sm" data-id="${ordenesdecompras.id}">
+                                        <i class="fas fa-check"></i>
+                        </a>
                         <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${ordenesdecompras.id}">
-                            <i class="fas fa-link"></i>
+                                        <i class="fa fa-arrows-h" ></i>
                         </a>
-                        <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${ordenesdecompras.id}">
-                            <i class="fas fa-edit"></i>
-                        </a>
+                        
                     </div>
                 </td>
             `;
@@ -138,11 +139,11 @@ $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
 // Función para guardar la orden de compra
 function guardarOrdenDeCompra() {
     const fechaOrdenCompra = new Date().toISOString().split('T')[0];
-    const estadoOrdenCompra = 'pendiente';
+    const estadoOrdenCompra = 'Pendiente';
     const proveedorId = $('#proveedor').val();
     const proveedorNombre = $('#proveedor option:selected').text();
     const totalOrdenCompra = $('#totalorden').val();
-    const cantidadAComprar  = $('#cantidadorden').val();
+    const cantidadAComprar = $('#cantidadorden').val();
     const articuloId = $('#articulo').val();
     const articuloNombre = $('#articulo option:selected').text();
 
@@ -151,43 +152,60 @@ function guardarOrdenDeCompra() {
         return;
     }
 
-    const ordenDeCompra = {
-        fechaOrdenCompra: fechaOrdenCompra,
-        estadoOrdenCompra: estadoOrdenCompra,
-        totalOrdenCompra: parseFloat(totalOrdenCompra),
-        ordenCompraDetalles: [{
-            cantidadAComprar: parseInt(cantidadAComprar), // Ensure quantity is an integer
-            articulo: {
-                id: parseInt(articuloId), // Ensure articuloId is an integer
-                nombreArticulo: articuloNombre
-            }
-        }],
-        proveedor: {
-            id: parseInt(proveedorId), // Ensure proveedorId is an integer
-            nombreProveedor: proveedorNombre
-        }
-    };
-
+    // Check if the article has an active order
     $.ajax({
-        type: 'POST',
-        url: 'http://localhost:9090/api/v1/ordenescompras',
-        contentType: 'application/json',
-        data: JSON.stringify(ordenDeCompra),
+        type: 'GET',
+        url: `http://localhost:9090/api/v1/articuloconordenactiva?articuloId=${articuloId}`,
         success: function(response) {
-            alert('Orden de Compra guardada con éxito!');
-            $('#crearOrdenDeCompraModal').modal('hide');
-            // Clear the form
-            $('#proveedor').val('');
-            $('#totalorden').val('');
-            $('#cantidadorden').val('');
-            $('#articulo').val('');
+            if (response) {
+                alert('El artículo ya tiene una orden de compra activa.');
+            } else {
+                // If no active order exists, proceed to create the new order
+                const ordenDeCompra = {
+                    fechaOrdenCompra: fechaOrdenCompra,
+                    estadoOrdenCompra: estadoOrdenCompra,
+                    totalOrdenCompra: parseFloat(totalOrdenCompra),
+                    ordenCompraDetalles: [{
+                        cantidadAComprar: parseInt(cantidadAComprar), // Ensure quantity is an integer
+                        articulo: {
+                            id: parseInt(articuloId), // Ensure articuloId is an integer
+                            nombreArticulo: articuloNombre
+                        }
+                    }],
+                    proveedor: {
+                        id: parseInt(proveedorId), // Ensure proveedorId is an integer
+                        nombreProveedor: proveedorNombre
+                    }
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:9090/api/v1/ordenescompras',
+                    contentType: 'application/json',
+                    data: JSON.stringify(ordenDeCompra),
+                    success: function(response) {
+                        alert('Orden de Compra guardada con éxito!');
+                        $('#crearOrdenDeCompraModal').modal('hide');
+                        // Clear the form
+                        $('#proveedor').val('');
+                        $('#totalorden').val('');
+                        $('#cantidadorden').val('');
+                        $('#articulo').val('');
+                    },
+                    error: function(error) {
+                        console.error('Error al guardar la Orden de Compra:', error);
+                        alert('Error al guardar la Orden de Compra.');
+                    }
+                });
+            }
         },
         error: function(error) {
-            console.error('Error al guardar la Orden de Compra:', error);
-            alert('Error al guardar la Orden de Compra.');
+            console.error('Error al verificar la orden de compra activa:', error);
+            alert('Error al verificar la orden de compra activa.');
         }
     });
 }
 
 // Bind the guardarOrdenDeCompra function to the button click event
 $('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
+

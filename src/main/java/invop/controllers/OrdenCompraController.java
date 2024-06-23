@@ -25,5 +25,13 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
         }
     }
 
+    @GetMapping("/articuloconordenactiva")
+    public ResponseEntity<?> articuloconordenactiva(@RequestParam Long articuloId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.articuloConOrdenActiva(articuloId));
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+        }
+    }
 
 }
