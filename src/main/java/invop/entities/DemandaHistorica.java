@@ -32,12 +32,12 @@ public class DemandaHistorica extends Base {
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(
-            name ="historicas-ventas",
-            joinColumns = @JoinColumn(name = "demanda_historica_id"),
-            inverseJoinColumns = @JoinColumn(name = "venta_id")
-    )
-    private List <Venta> ventaList;
+    //@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    //@JoinTable(
+    //        name ="historicas-ventas",
+    //        joinColumns = @JoinColumn(name = "demanda_historica_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "venta_id")
+    //)
+    //private List <Venta> ventaList;
 
 }

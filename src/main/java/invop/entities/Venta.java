@@ -27,8 +27,8 @@ public class Venta extends Base{
     @Builder.Default
     private List<VentaDetalle> ventaDetalles = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "ventaList")
-    private List<DemandaHistorica> demandaHistoricaList;
+    // @ManyToMany(mappedBy = "ventaList")
+    // private List<DemandaHistorica> demandaHistoricaList;
 
     public void agregarDetalleVenta(VentaDetalle ventaDetalle){
         ventaDetalles.add(ventaDetalle);

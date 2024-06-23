@@ -33,7 +33,7 @@ public class ErrorController extends BaseControllerImpl<ErrorMetodo, ErrorMetodo
         }
     }
 
-     @GetMapping("/buscar/{idArticulo}")
+    @GetMapping("/buscar/{idArticulo}")
     public ResponseEntity<List<ErrorMetodo>> getErroresSegunArticulo(@PathVariable Long idArticulo){
         try{
             List<ErrorMetodo> listaErrores = errorMetodoService.buscarErroresSegunArticulo(idArticulo);
