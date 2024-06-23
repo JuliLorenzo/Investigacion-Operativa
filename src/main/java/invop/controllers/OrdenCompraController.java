@@ -28,9 +28,10 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
     @GetMapping("/articuloconordenactiva")
     public ResponseEntity<?> articuloconordenactiva(@RequestParam Long articuloId) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.articuloConOrdenActiva(articuloId));
+            boolean exists = servicio.articuloConOrdenActiva(articuloId);
+            return ResponseEntity.status(HttpStatus.OK).body(exists);
         } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
 

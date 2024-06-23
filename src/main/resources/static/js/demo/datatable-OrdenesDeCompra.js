@@ -139,7 +139,7 @@ $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
 // Función para guardar la orden de compra
 function guardarOrdenDeCompra() {
     const fechaOrdenCompra = new Date().toISOString().split('T')[0];
-    const estadoOrdenCompra = 'Pendiente';
+    const estadoOrdenCompra = 'PENDIENTE';
     const proveedorId = $('#proveedor').val();
     const proveedorNombre = $('#proveedor option:selected').text();
     const totalOrdenCompra = $('#totalorden').val();
@@ -152,10 +152,10 @@ function guardarOrdenDeCompra() {
         return;
     }
 
-    // Check if the article has an active order
+    // ver si tiene orden
     $.ajax({
         type: 'GET',
-        url: `http://localhost:9090/api/v1/articuloconordenactiva?articuloId=${articuloId}`,
+        url: `http://localhost:9090/api/v1/ordenescompras/articuloconordenactiva?articuloId=${articuloId}`,
         success: function(response) {
             if (response) {
                 alert('El artículo ya tiene una orden de compra activa.');
@@ -204,6 +204,8 @@ function guardarOrdenDeCompra() {
             alert('Error al verificar la orden de compra activa.');
         }
     });
+
+
 }
 
 // Bind the guardarOrdenDeCompra function to the button click event
