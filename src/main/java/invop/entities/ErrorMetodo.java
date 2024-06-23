@@ -19,22 +19,13 @@ public class ErrorMetodo extends Base {
     @NotNull
     @Column(name = "error")
     private Double porcentajeError;
-
-    /*@ManyToOne()
-    @JoinColumn(name = "demanda_real")
-    private DemandaHistorica demandaReal;
-
-    @NotNull
-    @ManyToOne()
-    @JoinColumn(name = "id_prediccion_demanda")
-    private PrediccionDemanda prediccionDemanda;
-*/
+    /*
     @Column(name = "valor_demanda_real")
     private Integer valorDemandaReal;
 
     @Column(name = "valor_prediccion_demanda")
     private Integer valorPrediccionDemanda;
-
+*/
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;

@@ -182,7 +182,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int nroMes = fechaPrediccion.minusMonths(i+1).getMonthValue(); //obtiene el nro de mes (para los x)
 
                 int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-
+                if(demandaHistoricaMes < 0 ){
+                    demandaHistoricaMes = 0;
+                }
                 sumaXY += (nroMes * demandaHistoricaMes);
                 sumaX2 += Math.pow(nroMes, 2);
                 sumaDemandas += demandaHistoricaMes;
@@ -194,7 +196,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             double promPeriodosCuadrado = Math.pow(promedioPeriodos,2);
 
             b = (sumaXY - (datosPrediccionDTO.getCantidadPeriodos() * promedioPeriodos * promedioDemandas)) / (sumaX2 - (datosPrediccionDTO.getCantidadPeriodos() * promPeriodosCuadrado));
+            System.out.println("VALOR DE b: " + b);
             a = promedioDemandas - (b * promedioPeriodos);
+            System.out.println("VALOR DE a: " + a);
 
             int valorPrediccion = (int)(a + (b * mesAPredecir));
 
