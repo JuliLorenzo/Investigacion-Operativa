@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import invop.entities.Venta;
 import invop.services.VentaServiceImpl;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,18 +46,31 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
     @PostMapping("/crearVenta")
     @ResponseBody
     public ResponseEntity<Void> crearNuevaVenta(@RequestBody VentaDto ventaDTO) throws Exception {
-        List<Long> articulosSinStock = articuloService.getArticulosSinStock(ventaDTO.getArticulosDetalleVenta());
-        if (!articulosSinStock.isEmpty()) {
-            for (int i = 0; i < articulosSinStock.size(); i++) {
-                String nombreArticulo = articuloService.findById(articulosSinStock.get(i)).getNombreArticulo();
-                throw new RuntimeException(String.format("El articulo no tiene stock suficiente: " + nombreArticulo));
+        List<Long> articulosSinStockIds = articuloService.getArticulosSinStock(ventaDTO.getArticulosDetalleVenta());
+        if (!articulosSinStockIds.isEmpty()) {
+            StringBuilder mensajeError = new StringBuilder("Los siguientes artículos no tienen stock suficiente: ");
+            for (Long id : articulosSinStockIds) {
+                String nombreArticulo = articuloService.findById(id).getNombreArticulo();
+                mensajeError.append(nombreArticulo).append(", ");
             }
+            mensajeError.setLength(mensajeError.length() - 2); // eliminar última coma y espacio
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Error-Message", mensajeError.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).build();
+        }
+        try {
+            ventaService.crearVenta(ventaDTO);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Error-Message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
         // if (!articulosSinStock.isEmpty()) {
         // throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
-        ventaService.crearVenta(ventaDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        // ventaService.crearVenta(ventaDTO);
+        // return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

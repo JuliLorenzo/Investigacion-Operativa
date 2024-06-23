@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.textContent = 'Seleccione un artículo';
-                defaultOption.disabled = true;
+                // defaultOption.disabled = true;
                 defaultOption.selected = true;
                 select.appendChild(defaultOption);
 
@@ -133,9 +133,10 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(response => {
                 if (response.ok) {
                     alert("Venta creada exitosamente");
-                    location.reload(); // Recargar para ver nueva venta
+                    location.reload(); // Recargar la página
                 } else {
-                    return response.text().then(text => { throw new Error(text); });
+                    const errorMessage = response.headers.get("Error-Message");
+                    throw new Error(errorMessage || "Error desconocido");
                 }
             })
             .catch(error => {
