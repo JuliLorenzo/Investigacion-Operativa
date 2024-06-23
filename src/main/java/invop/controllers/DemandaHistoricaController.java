@@ -1,5 +1,6 @@
 package invop.controllers;
 
+import invop.dto.DemandaHistoricaDto;
 import invop.entities.DemandaHistorica;
 import invop.services.DemandaHistoricaService;
 import invop.services.DemandaHistoricaServiceImpl;
@@ -24,16 +25,13 @@ public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistor
     private DemandaHistoricaService demandaHistoricaService;
 
     @PostMapping("/calcularDemandaHistorica")
-    public ResponseEntity<?> calcularDemandaHistorica(
-            @RequestParam LocalDate desde, @RequestParam LocalDate hasta, @RequestParam Long idArticulo
-    ) throws Exception {
+    public ResponseEntity<?> calcularDemandaHistorica(@RequestBody DemandaHistoricaDto demandaHistorica) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            LocalDate fechaDesde = desde;
-            LocalDate fechaHasta = hasta;
+            LocalDate fechaDesde = demandaHistorica.getFechaDesde();
+            LocalDate fechaHasta = demandaHistorica.getFechaHasta();
             //LocalDateTime fechaAlta = LocalDateTime.now();
-            demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, idArticulo);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.OK).body(demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, demandaHistorica.getIdArticulo()));
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Articulo no encontrado");
         } catch (IllegalArgumentException e){
