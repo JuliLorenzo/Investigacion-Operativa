@@ -112,12 +112,14 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
             errorCalculado.setArticulo(articulo);
 
-            /*Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
             errorCalculado.setValorDemandaReal(demandaHistorica);
 
             Integer prediccionDemanda = calcularSumaPredicciones(datosError);
             errorCalculado.setValorPrediccionDemanda(prediccionDemanda);
-            */
+
+            Double errorTotal = calculoErrorTotal(datosError);
+            errorCalculado.setErrorTotal(errorTotal);
 
             Double valorError = calculoError(datosError);
             errorCalculado.setPorcentajeError(valorError);
@@ -128,6 +130,20 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             errorMetodoRepository.save(errorCalculado);
 
             return errorCalculado;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+    public Double calculoErrorTotal(DatosPrediccionDTO datosError) throws Exception{
+        try{
+            int valorDemandaReal = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+
+            int valorPrediccionDemanda = calcularSumaPredicciones(datosError);
+
+            double numerador = (double)100 * Math.abs(valorDemandaReal - valorPrediccionDemanda) / valorDemandaReal;
+            double valorError = numerador/12;
+
+            return valorError;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
