@@ -1,9 +1,13 @@
 package invop.entities;
 
+import invop.enums.EstadoOrdenCompra;
+import invop.enums.ModeloInventario;
 import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,23 +23,28 @@ import java.util.List;
 public class OrdenCompra extends Base{
 
     @Column(name = "fecha_orden_compra")
-    private Date fechaOrdenCompra;
+    private LocalDate fechaOrdenCompra;
 
     @Column(name = "estado_orden_compra")
-    private String estadoOrdenCompra;
+    @Enumerated(EnumType.STRING)
+    private EstadoOrdenCompra estadoOrdenCompra;
 
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
+
+    /*
     @Column(name = "total_orden_compra")
     private Double totalOrdenCompra;
+    */
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_orden_compra")
     @Builder.Default
     private List<OrdenCompraDetalle> ordenCompraDetalles = new ArrayList<>();
 
-    @NotNull
-    @ManyToOne()
-    @JoinColumn(name = "id_proveedor")
-    private Proveedor proveedor;
+
 
 
 }

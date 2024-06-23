@@ -87,12 +87,37 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
         return articulosSinStock;
     }
-    public void disminuirStock(Articulo articulo, Integer cantVendida){
-        Integer nuevoStock = articulo.getCantidadArticulo() - cantVendida;
-        articulo.setCantidadArticulo(nuevoStock);
-        articuloRepository.save(articulo);
+    public void disminuirStock(Articulo articulo, Integer cantVendida) throws Exception{
+        try {
+            Integer nuevoStock = articulo.getCantidadArticulo() - cantVendida;
+            articulo.setCantidadArticulo(nuevoStock);
+            articuloRepository.save(articulo);
+
+            if (articulo.getModeloInventario() == ModeloInventario.MODELO_LOTE_FIJO){
+                try {
+                    controlStockPP(articulo);
+
+                }catch (Exception e){
+                    throw new Exception(e.getMessage());
+                }
+            }
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 
+    public void controlStockPP(Articulo articulo) throws Exception{
+        if (articulo.getCantidadArticulo() <= articulo.getPuntoPedidoArticulo()){
+            try{
+                OrdenCompra ordenCompraAutomatica= ordenCompraService.crearOrdenCompraAutomatica(articulo);
+            }catch (Exception e){
+                throw new Exception(e.getMessage());
+
+            }
+
+        }
+    }
     @Override
     //@Transactional
     public Double calculoCGI(Long idArticulo) throws Exception {
