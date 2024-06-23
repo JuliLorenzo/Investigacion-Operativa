@@ -216,15 +216,15 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         ArrayList<Integer> prediccionDemandaMensual = new ArrayList<Integer>(Collections.nCopies(cantidadMeses, 0));
         try {
             // cantidadDemandaAnualTotal la ingresa el usuario
-            System.out.println();
             // int anioAPredecir = LocalDate.now().getYear();
-            System.out.println("Año a predecir: " + datosPrediccionDTO.getAnioAPredecir());
+            //System.out.println("Año a predecir: " + datosPrediccionDTO.getAnioAPredecir());
             int anioActual = 0;
             int cantidadAnios = 3;
             Integer[][] demandaAnios = new Integer[cantidadAnios][cantidadMeses];
             Integer sumatoria = 0;
             for (int i = 0; i < cantidadAnios; i++) {
                 anioActual = datosPrediccionDTO.getAnioAPredecir() - (i + 1);
+                System.out.println(anioActual);
                 for (int j = 0; j < cantidadMeses; j++) {
                     System.out.println(j);
                     int mes = j + 1;
@@ -234,51 +234,54 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     if (demandaMesActual < 0) {
                         demandaMesActual = 0;
                     }
-                    System.out.println("La demanda del Mes: " + mes + " Año: " + anioActual + " fue: " + demandaMesActual);
+                    //System.out.println("La demanda del Mes: " + mes + " Año: " + anioActual + " fue: " + demandaMesActual);
                     demandaAnios[i][j] = demandaMesActual;
                     sumatoria = sumatoria + demandaMesActual;
                 }
             }
+            System.out.println(Arrays.deepToString(demandaAnios));
             ;
             System.out.println("La sumatoria dio " + sumatoria);
 
-            Integer[] demandaAnualPromedio = new Integer[cantidadMeses];
-            Arrays.fill(demandaAnualPromedio, 0); // llena con 0
-            Integer demandaMensualPromedio = (int) Math.ceil((double) sumatoria / (cantidadAnios * cantidadMeses));
+            Double[] demandaAnualPromedio = new Double[cantidadMeses];
+            Arrays.fill(demandaAnualPromedio, 0.0); // llena con 0
+            Double demandaMensualPromedio = Double.valueOf((double) sumatoria / (cantidadAnios * cantidadMeses));
             System.out.println("Demanda Mensual Promedio: " + demandaMensualPromedio);
-            for (int k = 0; k < cantidadAnios; k++) {
+
+            for (int t = 0; t < cantidadMeses; t++) {
                 Integer sumaMes = 0;
-                for (int t = 0; t < cantidadMeses; t++) {
+                for (int k = 0; k < cantidadAnios; k++) {
                     sumaMes = sumaMes + demandaAnios[k][t];
-                    System.out.println("Llegué hasta acá, mes: " + t + ", año: " + k);
+                    //System.out.println("Llegué hasta acá, mes: " + t + ", año: " + k);
                 }
-                demandaAnualPromedio[k] = (int) Math.ceil((double) sumaMes / cantidadAnios);
+                System.out.println(sumaMes);
+                demandaAnualPromedio[t] = Double.valueOf((double) sumaMes / cantidadAnios);
             }
             System.out.println("demandaAnualPromedio:"+Arrays.toString(demandaAnualPromedio));
             Double[] indiceEstacionalMensual = new Double[cantidadMeses];
             for (int t = 0; t < cantidadMeses; t++) {
                 int mes = t + 1;
-                indiceEstacionalMensual[t] = (double) (demandaAnualPromedio[t] / demandaMensualPromedio);
-                prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * datosPrediccionDTO.getCantidadDemandaAnualTotal()));
+                indiceEstacionalMensual[t] = demandaAnualPromedio[t] / demandaMensualPromedio;
+                prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * datosPrediccionDTO.getCantidadDemandaAnualTotal()/cantidadMeses));
                 PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
                 prediccionDemanda.setArticulo(articuloService.findById(datosPrediccionDTO.getIdArticulo()));
                 prediccionDemanda.setValorPrediccion(prediccionDemandaMensual.get(t));
                 prediccionDemanda.setFechaPrediccion(LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), mes, 1));
                 prediccionDemanda.setNombreMetodoUsado(ESTACIONALIDAD);
                 prediccionDemandaRepository.save(prediccionDemanda);
-                System.out.println("Llegué a guardar");
+
+                // System.out.println("Llegué a guardar");
             }
             System.out.println("indiceEstacionalMensual: "+  Arrays.toString(indiceEstacionalMensual));
+            System.out.println("prediccionPorMes" + prediccionDemandaMensual);
 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-        //return prediccionDemandaMensual;
-        return prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir());
+        return prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir()-1);
+        // revisar este return porq tiene q traer bien el indice del mes
     }
 
-
     //CREAR PREDICCION SEGUN EL METODO
-
 
 }
