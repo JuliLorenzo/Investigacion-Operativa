@@ -9,16 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 row.innerHTML = `
                 <td>${proveedor.id}</td>
                 <td>${proveedor.nombreProveedor}</td>
-                <td>
-                    <div style="text-align: center">
-                        <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${proveedor.id}">
-                            <i class="fas fa-link"></i>
-                        </a>
-                        <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${proveedor.id}">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
             `;
                 tableBody.appendChild(row);
             });
