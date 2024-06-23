@@ -264,11 +264,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         const proveedorSelect = $('#proveedorParaModificar');
                         proveedorSelect.empty();
                         const defaultOption = document.createElement("option");
-                        if (articulo.proveedorPredeterminado === null) {
-                            defaultOption.textContent = "Seleccione un proveedor";
-                        } else {
-                            defaultOption.textContent = articulo.proveedorPredeterminado.proveedor;
-                        }
+                        //if (articulo.proveedorPredeterminado === null) {
+                            //defaultOption.textContent = "Seleccione un proveedor";
+                        //} else {
+                            defaultOption.textContent = articulo.proveedorPredeterminado.nombreProveedor;
+                        //}
                         proveedorSelect.append(defaultOption);
                         proveedoresarticulos.forEach(function(proveedorarticulo) {
                             const proveedor = proveedorarticulo.proveedor;
