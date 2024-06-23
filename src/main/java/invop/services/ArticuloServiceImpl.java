@@ -208,8 +208,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Articulo articulo = findArticuloById(idArticulo);
 
             int demandaAnual = calculoDemandaAnual(idArticulo);
-            double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
-            double costoPedido = articulo.getCostoPedidoArticulo();
+            Double costoAlmacenamiento = articulo.getCostoAlmacenamientoArticulo();
+            Double costoPedido = articulo.getCostoPedidoArticulo();
 
             int loteOptimo = (int)Math.sqrt((2 * demandaAnual * costoPedido) / costoAlmacenamiento);
             return loteOptimo;
@@ -256,7 +256,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Double tiempoProveedor = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), articulo.getProveedorPredeterminado().getId()).getTiempoDemoraArticulo();
             Double tiempoRevision = articulo.getTiempoRevisionArticulo();
 
-            // Si el artículo usa modelo de Lote Fijo, el tiempo de revisión o entre pedidos es null, por lo que lo tomamos como 0
+            // Si el artículo usa modelo de Lote Fijo, el tiempo de revisión o entre pedidos es null, por lo que lo tomamos como 0 para que no dé error
             if (tiempoRevision == null) {
                 tiempoRevision = 0.0;
             }
