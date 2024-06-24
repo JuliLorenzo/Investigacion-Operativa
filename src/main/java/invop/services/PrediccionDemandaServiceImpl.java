@@ -112,7 +112,11 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     int mes = fechaDesde.getMonthValue();
 
                     PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                    demandaHistorica = prediccionMesAnterior.getValorPrediccion();
+                    if(!prediccionMesAnterior.equals(null)){
+                        demandaHistorica = prediccionMesAnterior.getValorPrediccion();
+                    } else{
+                        demandaHistorica = 0;
+                    }
                 }
                 sumaValorYCoef = sumaValorYCoef + (factorPonderacion*demandaHistorica);
                 sumaCoef = sumaCoef + factorPonderacion;
@@ -169,7 +173,12 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int mes = fechaDesde.getMonthValue();
 
                 PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                demandaHistoricaMesAnterior = prediccionMesAnterior.getValorPrediccion();
+                if(!prediccionMesAnterior.equals(null)){
+                    demandaHistoricaMesAnterior = prediccionMesAnterior.getValorPrediccion();
+                } else{
+                    demandaHistoricaMesAnterior = 0;
+                }
+
 
             }
             System.out.println("La demanda historica del ems anterior es: "+ demandaHistoricaMesAnterior);
@@ -210,8 +219,11 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     int mes = fechaDesde.getMonthValue();
 
                     PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                    demandaHistoricaMes = prediccionMesAnterior.getValorPrediccion();
-
+                    if(!prediccionMesAnterior.equals(null)){
+                        demandaHistoricaMes = prediccionMesAnterior.getValorPrediccion();
+                    } else{
+                        demandaHistoricaMes = 0;
+                    }
                 }
 
                 System.out.println("Demanda: " + demandaHistoricaMes);
