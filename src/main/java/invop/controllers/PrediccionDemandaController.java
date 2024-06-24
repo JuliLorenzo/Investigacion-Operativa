@@ -60,4 +60,14 @@ public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDe
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PostMapping("/crearPredicciones")
+    public ResponseEntity<List<PrediccionDemanda>> crearPredicciones(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
+        try{
+            List<PrediccionDemanda> listaPredicciones = servicio.crearPredicciones(datosPrediccionDTO);
+            return ResponseEntity.ok(listaPredicciones);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }

@@ -174,8 +174,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
 
-
-
         // Manejar clic en el botón de eliminación
     $(document).on('click', '.borrar-articulo', function(event) {
         event.preventDefault();
@@ -209,26 +207,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-
-//PARA MODIFICACION DE ARTICULOS
-
-
-//fetch UN solo articulo
-/*async function obtenerArticuloSeleccionado(idArticulo) {
-    try {
-        const response = await fetch(`http://localhost:9090/api/v1/articulos/${idArticulo}`);
-        if (!response.ok) {
-            throw new Error('No se pudo obtener el artículo');
-        }
-        const articulo = await response.json();
-        return articulo;
-    } catch (error) {
-        console.error("Error al obtener el artículo:", error);
-        throw error; // Puedes relanzar el error para manejarlo en el contexto que llame a esta función
-    }
-}*/
-
 
     $(document).on('click', '.btn-modificar-articulo', function (event) {
         event.preventDefault();
@@ -264,11 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         const proveedorSelect = $('#proveedorParaModificar');
                         proveedorSelect.empty();
                         const defaultOption = document.createElement("option");
-                        //if (articulo.proveedorPredeterminado === null) {
-                            //defaultOption.textContent = "Seleccione un proveedor";
-                        //} else {
-                            defaultOption.textContent = articulo.proveedorPredeterminado.nombreProveedor;
-                        //}
+                        defaultOption.textContent = articulo.proveedorPredeterminado.nombreProveedor;
                         proveedorSelect.append(defaultOption);
                         proveedoresarticulos.forEach(function(proveedorarticulo) {
                             const proveedor = proveedorarticulo.proveedor;
@@ -296,14 +270,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
         $('#guardarArticuloModificado').off('click').on('click', function() {
             console.log('ID DEL ARTICULO:', articuloId);
+            var tiempoRevision = $('#tiempoEntrePedidosModificacion').val();
+            var proveedorId = $('#proveedorParaModificar').val();
+            proveedorId = proveedorId ? parseInt(proveedorId, 10) : null;
             var formData = {
                 id: articuloId,
                 nombreArticulo: $('#nombreParaModificar').val(),
                 modeloInventario: $('#modeloParaModificar').val(),
                 proveedorPredeterminado: {
-                    id: $('#proveedorParaModificar').val()
+                    id: proveedorId
                 },
-               // tiempoEntrePedidosModificacion: $('#tiempoEntrePedidosModificacion').val()
+                tiempoRevisionArticulo: tiempoRevision ? parseFloat(tiempoRevision) : null
             };
 
             // Verificar el valor seleccionado del proveedor
@@ -336,5 +313,22 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             $('#tiempoEntrePedidosModificacionGroup').hide();
         }
+    }})
+
+//PARA MODIFICACION DE ARTICULOS
+
+
+//fetch UN solo articulo
+/*async function obtenerArticuloSeleccionado(idArticulo) {
+    try {
+        const response = await fetch(`http://localhost:9090/api/v1/articulos/${idArticulo}`);
+        if (!response.ok) {
+            throw new Error('No se pudo obtener el artículo');
+        }
+        const articulo = await response.json();
+        return articulo;
+    } catch (error) {
+        console.error("Error al obtener el artículo:", error);
+        throw error; // Puedes relanzar el error para manejarlo en el contexto que llame a esta función
     }
-})
+}*/

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> implements ErrorMetodoService {
@@ -194,6 +196,24 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
                 sumaPredicciones += pronosticoDemanda;
             }
             return sumaPredicciones;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public ErrorMetodo devolverMenorError(Long idArticulo) throws Exception{
+        try{
+            List<ErrorMetodo> listaErrores = buscarErroresSegunArticulo(idArticulo);
+            if(listaErrores.isEmpty()){
+                throw new Exception("No hay errores para el artículo proporcionado");
+            }
+            ErrorMetodo menorError = listaErrores.get(0);
+            for(ErrorMetodo errorMetodo : listaErrores){
+                if(errorMetodo.getPorcentajeError() < menorError.getPorcentajeError()){
+                    menorError = errorMetodo;
+                }
+            }
+            return menorError;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }

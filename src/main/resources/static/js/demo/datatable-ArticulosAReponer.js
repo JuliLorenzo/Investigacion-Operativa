@@ -1,25 +1,22 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Fetch artículos
     fetch("http://localhost:9090/api/v1/articulos/reponer")
         .then(response => response.json())
         .then(data => {
-            const tableBody = document.querySelector("#articulos-faltantes-table tbody");
+            console.log(data); // Añadir esta línea para verificar la respuesta en la consola
+            const tableBody = document.getElementById("tableBody");
             data.forEach(articuloReponer => {
-                // Filtrar artículos que no tienen una orden de compra activa
-                if (!articuloReponer.ordenActiva) {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${articuloReponer.idArticulo}</td>
-                        <td>${articuloReponer.nombreArticulo}</td>
-                        <td>${articuloReponer.stockActualArticulo}</td>
-                        <td>${articuloReponer.puntoPedido}</td>
-                        <td>NO</td>
-                    `;
-                    tableBody.appendChild(row);
-                }
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${articuloReponer.idArticulo}</td>
+                    <td>${articuloReponer.nombreArticulo}</td>
+                    <td>${articuloReponer.cantidadArticulo}</td>
+                    <td>${articuloReponer.puntoPedido}</td>
+                `;
+                tableBody.appendChild(row);
             });
+            $('#articulos-areponer-table').DataTable();
         })
         .catch(error => {
-            console.error("Error al obtener los artículos faltantes", error);
+            console.error("Error al obtener los artículos a reponer:", error);
         });
 });

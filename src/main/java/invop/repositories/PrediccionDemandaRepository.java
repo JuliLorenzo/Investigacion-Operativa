@@ -17,4 +17,16 @@ public interface PrediccionDemandaRepository extends BaseRepository<PrediccionDe
             nativeQuery = true
     )
     List<PrediccionDemanda> findPrediccionesByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
+
+    @Query(
+            value = "SELECT * " +
+                    "FROM predicciones_demanda " +
+                    "WHERE articulo_id = :filtroArticulo " +
+                    "AND YEAR(fecha_prediccion) = :filtroAnio "+
+                    "AND MONTH(fecha_prediccion) = :filtroMes "+
+                    "LIMIT 1",
+            nativeQuery = true
+    )
+    PrediccionDemanda findPrediccionArticuloByFecha(@PathVariable("filtroArticulo") Long filtroArticulo, @PathVariable("filtroAnio") int filtroAnio, @PathVariable("filtroMes") int filtroMes);
+
 }
