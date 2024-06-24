@@ -1,5 +1,6 @@
 package invop.services;
 
+import invop.entities.Articulo;
 import invop.entities.OrdenCompra;
 import invop.entities.OrdenCompraDetalle;
 import invop.entities.Venta;
@@ -15,12 +16,14 @@ public class OrdenCompraDetalleServiceImpl extends BaseServiceImpl<OrdenCompraDe
 
     @Autowired
     private OrdenCompraDetalleRepository ordenCompraDetalleRepository;
-    public OrdenCompraDetalleServiceImpl(OrdenCompraDetalleRepository ordenCompraDetalleRepository){
+
+
+    public OrdenCompraDetalleServiceImpl(OrdenCompraDetalleRepository ordenCompraDetalleRepository) {
         super(ordenCompraDetalleRepository);
         this.ordenCompraDetalleRepository = ordenCompraDetalleRepository;
     }
 
-    }
+}
 
 
 

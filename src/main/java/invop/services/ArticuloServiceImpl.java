@@ -106,6 +106,14 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
         }
 
     }
+    @Override
+    @Transactional
+    public void aumentarStock(Articulo articulo, Integer cantPedida){
+        Integer nuevoStock = articulo.getCantidadArticulo() + cantPedida;
+        articulo.setCantidadArticulo(nuevoStock);
+        articuloRepository.save(articulo);
+
+    }
 
     public void controlStockPP(Articulo articulo) throws Exception{
         if (articulo.getCantidadArticulo() <= articulo.getPuntoPedidoArticulo()){

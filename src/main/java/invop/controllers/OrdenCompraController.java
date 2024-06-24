@@ -5,6 +5,8 @@ import invop.entities.Articulo;
 import invop.entities.OrdenCompra;
 import invop.entities.OrdenCompraDetalle;
 import invop.entities.ProveedorArticulo;
+import invop.enums.EstadoOrdenCompra;
+import invop.services.ArticuloService;
 import invop.services.OrdenCompraService;
 import invop.services.OrdenCompraServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,21 +14,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/ordenescompras")
 public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, OrdenCompraServiceImpl> {
 
     @Autowired
-    OrdenCompraService ordenCompraService;
-
+    private OrdenCompraService ordenCompraService;
+    @Autowired
+    private ArticuloService articuloService;
 
     @GetMapping("/findOrdenesByEstado")
-    public ResponseEntity<?> findOrdenesByEstado(@RequestParam String filtroEstado) {
+    public ResponseEntity<?> findOrdenesByEstado(@RequestParam EstadoOrdenCompra filtroEstado) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.findOrdenCompraByEstado(filtroEstado));
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
+            List<OrdenCompra> ordenes = ordenCompraService.findOrdenCompraByEstado(filtroEstado);
+            return ResponseEntity.status(HttpStatus.OK).body(ordenes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
 
@@ -62,6 +68,12 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
     @PutMapping("/finalizar/{id}")
     public ResponseEntity<OrdenCompra> finalizarOrdenCompra(@PathVariable Long id) {
         OrdenCompra ordenCompra = ordenCompraService.finalizarOrdenCompra(id);
+
+        OrdenCompraDetalle detalle = ordenCompra.getOrdenCompraDetalles().get(0);
+        Articulo articulo = detalle.getArticulo();
+        Integer cantidadPedida = detalle.getCantidadAComprar();
+        articuloService.aumentarStock(articulo, cantidadPedida);
+
         return ResponseEntity.ok(ordenCompra);
     }
 

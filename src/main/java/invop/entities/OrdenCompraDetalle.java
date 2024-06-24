@@ -21,4 +21,9 @@ public class OrdenCompraDetalle extends Base {
     @ManyToOne()
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
+
+    public OrdenCompraDetalle(Articulo articulo, Integer cantidadAComprar) {
+        this.articulo = articulo;
+        this.cantidadAComprar = cantidadAComprar;
+    }
 }
