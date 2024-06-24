@@ -230,14 +230,13 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             LocalDate fechaActual = LocalDate.now();
             LocalDate fechaHaceUnAno = fechaActual.minusYears(1);
             Integer demandaAnual = demandaHistoricaService.calcularDemandaHistorica(fechaHaceUnAno,fechaActual,idArticulo);
-            // si el artículo recién se crea, se setea la demandaAnual = 30
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
 
-            // mirar método calcularDemandaHistoricaArticulo de DemandaHistoricaServiceImpl
             // esto es para que si el artículo es nuevo, usa el atributo cargado en articulo como la demanda anual
             if (demandaAnual == -1) {
                 demandaAnual = articulo.getDemandaAnualArticulo();
             }
+
             articulo.setDemandaAnualArticulo(demandaAnual);
             articuloRepository.save(articulo);
             return demandaAnual;
