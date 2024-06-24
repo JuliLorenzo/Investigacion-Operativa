@@ -103,6 +103,37 @@ document.addEventListener("DOMContentLoaded", function() {
             option.value = modelo;
             modeloSelect.appendChild(option);
         });
+        modeloSelect.addEventListener("change", manejarCambioModelo);
+    }
+
+    function manejarCambioModelo(event){
+        const selectedModel = event.target.value;
+        const coefContainer = document.querySelector('#coefPondContainer');
+        const prediccionPMPS = document.querySelector('#prediccionPMPS');
+        const prediccionEst = document.querySelector('#prediccionEst');
+        const cantidadPeriodos = document.querySelector('#cantidadPeriodosContainer');
+
+        coefContainer.innerHTML = ''; //limpiar inputs previos
+        prediccionPMPS.style.display = 'none';
+        prediccionEst.style.display = 'none';
+        cantidadPeriodos.style.display = 'none';
+        coefContainer.style.display = 'none';
+
+        switch(selectedModel){
+            case "PROMEDIO_MOVIL_PONDERADO":
+                cantidadPeriodos.style.display = 'block';
+                coefContainer.style.display = 'block';
+                break;
+            case "PROMEDIO_MOVIL_SUAVIZADO":
+                prediccionPMPS.style.display = 'block';
+                break;
+            case "REGRESION_LINEAL":
+                cantidadPeriodos.style.display = 'block';
+                break;
+            case "ESTACIONALIDAD":
+                prediccionEst.style.display = 'block';
+                break;
+        }
     }
     cargarModelos();
 
