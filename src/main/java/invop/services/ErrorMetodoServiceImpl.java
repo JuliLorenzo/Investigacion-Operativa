@@ -255,6 +255,13 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             ErrorMetodo errorEst = crearErrorMetodoEst(datosError);
             listaErrores.add(errorEst);
 
+            ErrorMetodo menorError = devolverMenorError(datosError.getIdArticulo());
+            NombreMetodoPrediccion metodoPredeterminado = menorError.getNombreMetodoUsado();
+
+            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
+            articulo.setMetodoPrediccionPredeterminado(metodoPredeterminado);
+            articuloService.update(datosError.getIdArticulo(), articulo);
+
             return listaErrores;
         }catch(Exception e){
             throw new Exception(e.getMessage());
