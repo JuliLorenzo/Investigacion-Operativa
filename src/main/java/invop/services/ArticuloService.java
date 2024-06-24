@@ -12,7 +12,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public Articulo findArticuloById(Long id);
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
 
-    public void darDeBajaArticulo(Long idArticulo) throws Exception;
+    public boolean darDeBajaArticulo(Long idArticulo) throws Exception;
     public List<Long> getArticulosSinStock(Map<String, Integer> articulosDetalleVenta);
     public void disminuirStock(Articulo articulo, Integer cantVendida) throws Exception;
     public void aumentarStock(Articulo articulo, Integer cantPedida);

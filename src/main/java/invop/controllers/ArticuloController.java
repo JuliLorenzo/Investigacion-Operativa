@@ -116,4 +116,14 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         return ResponseEntity.ok(proveedor);
     }
 
+    @DeleteMapping("/borrarArticulo/{id}")
+    public ResponseEntity<?> borrarArticulo(@PathVariable Long id){
+        try{
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(articuloService.darDeBajaArticulo(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+        }
+    }
+
 }

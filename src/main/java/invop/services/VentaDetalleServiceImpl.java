@@ -14,9 +14,20 @@ public class VentaDetalleServiceImpl extends BaseServiceImpl<VentaDetalle, Long>
 
     @Autowired
     private VentaDetalleRepository ventaDetalleRepository;
+
+
     public VentaDetalleServiceImpl(VentaDetalleRepository ventaDetalleRepository){
         super(ventaDetalleRepository);
         this.ventaDetalleRepository = ventaDetalleRepository;
+    }
+
+    public List<VentaDetalle> buscarDetallesPorIdArticulo(Long idArticulo) throws Exception{
+        try{
+            List<VentaDetalle> listaDetalles = ventaDetalleRepository.findDetallesByArticulo(idArticulo);
+            return listaDetalles;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
 }
