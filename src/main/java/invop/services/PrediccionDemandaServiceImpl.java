@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static invop.enums.NombreMetodoPrediccion.ESTACIONALIDAD;
@@ -32,6 +30,15 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         this.articuloService = articuloService;
     }
 
+    @Override
+    public List<PrediccionDemanda> buscarPrediccionesSegunArticulo(Long filtroArticulo) throws Exception{
+        try{
+            List<PrediccionDemanda> listaPredicciones = prediccionDemandaRepository.findPrediccionesByArticulo(filtroArticulo);
+            return listaPredicciones;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 
     //CREAR PREDICCION
     public List<PrediccionDemanda> crearPredicciones(DatosPrediccionDTO datosPrediccion) throws Exception{

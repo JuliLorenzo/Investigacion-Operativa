@@ -1,11 +1,14 @@
 package invop.controllers;
 
 import invop.dto.DatosPrediccionDTO;
+import invop.entities.ErrorMetodo;
 import invop.entities.PrediccionDemanda;
 import invop.services.PrediccionDemandaServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -48,4 +51,13 @@ public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDe
         }
     }
 
+    @GetMapping("/buscar/{idArticulo}")
+    public ResponseEntity<List<PrediccionDemanda>> getPrediccionesSegunArticulo(@PathVariable Long idArticulo){
+        try{
+            List<PrediccionDemanda> listaPredicciones = servicio.buscarPrediccionesSegunArticulo(idArticulo);
+            return ResponseEntity.ok(listaPredicciones);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
