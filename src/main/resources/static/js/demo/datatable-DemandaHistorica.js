@@ -12,16 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>${demandashistoricas.fechaHasta}</td>
                 <td>${demandashistoricas.cantidadVendida > 0 ? demandashistoricas.cantidadVendida : 0}</td>
                 <td>${demandashistoricas.articulo ? demandashistoricas.articulo.nombreArticulo : 'N/A'}</td>             
-                <td>
-                    <div style="text-align: center">
-                        <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${demandashistoricas.id}">
-                            <i class="fas fa-link"></i>
-                        </a>
-                        <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${demandashistoricas.id}">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
             `;
                 tableBody.appendChild(row);
             });
@@ -89,16 +79,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${response.fechaHasta}</td>
                     <td>${response.cantidadVendida > 0 ? response.cantidadVendida : 0}</td>
                     <td>${response.articulo ? response.articulo.nombreArticulo : 'N/A'}</td>             
-                    <td>
-                    <div style="text-align: center">
-                        <a href="#" class="btn btn-info btn-circle btn-sm" data-id="${response.id}">
-                            <i class="fas fa-link"></i>
-                        </a>
-                        <a href="#" class="btn btn-warning btn-circle btn-sm" data-id="${response.id}">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
                 `;
                     tableBody.append(row);
 

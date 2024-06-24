@@ -187,10 +187,16 @@
                         <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearArticuloModal">
                             <span class="text">Crear error</span>
                         </a>
-
                     </div>
                 </div>
                 <!-- Modal de Bootstrap para crear un error-->
+                <div style="justify-content: space-between; align-items: center; margin-bottom: 8px">
+                        <label for="articulo">Filtrar por artículo</label>
+                        <select style="width: 20% !important;"   class="form-control" id="articulo" name="articulo" required>
+                            <option value="">Seleccione un artículo</option>
+                            <!-- Opciones cargadas dinámicamente -->
+                        </select>
+                </div>
                 <div class="modal fade" id="crearErrorModal" tabindex="-1" role="dialog" aria-labelledby="crearErrorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -270,13 +276,14 @@
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Porcentaje de error</th>
-                                    <th>Fecha desde</th>
-                                    <th>Fecha hasta</th>
-                                    <th>Articulo</th>
-                                    <th>Metodo usado</th>
-                                    <th>Valor demanda real</th>
-                                    <th>Valor prediccion demanda</th>
+                                    <th>% Error</th>
+                                    <th>Error Total</th>
+                                    <th>Fecha Desde</th>
+                                    <th>Fecha Hasta</th>
+                                    <th>Artículo</th>
+                                    <th>Método usado</th>
+                                    <th>Demanda Real</th>
+                                    <th>Predicción Demanda</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tableBody">
