@@ -1,16 +1,23 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Fetch artículos
+    // ARTICULOS PARA EL FILTRO Y PARA LA CREACION
     function cargarArticulos() {
         fetch("http://localhost:9090/api/v1/articulos")
             .then(response => response.json())
             .then(data => {
-                const articuloSelect = document.querySelector("#articulo");
+                const articuloSelect = document.querySelector("#idArticulo");
+                const filtroArticuloSelect = document.querySelector("#articulo");
                 articuloSelect.innerHTML = '<option value="">Seleccione un artículo</option>';
+                filtroArticuloSelect.innerHTML = '<option value="">Seleccione un artículo para filtrar</option>';
                 data.forEach(articulo => {
-                    const option = document.createElement("option");
-                    option.textContent = articulo.nombreArticulo;
-                    option.value = articulo.id;
-                    articuloSelect.appendChild(option);
+                    const option1 = document.createElement("option");
+                    option1.textContent = articulo.nombreArticulo;
+                    option1.value = articulo.id;
+                    articuloSelect.appendChild(option1);
+
+                    const option2 = document.createElement("option");
+                    option2.textContent = articulo.nombreArticulo;
+                    option2.value = articulo.id;
+                    filtroArticuloSelect.appendChild(option2);
                 });
             })
             .catch(error => {
@@ -18,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // Fetch errores
+    // TRAE TODOS LOS ERRORES A LA TABLA
     function cargarErrores() {
         fetch("http://localhost:9090/api/v1/errores")
             .then(response => response.json())
@@ -50,14 +57,15 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // Load articles on dropdown focus
-    const articuloSelect = document.querySelector("#articulo");
-    articuloSelect.addEventListener("focus", cargarArticulos);
+    // CARGA LOS ARTICULOS CUANDO SE CARGA LA PAGINA
+    cargarArticulos();
 
-    // Filter errors based on selected article
-    articuloSelect.addEventListener("change", function() {
-        const selectedArticuloId = articuloSelect.value;
+    // FILTRO DE ERRORES POR ARTICULO
+    const filtroArticuloSelect = document.querySelector("#articulo");
+    filtroArticuloSelect.addEventListener("change", function() {
+        const selectedArticuloId = filtroArticuloSelect.value;
         if (selectedArticuloId) {
+            //FETCH PARA BUSCAR LOS ERRORES POR ARTICULO
             fetch(`http://localhost:9090/api/v1/errores/buscar/${selectedArticuloId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -90,10 +98,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Initial load of errors
+    // CARGA INICIAL DE ERRORES CUANDO LLEGA A LA PAGINA
     cargarErrores();
 
     //PARA CREAR ERROR
+    //CARGA LOS MODELOS EN EL LABEL DE CREAR
     function cargarModelos() {
         const modelos = ["PROMEDIO_MOVIL_PONDERADO", "PROMEDIO_MOVIL_SUAVIZADO", "REGRESION_LINEAL", "ESTACIONALIDAD"]; // Reemplaza esto con una llamada fetch si necesitas cargar los modelos desde el backend.
         const modeloSelect = document.querySelector("#modeloPrediccion");
@@ -106,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
         modeloSelect.addEventListener("change", manejarCambioModelo);
     }
 
+    //ATRAPA LA SELECCION DE MODELO Y ELIGE QUE MOSTRAR
     function manejarCambioModelo(event){
         const selectedModel = event.target.value;
         const coefContainer = document.querySelector('#coefPondContainer');
@@ -137,9 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     cargarModelos();
 
-
-
-    //crear dinamicamente espacios para coef de ponderacion
+    //ESTO ES PARA QUE INGRESE LOS COEFICIENTES DE PONDERACION SEGUN LA CANTIDAD DE PERIODOS
     document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
         const coefContainer = document.querySelector("#coefPondContainer");
         coefContainer.innerHTML = ''; // Clear previous inputs
@@ -154,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    //envia datos crear error
+    //PARA CREAR EL ERROR, ES EL POST
     document.querySelector("#guardarError").addEventListener("click", function() {
         const form = document.querySelector("#crearErrorForm");
         const formData = new FormData(form);

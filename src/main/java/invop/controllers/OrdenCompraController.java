@@ -51,6 +51,18 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
         OrdenCompra ordenCompra = ordenCompraService.crearOrdenCompraAutomatica(articulo);
         return ResponseEntity.ok(ordenCompra);
     }
+    @PutMapping("/{id}/modificar")
+    public ResponseEntity<?> modificarOrdenCompra(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long idProveedor,
+            @RequestParam(required = false) Integer nuevaCantidad) {
+        try {
+            OrdenCompra ordenCompraModificada = ordenCompraService.modificarOCAutomatica(id, idProveedor, nuevaCantidad);
+            return ResponseEntity.status(HttpStatus.OK).body(ordenCompraModificada);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
 
     //Métodos para cambiar el estado de la orden de compra
     //PENDIENTE --> EN CURSO

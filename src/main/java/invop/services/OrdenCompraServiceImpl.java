@@ -3,8 +3,11 @@ package invop.services;
 import invop.entities.*;
 import invop.enums.EstadoOrdenCompra;
 import invop.repositories.OrdenCompraRepository;
+import invop.repositories.ProveedorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.aspectj.weaver.ast.Or;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +25,13 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
     @Autowired
     private OrdenCompraRepository ordenCompraRepository;
 
-    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository){
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
+    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository, ProveedorRepository proveedorRepository){
         super(ordenCompraRepository);
         this.ordenCompraRepository = ordenCompraRepository;
+        this.proveedorRepository = proveedorRepository;
 
     }
 
@@ -93,6 +100,29 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         }
 
     }
+
+    public OrdenCompra modificarOCAutomatica(Long idOrdenCompra, Long idProveedor, Integer nuevaCantidad) throws Exception {
+        try {
+            Optional<OrdenCompra> ordenCompraOpcional = ordenCompraRepository.findById(idOrdenCompra);
+            OrdenCompra ordenExiste = ordenCompraOpcional.orElseThrow(() -> new EntityNotFoundException("Orden de Compra no encontrada"));
+
+            if (idProveedor != null) {
+                Proveedor nuevoProveedor = proveedorRepository.findById(idProveedor)
+                        .orElseThrow(() -> new EntityNotFoundException("Proveedor no encontrado con el id: " + idProveedor));
+                ordenExiste.setProveedor(nuevoProveedor);
+            }
+
+            if (nuevaCantidad != null && !ordenExiste.getOrdenCompraDetalles().isEmpty()) {
+                OrdenCompraDetalle detalleExistente = ordenExiste.getOrdenCompraDetalles().get(0);
+                detalleExistente.setCantidadAComprar(nuevaCantidad);
+            }
+
+            return ordenCompraRepository.save(ordenExiste);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
     public OrdenCompra confirmarOrdenCompra(Long ordenCompraId) {
         Optional<OrdenCompra> optionalOrdenCompra = ordenCompraRepository.findById(ordenCompraId);
         if (optionalOrdenCompra.isPresent()) {

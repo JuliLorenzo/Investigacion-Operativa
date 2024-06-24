@@ -43,7 +43,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     }
 
     public Integer calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        //System.out.println("La fecha desde es: "+ fechaDesde + " la fecha hasta es: "+ fechaHasta);
         int cantidadTotal = calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
         return cantidadTotal;
     }

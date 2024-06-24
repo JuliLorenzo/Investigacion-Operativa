@@ -14,7 +14,9 @@ public interface OrdenCompraService extends BaseService<OrdenCompra, Long> {
     public List<OrdenCompra> findOrdenCompraByEstado(EstadoOrdenCompra filtroEstado) throws Exception;
     public boolean articuloConOrdenActiva(Long articuloId) throws Exception;
     public OrdenCompra crearOrdenCompraAutomatica(Articulo articulo) throws Exception;
-    public OrdenCompra confirmarOrdenCompra(Long ordenCompraId);
+    public OrdenCompra modificarOCAutomatica(Long idOrdenCompra, Long idProveedor, Integer nuevaCantidad) throws Exception;
+
+        public OrdenCompra confirmarOrdenCompra(Long ordenCompraId);
     public OrdenCompra cancelarOrdenCompra(Long ordenCompraId);
     public OrdenCompra finalizarOrdenCompra(Long ordenCompraId);
 
