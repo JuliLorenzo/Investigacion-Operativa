@@ -12,5 +12,7 @@ public class ArticuloAReponerDto {
 
     private int stockSeguridad;
 
+    private int cantidadArticulo;
+
     private boolean ordenActiva;
 }
