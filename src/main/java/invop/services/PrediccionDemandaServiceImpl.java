@@ -112,7 +112,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     int mes = fechaDesde.getMonthValue();
 
                     PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                    if(!prediccionMesAnterior.equals(null)){
+                    if(prediccionMesAnterior != null && prediccionMesAnterior.getValorPrediccion() != null){
                         demandaHistorica = prediccionMesAnterior.getValorPrediccion();
                     } else{
                         demandaHistorica = 0;
@@ -173,7 +173,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int mes = fechaDesde.getMonthValue();
 
                 PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                if(!prediccionMesAnterior.equals(null)){
+                if(prediccionMesAnterior != null && prediccionMesAnterior.getValorPrediccion() != null){
                     demandaHistoricaMesAnterior = prediccionMesAnterior.getValorPrediccion();
                 } else{
                     demandaHistoricaMesAnterior = 0;
@@ -219,7 +219,8 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                     int mes = fechaDesde.getMonthValue();
 
                     PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                    if(!prediccionMesAnterior.equals(null)){
+                    System.out.println("La prediccion anterior essssssssss " + prediccionMesAnterior);
+                    if(prediccionMesAnterior != null && prediccionMesAnterior.getValorPrediccion() != null){
                         demandaHistoricaMes = prediccionMesAnterior.getValorPrediccion();
                     } else{
                         demandaHistoricaMes = 0;

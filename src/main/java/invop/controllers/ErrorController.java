@@ -23,16 +23,25 @@ public class ErrorController extends BaseControllerImpl<ErrorMetodo, ErrorMetodo
     public ErrorController(ErrorMetodoService errorMetodoService) {
         this.errorMetodoService = errorMetodoService;
     }
-
+/*
     @PostMapping("/calcularerror")
     public ResponseEntity<?> calcularErrorMetodo(@RequestBody DatosPrediccionDTO datosPrediccionDTO){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.crearErrorMetodo(datosPrediccionDTO));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.crearErroresMetodos(datosPrediccionDTO));
         }catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }
-    }
+    }*/
 
+    @PostMapping("/crearErrores")
+    public ResponseEntity<List<ErrorMetodo>> crearErroresMetodos(@RequestBody DatosPrediccionDTO datosPrediccionDTO){
+        try{
+            List<ErrorMetodo> listaErroresCreados = errorMetodoService.crearErroresMetodos(datosPrediccionDTO);
+            return ResponseEntity.ok(listaErroresCreados);
+        }catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     @GetMapping("/buscar/{idArticulo}")
     public ResponseEntity<List<ErrorMetodo>> getErroresSegunArticulo(@PathVariable Long idArticulo){
         try{

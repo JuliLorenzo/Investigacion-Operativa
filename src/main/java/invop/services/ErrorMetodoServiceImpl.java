@@ -3,6 +3,7 @@ package invop.services;
 import invop.dto.DatosPrediccionDTO;
 import invop.entities.Articulo;
 import invop.entities.ErrorMetodo;
+import invop.enums.NombreMetodoPrediccion;
 import invop.repositories.ErrorMetodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,37 +102,160 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
         }
     }
 
-    public ErrorMetodo crearErrorMetodo(DatosPrediccionDTO datosError) throws Exception {
+    public ErrorMetodo crearErrorMetodoPMP(DatosPrediccionDTO datosError) throws Exception{
+        try{
+            System.out.println("ENTRE AL CREAR ERROR DEL PMP");
+            datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_PONDERADO);
+
+            ErrorMetodo errorPMP = new ErrorMetodo();
+
+            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
+            errorPMP.setArticulo(articulo);
+
+            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+            errorPMP.setValorDemandaReal(demandaHistorica);
+
+            Integer prediccionDemanda = calcularSumaPredicciones(datosError);
+            errorPMP.setValorPrediccionDemanda(prediccionDemanda);
+
+            Double errorTotal = calculoErrorTotal(datosError);
+            errorPMP.setErrorTotal(errorTotal);
+
+            Double valorError = calculoError(datosError);
+            errorPMP.setPorcentajeError(valorError);
+
+            errorPMP.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
+            errorPMP.setFechaDesde(datosError.getFechaDesde());
+            errorPMP.setFechaHasta(datosError.getFechaHasta());
+            errorMetodoRepository.save(errorPMP);
+
+            return errorPMP;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public ErrorMetodo crearErrorMetodoPMPS(DatosPrediccionDTO datosError) throws Exception{
+        try{
+            System.out.println("ENTRE AL CREAR ERROR DEL PMPS");
+            datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_SUAVIZADO);
+
+            ErrorMetodo errorPMPS = new ErrorMetodo();
+
+            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
+            errorPMPS.setArticulo(articulo);
+
+            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+            errorPMPS.setValorDemandaReal(demandaHistorica);
+
+            Integer prediccionDemanda = calcularSumaPredicciones(datosError);
+            errorPMPS.setValorPrediccionDemanda(prediccionDemanda);
+
+            Double errorTotal = calculoErrorTotal(datosError);
+            errorPMPS.setErrorTotal(errorTotal);
+
+            Double valorError = calculoError(datosError);
+            errorPMPS.setPorcentajeError(valorError);
+
+            errorPMPS.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
+            errorPMPS.setFechaDesde(datosError.getFechaDesde());
+            errorPMPS.setFechaHasta(datosError.getFechaHasta());
+            errorMetodoRepository.save(errorPMPS);
+
+            return errorPMPS;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public ErrorMetodo crearErrorMetodoRL(DatosPrediccionDTO datosError) throws Exception{
+        try{
+            System.out.println("ENTRE AL CREAR ERROR DEL REGRESION LINEAL");
+            datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.REGRESION_LINEAL);
+
+            ErrorMetodo errorRL = new ErrorMetodo();
+
+            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
+            errorRL.setArticulo(articulo);
+
+            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+            errorRL.setValorDemandaReal(demandaHistorica);
+
+            Integer prediccionDemanda = calcularSumaPredicciones(datosError);
+            errorRL.setValorPrediccionDemanda(prediccionDemanda);
+
+            Double errorTotal = calculoErrorTotal(datosError);
+            errorRL.setErrorTotal(errorTotal);
+
+            Double valorError = calculoError(datosError);
+            errorRL.setPorcentajeError(valorError);
+
+            errorRL.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
+            errorRL.setFechaDesde(datosError.getFechaDesde());
+            errorRL.setFechaHasta(datosError.getFechaHasta());
+            errorMetodoRepository.save(errorRL);
+
+            return errorRL;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public ErrorMetodo crearErrorMetodoEst(DatosPrediccionDTO datosError) throws Exception{
+        try{
+            System.out.println("ENTRE AL CREAR ERROR DEL ESTACIONAL");
+            datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.ESTACIONALIDAD);
+
+            ErrorMetodo errorEst = new ErrorMetodo();
+
+            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
+            errorEst.setArticulo(articulo);
+
+            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
+            errorEst.setValorDemandaReal(demandaHistorica);
+
+            Integer prediccionDemanda = calcularSumaPredicciones(datosError);
+            errorEst.setValorPrediccionDemanda(prediccionDemanda);
+
+            Double errorTotal = calculoErrorTotal(datosError);
+            errorEst.setErrorTotal(errorTotal);
+
+            Double valorError = calculoError(datosError);
+            errorEst.setPorcentajeError(valorError);
+
+            errorEst.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
+            errorEst.setFechaDesde(datosError.getFechaDesde());
+            errorEst.setFechaHasta(datosError.getFechaHasta());
+            errorMetodoRepository.save(errorEst);
+
+            return errorEst;
+        }catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+    public List<ErrorMetodo> crearErroresMetodos(DatosPrediccionDTO datosError) throws Exception {
         try{
 
-            ErrorMetodo errorCalculado = new ErrorMetodo();
+            List<ErrorMetodo> listaErrores = new ArrayList<>();
 
             int mes = datosError.getFechaDesde().getMonthValue();
             datosError.setMesAPredecir(mes);
             int anio = datosError.getFechaDesde().getYear();
             datosError.setAnioAPredecir(anio);
 
-            Articulo articulo = articuloService.findArticuloById(datosError.getIdArticulo());
-            errorCalculado.setArticulo(articulo);
+            ErrorMetodo errorPMP = crearErrorMetodoPMP(datosError);
+            listaErrores.add(errorPMP);
 
-            Integer demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
-            errorCalculado.setValorDemandaReal(demandaHistorica);
+            ErrorMetodo errorPMPS = crearErrorMetodoPMPS(datosError);
+            listaErrores.add(errorPMPS);
 
-            Integer prediccionDemanda = calcularSumaPredicciones(datosError);
-            errorCalculado.setValorPrediccionDemanda(prediccionDemanda);
+            ErrorMetodo errorRL = crearErrorMetodoRL(datosError);
+            listaErrores.add(errorRL);
 
-            Double errorTotal = calculoErrorTotal(datosError);
-            errorCalculado.setErrorTotal(errorTotal);
+            ErrorMetodo errorEst = crearErrorMetodoEst(datosError);
+            listaErrores.add(errorEst);
 
-            Double valorError = calculoError(datosError);
-            errorCalculado.setPorcentajeError(valorError);
-
-            errorCalculado.setNombreMetodoUsado(datosError.getNombreMetodoPrediccion());
-            errorCalculado.setFechaDesde(datosError.getFechaDesde());
-            errorCalculado.setFechaHasta(datosError.getFechaHasta());
-            errorMetodoRepository.save(errorCalculado);
-
-            return errorCalculado;
+            return listaErrores;
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
