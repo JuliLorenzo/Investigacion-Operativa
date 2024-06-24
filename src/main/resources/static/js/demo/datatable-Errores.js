@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     // ARTICULOS PARA EL FILTRO Y PARA LA CREACION
-    // ARTICULOS PARA EL FILTRO Y PARA LA CREACION
     function cargarArticulos() {
         fetch("http://localhost:9090/api/v1/articulos")
             .then(response => response.json())
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Error al obtener la lista de artículos:', error);
             });
     }
-
 
     // TRAE TODOS LOS ERRORES A LA TABLA
     function cargarErrores() {
@@ -59,13 +57,13 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // CARGA LOS ARTICULOS UNA VEZ QUE SE CLICKEE EL LABEL DE CREAR
-    const articuloSelect = document.querySelector("#idArticulo");
-    articuloSelect.addEventListener("focus", cargarArticulos);
+    // CARGA LOS ARTICULOS CUANDO SE CARGA LA PAGINA
+    cargarArticulos();
 
     // FILTRO DE ERRORES POR ARTICULO
-    articuloSelect.addEventListener("change", function() {
-        const selectedArticuloId = articuloSelect.value;
+    const filtroArticuloSelect = document.querySelector("#articulo");
+    filtroArticuloSelect.addEventListener("change", function() {
+        const selectedArticuloId = filtroArticuloSelect.value;
         if (selectedArticuloId) {
             //FETCH PARA BUSCAR LOS ERRORES POR ARTICULO
             fetch(`http://localhost:9090/api/v1/errores/buscar/${selectedArticuloId}`)
@@ -104,10 +102,6 @@ document.addEventListener("DOMContentLoaded", function() {
     cargarErrores();
 
     //PARA CREAR ERROR
-    //PARA CREAR ERROR
-    //PARA CREAR ERROR
-    //PARA CREAR ERROR
-
     //CARGA LOS MODELOS EN EL LABEL DE CREAR
     function cargarModelos() {
         const modelos = ["PROMEDIO_MOVIL_PONDERADO", "PROMEDIO_MOVIL_SUAVIZADO", "REGRESION_LINEAL", "ESTACIONALIDAD"]; // Reemplaza esto con una llamada fetch si necesitas cargar los modelos desde el backend.
