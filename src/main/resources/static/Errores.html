@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Errores</title>
-
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
     <!-- Custom styles for this template -->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
 </head>
 <body id="page-top">
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
             <div class="sidebar-brand-icon rotate-n-15">
@@ -29,25 +23,20 @@
             </div>
             <div class="sidebar-brand-text mx-3">Investigacion Operativa</div>
         </a>
-
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
-
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
             <a class="nav-link" href="index.html">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>MENÚ</span></a>
         </li>
-
         <!-- Divider -->
         <hr class="sidebar-divider">
-
         <!-- Heading -->
         <div class="sidebar-heading">
             Interface
         </div>
-
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -63,7 +52,6 @@
                 </div>
             </div>
         </li>
-
         <!-- Nav Item - Tablas Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -82,15 +70,12 @@
                 </div>
             </div>
         </li>
-
         <!-- Divider -->
         <hr class="sidebar-divider">
-
         <!-- Heading -->
         <div class="sidebar-heading">
             Addons
         </div>
-
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
@@ -101,16 +86,12 @@
             <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
-
                     <div class="collapse-divider"></div>
                     <h6 class="collapse-header">Other Pages:</h6>
-
                     <a class="collapse-item" href="blank.html">Blank Page</a>
                 </div>
             </div>
         </li>
-
-
         <!-- Nav Item - Tables -->
         <!-- Nav Item - Articulos -->
         <li class="nav-item active">
@@ -118,14 +99,12 @@
                 <i class="fas fa-fw fa-table"></i>
                 <span>Articulos</span></a>
         </li>
-
         <!-- Nav Item - Proveedores -->
         <li class="nav-item ">
             <a class="nav-link" href="Proveedores.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Proveedores</span></a>
         </li>
-
         <!-- Nav Item - Demanda Historica -->
         <li class="nav-item ">
             <a class="nav-link" href="DemandaHistorica.html">
@@ -146,40 +125,28 @@
         </li>
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
-
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
     </ul>
     <!-- End of Sidebar -->
-
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
                 <!-- Sidebar Toggle (Topbar) -->
                 <form class="form-inline">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
                 </form>
-
-
             </nav>
             <!-- End of Topbar -->
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-
-
                 <!-- Page Heading -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
                     <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Errores</h1>
@@ -189,15 +156,13 @@
                         </a>
                     </div>
                 </div>
-
                 <div style="justify-content: space-between; align-items: center; margin-bottom: 8px">
-                        <label for="articulo">Filtrar por artículo</label>
-                        <select style="width: 20% !important;"   class="form-control" id="articulo" name="articulo" required>
-                            <option value="">Seleccione un artículo</option>
-                            <!-- Opciones cargadas dinámicamente -->
-                        </select>
+                    <label for="articulo">Filtrar por artículo</label>
+                    <select style="width: 20% !important;" class="form-control" id="articulo" name="articulo" required>
+                        <option value="">Seleccione un artículo</option>
+                        <!-- Opciones cargadas dinámicamente -->
+                    </select>
                 </div>
-
                 <!-- Modal de Bootstrap para crear un error-->
                 <div class="modal fade" id="crearErrorModal" tabindex="-1" role="dialog" aria-labelledby="crearErrorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -228,45 +193,36 @@
                                         <label for="modeloPrediccion">Modelo de prediccion</label>
                                         <select class="form-control" id="modeloPrediccion" name="modeloPrediccion" required>
                                             <option value="">Seleccione un modelo</option>
-                                            <!-- Opciones cargadas dinámicamente -->
                                         </select>
                                     </div>
-                                    <div class="form-group" id="cantidadPeriodosContainer">
-                                            <label id="cantidadPeriodosLabel" for="cantidadPeriodos">Periodos historicos a usar</label>
-                                            <input type="number" class="form-control" id="cantidadPeriodos" name="cantidadPeriodos">
+                                    <div class="form-group" id="cantidadPeriodosContainer" style="display: none;">
+                                        <label id="cantidadPeriodosLabel" for="cantidadPeriodos">Cantidad de Periodos</label>
+                                        <input type="number" class="form-control" id="cantidadPeriodos" name="cantidadPeriodos">
                                     </div>
-                                    <div id="coefPondContainer" class="form-group">
-                                        <label id="coefPonderacionLabel">Coeficientes de ponderacion</label>
+                                    <div id="coefPondContainer" class="form-group" style="display: none;">
+                                        <label id="coefPonderacionLabel">Coeficientes de ponderación</label>
                                     </div>
-                                    <!-- VER COMO LLENAR LO DE LOS COEF DE PONDERACION-->
-
-
                                     <div id="prediccionPMPS" style="display: none;">
                                         <div class="form-group">
                                             <label for="alfa">Alfa</label>
                                             <input type="number" class="form-control" id="alfa" name="alfa">
                                         </div>
                                     </div>
-
                                     <div id="prediccionEst" style="display: none;">
                                         <div class="form-group">
                                             <label for="demandaAnual">Demanda anual total</label>
                                             <input type="number" class="form-control" id="demandaAnual" name="demandaAnual">
                                         </div>
                                     </div>
-
-
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                 <button type="button" class="btn btn-primary" id="guardarError">Guardar</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
                 <!-- DataTables Example -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
@@ -286,45 +242,31 @@
                                 </tr>
                                 </thead>
                                 <tbody id="tableBody">
-
+                                <!-- Datos cargados dinámicamente -->
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
-
                 </div>
-
                 <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
-
-
         </div>
         <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Page Wrapper -->
-
-
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-
     <!-- Page level plugins -->
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
     <!-- Page level custom scripts -->
     <script src="js/demo/datatable-Errores.js"></script>
 </div>
-
 </body>
 </html>

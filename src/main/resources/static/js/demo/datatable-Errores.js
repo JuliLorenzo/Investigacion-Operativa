@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch("http://localhost:9090/api/v1/articulos")
             .then(response => response.json())
             .then(data => {
-                const articuloSelect = document.querySelector("#articulo");
+                const articuloSelect = document.querySelector("#idArticulo");
                 articuloSelect.innerHTML = '<option value="">Seleccione un artículo</option>';
                 data.forEach(articulo => {
                     const option = document.createElement("option");
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Load articles on dropdown focus
-    const articuloSelect = document.querySelector("#articulo");
+    const articuloSelect = document.querySelector("#idArticulo");
     articuloSelect.addEventListener("focus", cargarArticulos);
 
     // Filter errors based on selected article
@@ -136,8 +136,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     cargarModelos();
-
-
 
     //crear dinamicamente espacios para coef de ponderacion
     document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
