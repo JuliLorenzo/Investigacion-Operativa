@@ -8,7 +8,9 @@ import java.util.List;
 
 @Data
 public class DatosPrediccionDTO {
-    private Integer cantidadPeriodos;
+    private Integer cantidadPeriodosHistoricos;
+
+    private Integer cantidadPeriodosAdelante;
 
     private List<Double> coeficientesPonderacion;
 
