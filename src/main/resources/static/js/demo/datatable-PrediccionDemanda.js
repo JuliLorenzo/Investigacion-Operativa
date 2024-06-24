@@ -25,10 +25,17 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 const tableBody = document.querySelector("#predicciones-table tbody");
                 tableBody.innerHTML = ''; // Clear existing rows
+                const metodoMapping = {
+                    'ESTACIONALIDAD': 'Estacionalidad',
+                    'PROMEDIO_MOVIL_PONDERADO': 'Promedio Móvil Ponderado',
+                    'PROMEDIO_MOVIL_SUAVIZADO': 'Promedio Móvil Suavizado',
+                    'REGRESION_LINEAL': 'Regresión Lineal'
+                };
                 data.forEach(prediccion => {
                     const fechaPrediccion = new Date(prediccion.fechaPrediccion);
-                    const mes = fechaPrediccion.getMonth() + 1;
+                    const mes = fechaPrediccion.getMonth();
                     const anio = fechaPrediccion.getFullYear();
+                    const metodoUsado = metodoMapping[prediccion.nombreMetodoUsado] || 'Método Desconocido';
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${prediccion.id}</td>
@@ -36,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td>${anio}</td>
                         <td>${prediccion.valorPrediccion}</td>
                         <td>${prediccion.articulo.nombreArticulo}</td>
-                        <td>${prediccion.nombreMetodoUsado}</td>
+                        <td>${metodoUsado}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -57,18 +64,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(data => {
                     const tableBody = document.querySelector("#predicciones-table tbody");
                     tableBody.innerHTML = ''; // Clear existing rows
+                    const metodoMapping = {
+                        'ESTACIONALIDAD': 'Estacionalidad',
+                        'PROMEDIO_MOVIL_PONDERADO': 'Promedio Móvil Ponderado',
+                        'PROMEDIO_MOVIL_SUAVIZADO': 'Promedio Móvil Suavizado',
+                        'REGRESION_LINEAL': 'Regresión Lineal'
+                    };
                     data.forEach(prediccion => {
                         const fechaPrediccion = new Date(prediccion.fechaPrediccion);
-                        const mes = fechaPrediccion.getMonth() + 1;
+                        const mes = fechaPrediccion.getMonth();
                         const anio = fechaPrediccion.getFullYear();
+                        const metodoUsado = metodoMapping[prediccion.nombreMetodoUsado] || 'Método Desconocido';
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${prediccion.id}</td>
-                            <td>${mes}</td>
-                            <td>${anio}</td>
-                            <td>${prediccion.valorPrediccion}</td>
-                            <td>${prediccion.articulo.nombreArticulo}</td>
-                            <td>${prediccion.nombreMetodoUsado}</td>
+                        <td>${prediccion.id}</td>
+                        <td>${mes}</td>
+                        <td>${anio}</td>
+                        <td>${prediccion.valorPrediccion}</td>
+                        <td>${prediccion.articulo.nombreArticulo}</td>
+                        <td>${metodoUsado}</td>
                         `;
                         tableBody.appendChild(row);
                     });
