@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Demanda Histórica</title>
+    <title>Predicción de Demanda</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -89,7 +89,7 @@
 
 
         <!-- Nav Item - Tables -->
-        <li class="nav-item">
+        <li class="nav-item active" >
             <a class="nav-link" href="Articulos.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Articulos</span></a>
@@ -102,7 +102,7 @@
         </li>
 
         <!-- Nav Item - Demanda Historica -->
-        <li class="nav-item active">
+        <li class="nav-item ">
             <a class="nav-link" href="DemandaHistorica.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Demanda Histórica</span></a>
@@ -158,69 +158,89 @@
 
                 <!-- Page Heading -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
-                    <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Demandas Historicas</h1>
-                    <a href="#" class="btn btn-danger btn-icon-split" data-toggle="modal" data-target="#crearDemandaHistoricaModal">
-                        <span class="text">Crear Demanda Historica</span>
-                    </a>
-                </div>
+                    <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Artículos</h1>
+                    <div style="display: flex; align-items: flex-end; gap: 8px">
+                        <a href="ArticulosFaltantes.html" class="btn btn-danger btn-icon-split">
+                            <span class="text">Ver faltantes</span>
+                        </a>
+                        <a href="ArticulosAReponer.html" class="btn btn-warning btn-icon-split">
+                            <span class="text">Ver a Reponer</span>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearArticuloModal">
+                            <span class="text">Crear artículo</span>
+                        </a>
 
-                <!-- Modal de Bootstrap para crear demanda historica-->
-                <div class="modal fade" id="crearDemandaHistoricaModal" tabindex="-1" role="dialog" aria-labelledby="crearDemandaHistoricaModalLabel" aria-hidden="true">
+                    </div>
+                </div>
+                <!-- Modal de Bootstrap para crear articulo-->
+                <div class="modal fade" id="crearPrediccionModal" tabindex="-1" role="dialog" aria-labelledby="crearPrediccionModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="crearDemandaHistoricaModalLabel">Crear Nueva Demanda Historica</h5>
+                                <h5 class="modal-title" id="crearPrediccionModalLabel">Crear Nueva Predicción</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="crearDemandaHistoricaForm">
+                                <form id="crearPrediccionForm">
                                     <div class="form-group">
-                                        <label for="fechaDesde">Fecha Desde</label>
-                                        <input type="date" class="form-control" id="fechaDesde" name="fechaDesde" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="fechaHasta">Fecha Hasta</label>
-                                        <input type="date" class="form-control" id="fechaHasta" name="fechaHasta" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="articulo">Articulo</label>
+                                        <label for="articulo">Seleccionar artículo</label>
                                         <select class="form-control" id="articulo" name="articulo" required>
-                                            <option value="">Seleccione un articulo</option>
+                                            <option value="">Seleccione un artículo</option>
                                             <!-- Opciones cargadas dinámicamente -->
                                         </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mesAPredecir">Mes a Predecir</label>
+                                        <select class="form-control" id="mesAPredecir" name="mesAPredecir" required>
+                                            <option value="">Seleccione el mes a predecir</option>
+                                            <!-- Opciones cargadas dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="anioAPredecir">Año a Predecir</label>
+                                        <select class="form-control" id="anioAPredecir" name="anioAPredecir" required>
+                                            <option value="">Seleccione el año a predecir</option>
+                                            <!-- Opciones cargadas dinámicamente -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <!-- esto es para que una vez elegido el artículo, le escriba el método predeterminado-->
+                                        <label for="metodo">Método de predicción de la demanda</label>
+                                        <input class="form-control" id="metodo" name="metodo" aria-label="Disabled input example" disabled>
+                                    </div>
+
+                                    <div id="metodoPMPDetalles" style="display: none;">
+
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" id="guardarDemandaHistorica">Guardar</button>
+                                <button type="button" class="btn btn-primary" id="guardarArticulo">Guardar</button>
                             </div>
 
                         </div>
                     </div>
                 </div>
-
-
-                <!-- DataTales Example -->
+                <!-- DataTables Example -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="demandahistorica-table" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="articulos-table" width="100%" cellspacing="0">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Fecha Desde</th>
-                                    <th>Fecha Hasta</th>
-                                    <th>Cantidad </th>
-                                    <th>Articulo</th>
-                                    <th>Acciones</th>
+                                    <th>Artículo</th>
+                                    <th>Método de Predicción</th>
+                                    <th>Mes</th>
+                                    <th>Año</th>
+                                    <th>Cantidad</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tableBody">
-                                <!-- En datatable-DemandaHsitorica.js se muestran dinámicamente las filas de la tabla -->
+                                <!-- En datatable-Articulos.js se muestran dinámicamente las filas de la tabla -->
                                 </tbody>
 
                             </table>
@@ -257,7 +277,7 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/datatable-DemandaHistorica.js"></script>
+    <script src="js/demo/datatable-Articulos.js"></script>
 </div>
 </body>
 
