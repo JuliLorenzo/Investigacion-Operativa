@@ -47,6 +47,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             List<PrediccionDemanda> listaPredicciones = new ArrayList<>();
             LocalDate fechaInicial = LocalDate.of(datosPrediccion.getAnioAPredecir(), datosPrediccion.getMesAPredecir(), 1);
 
+            System.out.println("El metodo de prediccion es: "+datosPrediccion.getNombreMetodoPrediccion());
             for(int i = 0 ; i < datosPrediccion.getCantidadPeriodosAdelante(); i++){
                 datosPrediccion.setMesAPredecir(datosPrediccion.getMesAPredecir()+i);
                 int valorPrediccion = 0;
@@ -106,8 +107,12 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
                 int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-                if (demandaHistorica < 0){
-                    demandaHistorica = 0;
+                if (demandaHistorica <= 0){
+                    int anio = fechaDesde.getYear();
+                    int mes = fechaDesde.getMonthValue();
+
+                    PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
+                    demandaHistorica = prediccionMesAnterior.getValorPrediccion();
                 }
                 sumaValorYCoef = sumaValorYCoef + (factorPonderacion*demandaHistorica);
                 sumaCoef = sumaCoef + factorPonderacion;
@@ -159,9 +164,15 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             }*/
 
             int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-            if (demandaHistoricaMesAnterior < 0){
-                demandaHistoricaMesAnterior = 0;
+            if (demandaHistoricaMesAnterior <= 0){
+                int anio = fechaDesde.getYear();
+                int mes = fechaDesde.getMonthValue();
+
+                PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
+                demandaHistoricaMesAnterior = prediccionMesAnterior.getValorPrediccion();
+
             }
+            System.out.println("La demanda historica del ems anterior es: "+ demandaHistoricaMesAnterior);
             Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPrediccionDTO.getIdArticulo(), fechaPrediccion.minusMonths(1));
 
             Integer valorPrediccion = (int)(valorPrediccionMesAnterior + (datosPrediccionDTO.getAlfa() * (demandaHistoricaMesAnterior - valorPrediccionMesAnterior)));
@@ -194,8 +205,13 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
                 int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
 
-                if(demandaHistoricaMes < 0 ){
-                    demandaHistoricaMes = 0;
+                if(demandaHistoricaMes <= 0 ){
+                    int anio = fechaDesde.getYear();
+                    int mes = fechaDesde.getMonthValue();
+
+                    PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
+                    demandaHistoricaMes = prediccionMesAnterior.getValorPrediccion();
+
                 }
 
                 System.out.println("Demanda: " + demandaHistoricaMes);
