@@ -33,7 +33,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     @Autowired
     private ProveedorService proveedorService;
     @Autowired
-    private VentaRepository ventaRepository;
+    private VentaDetalleService ventaDetalleService;
 
     public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService, ProveedorService proveedorService) {
         super(baseRepository);
@@ -61,12 +61,26 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     //Borrar articulo si no hay orden de compra activa
-    public void darDeBajaArticulo(Long idArticulo) throws Exception{
+    public boolean darDeBajaArticulo(Long idArticulo) throws Exception{
         boolean ordenActiva = controlOrdenCompraActiva(idArticulo);
         try{
             if(!ordenActiva){
                 Articulo articuloABorrar = articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado"));
+                List<ProveedorArticulo> lineasProveedorArticulo = proveedorArticuloService.findProveedoresByArticulo(idArticulo);
+                List<VentaDetalle> listaDetalles = ventaDetalleService.buscarDetallesPorIdArticulo(idArticulo);
+                //borra todos los detalles relacionados con ese articulo
+                for (VentaDetalle ventaDetalle : listaDetalles){
+                    Long idLinea = ventaDetalle.getId();
+                    ventaDetalleService.delete(idLinea);
+                }
+                for( ProveedorArticulo linea : lineasProveedorArticulo){
+                    Long idLinea = linea.getId();
+                    proveedorArticuloService.delete(idLinea);
+                }
                 articuloRepository.delete(articuloABorrar);
+                return true;
+            } else{
+                return false;
             }
         }catch (Exception e){
             throw new Exception(e.getMessage());

@@ -92,4 +92,99 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initial load of errors
     cargarErrores();
+
+    //PARA CREAR ERROR
+    function cargarModelos() {
+        const modelos = ["PROMEDIO_MOVIL_PONDERADO", "PROMEDIO_MOVIL_SUAVIZADO", "REGRESION_LINEAL", "ESTACIONALIDAD"]; // Reemplaza esto con una llamada fetch si necesitas cargar los modelos desde el backend.
+        const modeloSelect = document.querySelector("#modeloPrediccion");
+        modelos.forEach(modelo => {
+            const option = document.createElement("option");
+            option.textContent = modelo;
+            option.value = modelo;
+            modeloSelect.appendChild(option);
+        });
+        modeloSelect.addEventListener("change", manejarCambioModelo);
+    }
+
+    function manejarCambioModelo(event){
+        const selectedModel = event.target.value;
+        const coefContainer = document.querySelector('#coefPondContainer');
+        const prediccionPMPS = document.querySelector('#prediccionPMPS');
+        const prediccionEst = document.querySelector('#prediccionEst');
+        const cantidadPeriodos = document.querySelector('#cantidadPeriodosContainer');
+
+        coefContainer.innerHTML = ''; //limpiar inputs previos
+        prediccionPMPS.style.display = 'none';
+        prediccionEst.style.display = 'none';
+        cantidadPeriodos.style.display = 'none';
+        coefContainer.style.display = 'none';
+
+        switch(selectedModel){
+            case "PROMEDIO_MOVIL_PONDERADO":
+                cantidadPeriodos.style.display = 'block';
+                coefContainer.style.display = 'block';
+                break;
+            case "PROMEDIO_MOVIL_SUAVIZADO":
+                prediccionPMPS.style.display = 'block';
+                break;
+            case "REGRESION_LINEAL":
+                cantidadPeriodos.style.display = 'block';
+                break;
+            case "ESTACIONALIDAD":
+                prediccionEst.style.display = 'block';
+                break;
+        }
+    }
+    cargarModelos();
+
+
+
+    //crear dinamicamente espacios para coef de ponderacion
+    document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
+        const coefContainer = document.querySelector("#coefPondContainer");
+        coefContainer.innerHTML = ''; // Clear previous inputs
+        const cantidadPeriodos = this.value;
+        for (let i = 0; i < cantidadPeriodos; i++) {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.className = "form-control";
+            input.name = `coefPond${i + 1}`;
+            input.placeholder = `Coeficiente ${i + 1}`;
+            coefContainer.appendChild(input);
+        }
+    });
+
+    //envia datos crear error
+    document.querySelector("#guardarError").addEventListener("click", function() {
+        const form = document.querySelector("#crearErrorForm");
+        const formData = new FormData(form);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            if (key.startsWith("coefPond")) {
+                if (!jsonData.coefPonderacion) {
+                    jsonData.coefPonderacion = [];
+                }
+                jsonData.coefPonderacion.push(parseFloat(value));
+            } else {
+                jsonData[key] = value;
+            }
+        });
+
+        fetch("http://localhost:9090/api/v1/errores/calcularerror", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    cargarErrores();
+                    $('#crearErrorModal').modal('hide');
+                } else {
+                    console.error("Error al guardar el error:", data.message);
+                }
+            })
+    });
 });

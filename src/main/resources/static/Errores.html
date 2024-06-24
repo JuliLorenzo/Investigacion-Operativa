@@ -184,12 +184,12 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
                     <h1 style="margin: 0 !important;" class="h3 mb-2 text-gray-800">Errores</h1>
                     <div style="display: flex; align-items: flex-end; gap: 8px">
-                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearArticuloModal">
+                        <a href="#" class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#crearErrorModal">
                             <span class="text">Crear error</span>
                         </a>
                     </div>
                 </div>
-                <!-- Modal de Bootstrap para crear un error-->
+
                 <div style="justify-content: space-between; align-items: center; margin-bottom: 8px">
                         <label for="articulo">Filtrar por artículo</label>
                         <select style="width: 20% !important;"   class="form-control" id="articulo" name="articulo" required>
@@ -197,6 +197,8 @@
                             <!-- Opciones cargadas dinámicamente -->
                         </select>
                 </div>
+
+                <!-- Modal de Bootstrap para crear un error-->
                 <div class="modal fade" id="crearErrorModal" tabindex="-1" role="dialog" aria-labelledby="crearErrorModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -217,35 +219,32 @@
                                         <input type="date" class="form-control" id="fechaHasta" name="fechaHasta" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="modeloPrediccion">Modelo</label>
+                                        <label for="idArticulo">Artículo</label>
+                                        <select class="form-control" id="idArticulo" name="idArticulo" required>
+                                            <option value="">Seleccione un Artículo</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="modeloPrediccion">Modelo de prediccion</label>
                                         <select class="form-control" id="modeloPrediccion" name="modeloPrediccion" required>
-                                            <option value="">Seleccione un modelo de prediccion</option>
+                                            <option value="">Seleccione un modelo</option>
                                             <!-- Opciones cargadas dinámicamente -->
                                         </select>
                                     </div>
-                                    <div id="prediccionPMP" style="display: none;">
-                                        <div class="form-group">
-                                            <label for="cantidadPeriodosPMP">Periodos historicos a usar</label>
-                                            <input type="number" class="form-control" id="cantidadPeriodosPMP" name="cantidadPeriodosPMP">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="coefPond">Coeficientes de ponderacion</label>
-                                            <input type="number" class="form-control" id="coefPond" name="coefPond">
-                                        </div>
-                                        <!-- VER COMO LLENAR LO DE LOS COEF DE PONDERACION-->
+                                    <div class="form-group" id="cantidadPeriodosContainer">
+                                            <label id="cantidadPeriodosLabel" for="cantidadPeriodos">Periodos historicos a usar</label>
+                                            <input type="number" class="form-control" id="cantidadPeriodos" name="cantidadPeriodos">
                                     </div>
+                                    <div id="coefPondContainer" class="form-group">
+                                        <label id="coefPonderacionLabel">Coeficientes de ponderacion</label>
+                                    </div>
+                                    <!-- VER COMO LLENAR LO DE LOS COEF DE PONDERACION-->
+
 
                                     <div id="prediccionPMPS" style="display: none;">
                                         <div class="form-group">
                                             <label for="alfa">Alfa</label>
                                             <input type="number" class="form-control" id="alfa" name="alfa">
-                                        </div>
-                                    </div>
-
-                                    <div id="prediccionRL" style="display: none;">
-                                        <div class="form-group">
-                                            <label for="cantidadPeriodosRL">Periodos historicos a usar</label>
-                                            <input type="number" class="form-control" id="cantidadPeriodosRL" name="cantidadPeriodosRL">
                                         </div>
                                     </div>
 
