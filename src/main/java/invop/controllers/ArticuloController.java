@@ -73,12 +73,13 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         try {
             List<Articulo> articulosAReponer = articuloService.listadoAReponer();
             List<ArticuloAReponerDto> ReponerFinal = new ArrayList<>();
-            for(Articulo articulo : articulosAReponer){
+            for (Articulo articulo : articulosAReponer) {
                 ArticuloAReponerDto areponer = new ArticuloAReponerDto();
                 areponer.setIdArticulo(articulo.getId());
                 areponer.setNombreArticulo(articulo.getNombreArticulo());
                 areponer.setPuntoPedido(articulo.getPuntoPedidoArticulo());
-                areponer.setStockSeguridad(articulo.getPuntoPedidoArticulo());
+                areponer.setStockSeguridad(articulo.getStockSeguridadArticulo());
+                areponer.setCantidadArticulo(articulo.getCantidadArticulo());
                 areponer.setOrdenActiva(articuloService.controlOrdenCompraActiva(articulo.getId()));
                 ReponerFinal.add(areponer);
             }
@@ -87,6 +88,7 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     @PatchMapping("/modificar/{idArticulo}")
     public ResponseEntity<?> modificarArticulo(@PathVariable Long idArticulo, @RequestBody Articulo articulo){
