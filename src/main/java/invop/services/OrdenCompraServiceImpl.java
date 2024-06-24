@@ -22,27 +22,23 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
     @Autowired
     private OrdenCompraRepository ordenCompraRepository;
 
-
-    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository, OrdenCompraDetalleService ordenCompraDetalleService){
+    public OrdenCompraServiceImpl(OrdenCompraRepository ordenCompraRepository){
         super(ordenCompraRepository);
         this.ordenCompraRepository = ordenCompraRepository;
 
     }
 
-    @Override
-    @Transactional
-    public List<OrdenCompra> findOrdenCompraByEstado(String filtroEstado) throws Exception{
+    public List<OrdenCompra> findOrdenCompraByEstado(EstadoOrdenCompra estadoOrdenCompra) throws Exception {
         try {
-            List<OrdenCompra> buscarOrdenes = ordenCompraRepository.findOrdenCompraByEstado(filtroEstado);
-            return buscarOrdenes;
-        } catch (Exception e){
+            return ordenCompraRepository.findOrdenCompraByEstado(estadoOrdenCompra.name());
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
     public List<OrdenCompra> findOrdenCompraActiva() throws Exception {
-        List<OrdenCompra> ordenesPendiente = findOrdenCompraByEstado("Pendiente");
-        List<OrdenCompra> ordenesEnCurso = findOrdenCompraByEstado("En Curso");
+        List<OrdenCompra> ordenesPendiente = findOrdenCompraByEstado(EstadoOrdenCompra.PENDIENTE);
+        List<OrdenCompra> ordenesEnCurso = findOrdenCompraByEstado(EstadoOrdenCompra.EN_CURSO);
 
         List<OrdenCompra> ordenesActivas = new ArrayList<>(ordenesPendiente);
         ordenesActivas.addAll(ordenesEnCurso);
@@ -125,6 +121,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         if (optionalOrdenCompra.isPresent()) {
             OrdenCompra ordenCompra = optionalOrdenCompra.get();
             ordenCompra.setEstadoOrdenCompra(EstadoOrdenCompra.FINALIZADA);
+
             ordenCompraRepository.save(ordenCompra);
             return ordenCompra;
         } else {
@@ -132,4 +129,6 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
         }
     }
 
+
 }
+
