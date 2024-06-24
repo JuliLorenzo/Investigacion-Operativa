@@ -53,18 +53,22 @@ public class OrdenCompraController extends BaseControllerImpl<OrdenCompra, Orden
     }
 
     //Métodos para cambiar el estado de la orden de compra
+    //PENDIENTE --> EN CURSO
     @PutMapping("/confirmar/{id}")
     public ResponseEntity<OrdenCompra> confirmarOrdenCompra(@PathVariable Long id) {
         OrdenCompra ordenCompra = ordenCompraService.confirmarOrdenCompra(id);
         return ResponseEntity.ok(ordenCompra);
     }
 
+    // EN CURSO - PENDIENDE  --> CANCELADA
     @PutMapping("/cancelar/{id}")
     public ResponseEntity<OrdenCompra> cancelarOrdenCompra(@PathVariable Long id) {
         OrdenCompra ordenCompra = ordenCompraService.cancelarOrdenCompra(id);
         return ResponseEntity.ok(ordenCompra);
     }
 
+
+    //EN CURSO --> FINALIZADA
     @PutMapping("/finalizar/{id}")
     public ResponseEntity<OrdenCompra> finalizarOrdenCompra(@PathVariable Long id) {
         OrdenCompra ordenCompra = ordenCompraService.finalizarOrdenCompra(id);
