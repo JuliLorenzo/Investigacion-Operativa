@@ -146,9 +146,9 @@ document.addEventListener("DOMContentLoaded", function() {
         for (let i = 0; i < formData.cantidadPeriodosHistoricos; i++) {
             const coefValue = parseFloat(document.querySelector(`input[name="coefPond${i + 1}"]`).value);
             formData.coeficientesPonderacion.push(coefValue);
-        };
+        }
 
-        console.log("Enviando datos... :", formData)
+        console.log("Enviando datos... :", formData);
 
         fetch("http://localhost:9090/api/v1/errores/crearErrores", {
             method: "POST",
