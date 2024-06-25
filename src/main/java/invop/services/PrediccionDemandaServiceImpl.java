@@ -24,6 +24,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     @Autowired
     private ArticuloService articuloService;
 
+
     public PrediccionDemandaServiceImpl(PrediccionDemandaRepository prediccionDemandaRepository, DemandaHistoricaService demandaHistoricaService, ArticuloService articuloService){
         super(prediccionDemandaRepository);
         this.prediccionDemandaRepository = prediccionDemandaRepository;
@@ -45,6 +46,10 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     public List<PrediccionDemanda> crearPredicciones(DatosPrediccionDTO datosPrediccion) throws Exception{
         try{
             Articulo articulo = articuloService.findArticuloById(datosPrediccion.getIdArticulo());
+            if( articulo.getMetodoPrediccionPredeterminado() == null){
+                throw new Exception("El artículo no tiene un método de predicción predeterminado.");
+            }
+            datosPrediccion.setNombreMetodoPrediccion(articulo.getMetodoPrediccionPredeterminado());
             List<PrediccionDemanda> listaPredicciones = new ArrayList<>();
             LocalDate fechaInicial = LocalDate.of(datosPrediccion.getAnioAPredecir(), datosPrediccion.getMesAPredecir(), 1);
 
