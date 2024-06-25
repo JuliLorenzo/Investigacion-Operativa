@@ -46,10 +46,10 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     public List<PrediccionDemanda> crearPredicciones(DatosPrediccionDTO datosPrediccion) throws Exception{
         try{
             Articulo articulo = articuloService.findArticuloById(datosPrediccion.getIdArticulo());
-            if( articulo.getMetodoPrediccionPredeterminado() == null){
+            /*if( articulo.getMetodoPrediccionPredeterminado() == null){
                 throw new Exception("El artículo no tiene un método de predicción predeterminado.");
             }
-            datosPrediccion.setNombreMetodoPrediccion(articulo.getMetodoPrediccionPredeterminado());
+            datosPrediccion.setNombreMetodoPrediccion(articulo.getMetodoPrediccionPredeterminado());*/
             List<PrediccionDemanda> listaPredicciones = new ArrayList<>();
             LocalDate fechaInicial = LocalDate.of(datosPrediccion.getAnioAPredecir(), datosPrediccion.getMesAPredecir(), 1);
 
@@ -71,6 +71,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                         valorPrediccion = calcularEstacional(datosPrediccion);
                     }
                 }
+                System.out.println("EL VALOR DE LA PREDICCION ESSSSSSSS: "+valorPrediccion);
                 int mes = datosPrediccion.getMesAPredecir()+i;
                 //LocalDate fechaDesde = datosPrediccion.getFechaDesde().plusMonths(i);
                 LocalDate fechaDesde = fechaInicial.plusMonths(i);
@@ -395,22 +396,24 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int mes = t + 1;
                 indiceEstacionalMensual[t] = demandaAnualPromedio[t] / demandaMensualPromedio;
                 prediccionDemandaMensual.set(t, (int) Math.ceil(indiceEstacionalMensual[t] * datosPrediccionDTO.getCantidadDemandaAnualTotal()/cantidadMeses));
-                PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
+
+               /* PrediccionDemanda prediccionDemanda = new PrediccionDemanda();
                 prediccionDemanda.setArticulo(articuloService.findById(datosPrediccionDTO.getIdArticulo()));
                 prediccionDemanda.setValorPrediccion(prediccionDemandaMensual.get(t));
                 prediccionDemanda.setFechaPrediccion(LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), mes, 1));
                 prediccionDemanda.setNombreMetodoUsado(ESTACIONALIDAD);
-                prediccionDemandaRepository.save(prediccionDemanda);
+                prediccionDemandaRepository.save(prediccionDemanda);*/
 
                 // System.out.println("Llegué a guardar");
             }
             System.out.println("indiceEstacionalMensual: "+  Arrays.toString(indiceEstacionalMensual));
             System.out.println("prediccionPorMes" + prediccionDemandaMensual);
-
+            System.out.println("LA PREDICCION ESSSSS: "+prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir()-1));
+            return prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir()-1);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-        return prediccionDemandaMensual.get(datosPrediccionDTO.getMesAPredecir()-1);
+
         // revisar este return porq tiene q traer bien el indice del mes
     }
 
