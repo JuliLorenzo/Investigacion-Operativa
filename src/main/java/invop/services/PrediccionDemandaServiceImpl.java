@@ -241,19 +241,22 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 fechaHasta = fechaHasta.withDayOfMonth(fechaHasta.lengthOfMonth());
             }*/
 
-            int demandaHistoricaMesAnterior = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-            if (demandaHistoricaMesAnterior <= 0){
-                int anio = fechaDesde.getYear();
-                int mes = fechaDesde.getMonthValue();
+            int demandaHistoricaMesAnterior = demandaHistoricaService.obtenerDemandaHistoricaOProyectada(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
 
-                PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                if(prediccionMesAnterior != null && prediccionMesAnterior.getValorPrediccion() != null){
-                    demandaHistoricaMesAnterior = prediccionMesAnterior.getValorPrediccion();
-                } else{
-                    demandaHistoricaMesAnterior = 0;
-                }
+            if (demandaHistoricaMesAnterior == -1) {
+                // Crear una copia del DTO con algunos valores cambiados (mes, fechaDesde, fechaHasta) para la predicción
+                DatosPrediccionDTO prediccionDTO = new DatosPrediccionDTO();
+                prediccionDTO.setCantidadPeriodosHistoricos(datosPrediccionDTO.getCantidadPeriodosHistoricos());
+                prediccionDTO.setCantidadPeriodosAdelante(datosPrediccionDTO.getCantidadPeriodosAdelante());
+                prediccionDTO.setCoeficientesPonderacion(datosPrediccionDTO.getCoeficientesPonderacion());
+                prediccionDTO.setIdArticulo(datosPrediccionDTO.getIdArticulo());
+                prediccionDTO.setAnioAPredecir(fechaPrediccion.minusMonths(1).getYear());
+                prediccionDTO.setMesAPredecir(fechaPrediccion.minusMonths(1).getMonthValue());
+                prediccionDTO.setAlfa(datosPrediccionDTO.getAlfa());
+                prediccionDTO.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_SUAVIZADO);
 
-
+                // Predecir la demanda usando la copia del DTO
+                demandaHistoricaMesAnterior = predecirDemandaParaMesFuturo(prediccionDTO);
             }
             System.out.println("La demanda historica del ems anterior es: "+ demandaHistoricaMesAnterior);
             Integer valorPrediccionMesAnterior = calcularPromedioMovilMesAnterior(datosPrediccionDTO.getIdArticulo(), fechaPrediccion.minusMonths(1));
@@ -286,19 +289,22 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 int nroMes = datosPrediccionDTO.getCantidadPeriodosHistoricos() - i;
                 System.out.println("Numero Mes: " + nroMes);
 
-                int demandaHistoricaMes = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
+                int demandaHistoricaMes = demandaHistoricaService.obtenerDemandaHistoricaOProyectada(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
 
-                if(demandaHistoricaMes <= 0 ){
-                    int anio = fechaDesde.getYear();
-                    int mes = fechaDesde.getMonthValue();
+                if (demandaHistoricaMes == -1) {
+                    // Crear una copia del DTO con algunos valores cambiados (mes, fechaDesde, fechaHasta) para la predicción
+                    DatosPrediccionDTO prediccionDTO = new DatosPrediccionDTO();
+                    prediccionDTO.setCantidadPeriodosHistoricos(datosPrediccionDTO.getCantidadPeriodosHistoricos());
+                    prediccionDTO.setCantidadPeriodosAdelante(datosPrediccionDTO.getCantidadPeriodosAdelante());
+                    prediccionDTO.setCoeficientesPonderacion(datosPrediccionDTO.getCoeficientesPonderacion());
+                    prediccionDTO.setIdArticulo(datosPrediccionDTO.getIdArticulo());
+                    prediccionDTO.setAnioAPredecir(fechaPrediccion.minusMonths(1).getYear());
+                    prediccionDTO.setMesAPredecir(fechaPrediccion.minusMonths(1).getMonthValue());
+                    prediccionDTO.setAlfa(datosPrediccionDTO.getAlfa());
+                    prediccionDTO.setNombreMetodoPrediccion(NombreMetodoPrediccion.REGRESION_LINEAL);
 
-                    PrediccionDemanda prediccionMesAnterior = prediccionDemandaRepository.findPrediccionArticuloByFecha(datosPrediccionDTO.getIdArticulo(), anio, mes);
-                    System.out.println("La prediccion anterior essssssssss " + prediccionMesAnterior);
-                    if(prediccionMesAnterior != null && prediccionMesAnterior.getValorPrediccion() != null){
-                        demandaHistoricaMes = prediccionMesAnterior.getValorPrediccion();
-                    } else{
-                        demandaHistoricaMes = 0;
-                    }
+                    // Predecir la demanda usando la copia del DTO
+                    demandaHistoricaMes = predecirDemandaParaMesFuturo(prediccionDTO);
                 }
 
                 System.out.println("Demanda: " + demandaHistoricaMes);
@@ -325,7 +331,9 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             System.out.println("VALOR DE a: " + a);
 
             Integer valorPrediccion = (int)(a + (b * (datosPrediccionDTO.getCantidadPeriodosHistoricos()+1)));
-
+            if (valorPrediccion < 0){
+                valorPrediccion = 0;
+            }
             return valorPrediccion;
         } catch(Exception e){
             throw new Exception(e.getMessage());
