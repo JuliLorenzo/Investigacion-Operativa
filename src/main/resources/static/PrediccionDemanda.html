@@ -92,6 +92,17 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        <label for="metodo">Método predeterminado de predicción</label>
+                                        <input class="form-control" id="metodo" name="metodo" aria-label="Disabled input example" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Cantidad de Periodos Adelante</label>
+                                        <div>
+                                            <label class="radio-inline"><input type="radio" name="cantidadPeriodosAdelante" id="periodo1" value="1"> 1</label>
+                                            <label class="radio-inline"><input type="radio" name="cantidadPeriodosAdelante" id="periodo2" value="2"> 2</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="mesAPredecir">Mes a Predecir</label>
                                         <select class="form-control" id="mesAPredecir" name="mesAPredecir" required>
                                             <option value="">Seleccione el mes a predecir</option>
@@ -105,16 +116,12 @@
                                             <!-- Opciones cargadas dinámicamente -->
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="metodo">Método de predicción de la demanda</label>
-                                        <input class="form-control" id="metodo" name="metodo" aria-label="Disabled input example" disabled>
-                                    </div>
-                                    <div id="metodoPMPDetalles" style="display: none;"></div>
+                                    <div id="camposExtra"></div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" id="guardarPrediccion">Guardar</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="guardarPrediccion">Predecir</button>
                             </div>
                         </div>
                     </div>
