@@ -189,6 +189,40 @@
                     </div>
                 </div>
 
+                <!-- Modal EDITAR Orden de Compra -->
+                <div class="modal fade" id="editarOrdenDeCompraModal" tabindex="-1" role="dialog" aria-labelledby="editarOrdenDeCompraModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarOrdenDeCompraModalLabel">Editar Orden de Compra</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="editarproveedor">Proveedor</label>
+                                        <select class="form-control" id="editarproveedor" name="editarproveedor" required>
+                                            <option value="">Seleccione un Proveedor para cambiar</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="editarcantidadorden">Cantidad a pedir</label>
+                                            <input type="number" class="form-control" id="editarcantidadorden" name="editarcantidadorden" required>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary">Editar Orden de Compra</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Content Row -->
                 <div class="card shadow mb-4">
