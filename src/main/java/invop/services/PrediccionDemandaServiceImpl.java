@@ -3,6 +3,7 @@ package invop.services;
 import invop.dto.DatosPrediccionDTO;
 import invop.entities.Articulo;
 import invop.entities.PrediccionDemanda;
+import invop.enums.NombreMetodoPrediccion;
 import invop.repositories.PrediccionDemandaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,11 +87,25 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }
     }
 
-
+    public Integer predecirDemandaParaMesFuturo(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
+        switch (datosPrediccionDTO.getNombreMetodoPrediccion()) {
+            case PROMEDIO_MOVIL_PONDERADO:
+                return calcularPromedioMovilPonderado(datosPrediccionDTO);
+            case PROMEDIO_MOVIL_SUAVIZADO: // Agrega casos para otros métodos de predicción
+                return calculoPromedioMovilPonderadoSuavizado(datosPrediccionDTO);
+            case REGRESION_LINEAL:
+                return calcularRegresionLineal(datosPrediccionDTO);
+            case ESTACIONALIDAD:
+                return calcularEstacional(datosPrediccionDTO);
+            default:
+                throw new IllegalArgumentException("Método de predicción no soportado: " + datosPrediccionDTO.getNombreMetodoPrediccion());
+        }
+    }
 
 
     // PROMEDIO MOVIL PONDERADO
     //tener en cuenta q la ponderacion es el primero de la lista con el mes mas cercano
+
     public Integer calculoPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
             // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
@@ -107,7 +122,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
                 LocalDate fechaDesde = fechaPrediccion.minusMonths(i+1).withDayOfMonth(1);
                 LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
                 int demandaHistorica = demandaHistoricaService.calcularDemandaHistorica(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
-                if (demandaHistorica <= 0){
+                if (demandaHistorica < 0){
                     int anio = fechaDesde.getYear();
                     int mes = fechaDesde.getMonthValue();
 
@@ -130,9 +145,13 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }
     }
 
+
+
     //PARA PROMEDIO MOVIL PONDERADO SUAVIZADO EXPONENCIALMENTE
     //calculo promedio movil a usar en el suavizado --> usa 12 meses siempre
+
     public Integer calcularPromedioMovilMesAnterior(Long idArticulo, LocalDate fechaPrediccion) throws Exception{
+
         try{
             //System.out.println(" fecha prediccion mes anterior con pm: "+ fechaPrediccion);
             LocalDate fechaDesde = fechaPrediccion.minusMonths(12).withDayOfMonth(1);
@@ -150,6 +169,56 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public Integer calcularPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
+        try {
+            if (datosPrediccionDTO.getCantidadPeriodosHistoricos() != datosPrediccionDTO.getCoeficientesPonderacion().size()) {
+                throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
+            }
+
+            double sumaValorYCoef = 0.0;
+            double sumaCoef = 0.0;
+            int i = 0;
+
+            LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);
+
+            for (Double factorPonderacion : datosPrediccionDTO.getCoeficientesPonderacion()) {
+                LocalDate fechaDesde = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(1);
+                LocalDate fechaHasta = fechaPrediccion.minusMonths(i + 1).withDayOfMonth(fechaPrediccion.minusMonths(i + 1).lengthOfMonth());
+
+                int demandaHistorica = demandaHistoricaService.obtenerDemandaHistoricaOProyectada(fechaDesde, fechaHasta, datosPrediccionDTO.getIdArticulo());
+
+                if (demandaHistorica == -1) {
+                    // Crear una copia del DTO con algunos valores cambiados (mes, fechaDesde, fechaHasta) para la predicción
+                    DatosPrediccionDTO prediccionDTO = new DatosPrediccionDTO();
+                    prediccionDTO.setCantidadPeriodosHistoricos(datosPrediccionDTO.getCantidadPeriodosHistoricos());
+                    prediccionDTO.setCantidadPeriodosAdelante(datosPrediccionDTO.getCantidadPeriodosAdelante());
+                    prediccionDTO.setCoeficientesPonderacion(datosPrediccionDTO.getCoeficientesPonderacion());
+                    prediccionDTO.setIdArticulo(datosPrediccionDTO.getIdArticulo());
+                    prediccionDTO.setAnioAPredecir(fechaPrediccion.minusMonths(i + 1).getYear());
+                    prediccionDTO.setMesAPredecir(fechaPrediccion.minusMonths(i + 1).getMonthValue());
+                    prediccionDTO.setAlfa(datosPrediccionDTO.getAlfa());
+                    prediccionDTO.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_PONDERADO);
+
+                    // Predecir la demanda usando la copia del DTO
+                    demandaHistorica = predecirDemandaParaMesFuturo(prediccionDTO);
+                }
+
+                sumaValorYCoef += factorPonderacion * demandaHistorica;
+                sumaCoef += factorPonderacion;
+                i++;
+            }
+
+            // Calcular y retornar el valor predicho
+            Integer valorPrediccion = (int) Math.ceil(sumaValorYCoef / sumaCoef);
+            return valorPrediccion;
+
+        } catch (Exception e) {
+            throw new Exception("Error al calcular el promedio móvil ponderado: " + e.getMessage());
+        }
+    }
+
     public Integer calculoPromedioMovilPonderadoSuavizado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
             LocalDate fechaPrediccion = LocalDate.of(datosPrediccionDTO.getAnioAPredecir(), datosPrediccionDTO.getMesAPredecir(), 1);

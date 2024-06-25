@@ -23,7 +23,7 @@ public class DemandaHistorica extends Base {
     @Column(name = "fecha_hasta")
     private LocalDate fechaHasta;
 
-    @NotNull
+    //@NotNull
     @Column(name = "cantidad_vendida")
     private Integer cantidadVendida;
 

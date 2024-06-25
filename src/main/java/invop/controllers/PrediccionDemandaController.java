@@ -27,7 +27,8 @@ public class PrediccionDemandaController extends BaseControllerImpl<PrediccionDe
     @PostMapping("/pmp")
     public ResponseEntity<?> calcularPromedioMovilPonderado(@RequestBody DatosPrediccionDTO datosPrediccionDTO) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderado(datosPrediccionDTO));
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.calcularPromedioMovilPonderado(datosPrediccionDTO));
+            //return ResponseEntity.status(HttpStatus.OK).body(servicio.calculoPromedioMovilPonderado(datosPrediccionDTO));
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
         }

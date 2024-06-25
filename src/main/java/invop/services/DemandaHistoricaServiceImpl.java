@@ -36,6 +36,23 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
         this.ventaRepository = ventaRepository;
     }
 
+    public Integer obtenerDemandaHistoricaOProyectada(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
+        int demandaHistorica = calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
+
+        if (demandaHistorica == 0) {
+            LocalDate hoy = LocalDate.now();
+            if (fechaHasta.isBefore(hoy)) {
+                // Si la fechaHasta es anterior al día actual, usar 0 como demanda histórica --> no hubieron ventas de ese articulo
+                return 0;
+            } else {
+                // Si el mes no ha pasado o no ha terminado, avisar que hay que hacer la predicción para ese mes --> no existe todavia la demanda historica, el mes todavia no pasa
+                return -1;
+            }
+        }
+
+        return demandaHistorica;
+    }
+
     public DemandaHistorica crearDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
         int cantidadTotalFinal = calcularDemandaHistorica(fechaDesde,fechaHasta,idArticulo);
         return nuevaDemandaHistorica(fechaDesde,fechaHasta,idArticulo,cantidadTotalFinal);
@@ -43,28 +60,24 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     }
 
     public Integer calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
+        //System.out.println("La fecha desde es: "+ fechaDesde + " la fecha hasta es: "+ fechaHasta);
         int cantidadTotal = calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
         return cantidadTotal;
     }
 
     public Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
         List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
-        boolean existe = false;
         int cantidadTotalVendida = 0;
+
         //recorrer ventas y acumular la cantidad vendida del articulo
         for (Venta venta : ventas) {
             for (VentaDetalle detalle : venta.getVentaDetalles()) {
                 if (detalle.getArticulo().getId().equals(idArticulo)) {
-                    cantidadTotalVendida = cantidadTotalVendida + detalle.getCantidadVendida();
-                    existe = true;
+                    cantidadTotalVendida += detalle.getCantidadVendida();
                 }
             }
         }
-        if (existe) {
             return cantidadTotalVendida;
-        } else {
-            return -1;
-        }
     }
 
     public DemandaHistorica nuevaDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo, Integer cantidadTotal){

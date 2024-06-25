@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PrediccionDemandaService extends BaseService<PrediccionDemanda, Long> {
+    public Integer predecirDemandaParaMesFuturo(DatosPrediccionDTO datosPrediccionDTO) throws Exception;
+    public Integer calcularPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception;
 
     public Integer calculoPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception;
 
