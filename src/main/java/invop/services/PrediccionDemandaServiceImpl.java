@@ -95,7 +95,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     public Integer predecirDemandaParaMesFuturo(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
         switch (datosPrediccionDTO.getNombreMetodoPrediccion()) {
             case PROMEDIO_MOVIL_PONDERADO:
-                return calcularPromedioMovilPonderado(datosPrediccionDTO);
+                return calculoPromedioMovilPonderado(datosPrediccionDTO);
             case PROMEDIO_MOVIL_SUAVIZADO: // Agrega casos para otros métodos de predicción
                 return calculoPromedioMovilPonderadoSuavizado(datosPrediccionDTO);
             case REGRESION_LINEAL:
@@ -110,7 +110,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
 
     // PROMEDIO MOVIL PONDERADO
     //tener en cuenta q la ponderacion es el primero de la lista con el mes mas cercano
-
+/*
     public Integer calculoPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception{
         try{
             // esto pq tienen q coincidir la cantidad de periodos con la cantidad de factores de ponderacion
@@ -148,7 +148,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
-    }
+    }*/
 
 
 
@@ -176,7 +176,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
     }
 
     @Override
-    public Integer calcularPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
+    public Integer calculoPromedioMovilPonderado(DatosPrediccionDTO datosPrediccionDTO) throws Exception {
         try {
             if (datosPrediccionDTO.getCantidadPeriodosHistoricos() != datosPrediccionDTO.getCoeficientesPonderacion().size()) {
                 throw new IllegalArgumentException("La cantidad de periodos a utilizar debe coincidir con la cantidad de coeficientes");
