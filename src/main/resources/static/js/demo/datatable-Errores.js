@@ -106,10 +106,12 @@ document.addEventListener("DOMContentLoaded", function() {
     //ESTO ES PARA QUE INGRESE LOS COEFICIENTES DE PONDERACION SEGUN LA CANTIDAD DE PERIODOS
     document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
         const coefContainer = document.querySelector("#coefPondContainer");
+        const coefAclaracion = document.querySelector("#coefPondAclaracion");
         coefContainer.innerHTML = ''; // Borra inputs previos
         const cantidadPeriodos = parseInt(this.value);
         if(cantidadPeriodos > 0){
             coefContainer.style.display = 'block';
+            coefContainer.appendChild(coefAclaracion);
             for (let i = 0; i < cantidadPeriodos; i++) {
                 const input = document.createElement("input");
                 input.type = "number";
