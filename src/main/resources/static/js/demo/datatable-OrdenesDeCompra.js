@@ -1,4 +1,3 @@
-//TRAE LAS OC Y LLAMA A LOS METODOS DE CAMBIO DE ESTADO
 document.addEventListener("DOMContentLoaded", function() {
     fetch("http://localhost:9090/api/v1/ordenescompras")
         .then(response => response.json())
@@ -26,17 +25,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>
                     <div style="text-align: center">
                         <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}">
-                                        <i class="fas fa-check"></i>
+                            <i class="fas fa-check"></i>
                         </a>
                         <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}">
-                                        <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                         </a>
                         <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
+                            <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
+                        ${ordenesdecompras.estadoOrdenCompra === 'PENDIENTE' ? `
+                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}">
+                            <i class="fas fa-edit"></i>
+                        </a>` : ''}
                     </div>
                 </td>
-            `;
+                `;
                 tableBody.appendChild(row);
             });
 
@@ -72,43 +75,103 @@ document.addEventListener("DOMContentLoaded", function() {
                     cancelarOrdenCompra(ordenCompraId);
                 }
             });
+
+            // LLAMA EL METODO PARA EDITAR LA ORDEN
+            tableBody.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-modificar-OC') || event.target.parentElement.classList.contains('btn-modificar-OC')) {
+                    const ordenCompraId = event.target.closest('.btn-modificar-OC').getAttribute('data-id');
+                    abrirEditarOrdenCompraModal(ordenCompraId);
+                }
+            });
         })
         .catch(error => {
             console.error("Error al obtener las órdenes de compra:", error);
         });
 });
 
-// Función para cargar artículos
-function cargararticulos() {
+// ABRIR EL MODAL DE MODIFICACION
+function abrirEditarOrdenCompraModal(ordenCompraId) {
+    console.log(`Abriendo modal para la orden de compra con ID: ${ordenCompraId}`);
+    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Datos de la orden de compra obtenidos:', data);
+            // Mostrar el modal de edición
+            $('#editarOrdenDeCompraModal').modal('show');
+
+            // Cargar el proveedor actual
+            $('#editarproveedor').val(data.proveedor ? data.proveedor.id : '');
+
+            // Cargar proveedores disponibles para el artículo asociado
+            if (data.ordenCompraDetalles && data.ordenCompraDetalles.length > 0) {
+                cargarproveedoreseditar(data.ordenCompraDetalles[0].articulo.id);
+            }
+
+            // Evento para el botón de guardar en el modal
+            $('#editarOrdenDeCompraModal .btn-primary').off('click').on('click', function() {
+                editarOrdenDeCompra(data.id);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar la orden de compra para editar:', error);
+        });
+}
+
+// Function to edit the order
+function editarOrdenDeCompra(ordenCompraId) {
+    const proveedorId = $('#editarproveedor').val();
+    const cantidadAComprar = $('#editarcantidadorden').val();
+
+    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}/modificar?idProveedor=${proveedorId}&nuevaCantidad=${cantidadAComprar}`, {
+        method: 'PUT'
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Orden de compra editada exitosamente');
+                $('#editarOrdenDeCompraModal').modal('hide');
+                location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Error al editar la orden de compra');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al editar la orden de compra:', error);
+            alert('Error al editar la orden de compra: ' + error.message);
+        });
+}
+
+// Función para cargar proveedores para un artículo específico en el modal de edición
+function cargarproveedoreseditar(articuloId) {
+    console.log(`Cargando proveedores para el artículo con ID: ${articuloId}`);
     $.ajax({
         type: 'GET',
-        url: 'http://localhost:9090/api/v1/articulos',
-        success: function(articulos) {
-            const articuloSelect = $('#articulo');
-            articuloSelect.empty();
-            articuloSelect.append('<option value="">Seleccione un Artículo</option>');
-            articulos.forEach(function(articulo) {
-                const option = $('<option>').text(articulo.nombreArticulo).attr('value', articulo.id);
-                articuloSelect.append(option);
-            });
+        url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
+        success: function(proveedoresarticulos) {
+            console.log('Proveedores obtenidos:', proveedoresarticulos);
+            const proveedorSelect = $('#editarproveedor');
+            proveedorSelect.empty(); // Limpiamos las opciones anteriores
 
-            // Agregar un evento para detectar cambios en la selección del artículo
-            articuloSelect.on('change', function() {
-                const selectedArticuloId = $(this).val();
-                if (selectedArticuloId) {
-                    cargarproveedores(selectedArticuloId);
-                    cargarproveedorpredeterminado(selectedArticuloId);
-                } else {
-                    const proveedorSelect = $('#proveedor');
-                    proveedorSelect.empty();
-                    proveedorSelect.append('<option value="">Seleccione un Proveedor</option>');
-                    const proveedorpredeterminadoElement = $('#proveedorpredeterminado');
-                    proveedorpredeterminadoElement.empty();
+            if (proveedoresarticulos && proveedoresarticulos.length > 0) {
+                proveedoresarticulos.forEach(function(proveedorarticulo) {
+                    const proveedor = proveedorarticulo.proveedor;
+                    const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
+                    proveedorSelect.append(option);
+                });
+
+                // Seleccionar el proveedor actual de la orden de compra
+                const proveedorActual = proveedoresarticulos.find(pa => pa.proveedor.id == proveedorSelect.val());
+                if (proveedorActual) {
+                    proveedorSelect.val(proveedorActual.proveedor.id);
                 }
-            });
+            } else {
+                console.log('No se encontraron proveedores para el artículo con ID:', articuloId);
+            }
         },
         error: function(error) {
-            console.error('Error al obtener la lista de artículos:', error);
+            console.error('Error al obtener la lista de proveedores:', error);
+            alert('Error al obtener la lista de proveedores.');
         }
     });
 }
@@ -172,7 +235,6 @@ function guardarOrdenDeCompra() {
     const articuloId = $('#articulo').val();
     const articuloNombre = $('#articulo option:selected').text();
 
-
     // ver si tiene orden
     $.ajax({
         type: 'GET',
@@ -223,15 +285,11 @@ function guardarOrdenDeCompra() {
             alert('Error al verificar la orden de compra activa.');
         }
     });
-
-
 }
 
 // guardar
 $('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
 
-//MODIFICACION DE ESTADO MANUAL
-//MODIFICACION DE ESTADO MANUAL
 //MODIFICACION DE ESTADO MANUAL
 
 // FUNCION PARA CONFIRMAR (PENDIENTE --> EN CURSO)
