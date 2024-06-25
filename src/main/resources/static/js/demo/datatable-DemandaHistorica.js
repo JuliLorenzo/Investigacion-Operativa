@@ -95,3 +95,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
+$(document).ready(function() {
+    $('#demandahistorica-table').DataTable({
+        "paging": false, // Deshabilita la paginación
+        searching: false, // Desactiva la función de búsqueda
+        info: false,      // Desactiva la información de 'Showing X of X entries'
+    });
+});
