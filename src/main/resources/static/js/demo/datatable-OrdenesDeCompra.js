@@ -103,9 +103,10 @@ function abrirEditarOrdenCompraModal(ordenCompraId) {
             $('#editarproveedor').val(data.proveedor ? data.proveedor.id : '');
 
             // Cargar proveedores disponibles para el artículo asociado
-            if (data.ordenCompraDetalles && data.ordenCompraDetalles.length > 0) {
-                cargarproveedoreseditar(data.ordenCompraDetalles[0].articulo.id);
-            }
+            cargarproveedores(data.ordenCompraDetalles[0].articulo.id, 'editar');
+
+            // Cargar la cantidad a pedir
+            $('#editarcantidadorden').val(data.ordenCompraDetalles[0].cantidadAComprar);
 
             // Evento para el botón de guardar en el modal
             $('#editarOrdenDeCompraModal .btn-primary').off('click').on('click', function() {
@@ -117,74 +118,16 @@ function abrirEditarOrdenCompraModal(ordenCompraId) {
         });
 }
 
-// Function to edit the order
-function editarOrdenDeCompra(ordenCompraId) {
-    const proveedorId = $('#editarproveedor').val();
-    const cantidadAComprar = $('#editarcantidadorden').val();
-
-    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}/modificar?idProveedor=${proveedorId}&nuevaCantidad=${cantidadAComprar}`, {
-        method: 'PUT'
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Orden de compra editada exitosamente');
-                $('#editarOrdenDeCompraModal').modal('hide');
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                return response.json().then(data => {
-                    throw new Error(data.error || 'Error al editar la orden de compra');
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error al editar la orden de compra:', error);
-            alert('Error al editar la orden de compra: ' + error.message);
-        });
-}
-
-// Función para cargar proveedores para un artículo específico en el modal de edición
-function cargarproveedoreseditar(articuloId) {
-    console.log(`Cargando proveedores para el artículo con ID: ${articuloId}`);
-    $.ajax({
-        type: 'GET',
-        url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
-        success: function(proveedoresarticulos) {
-            console.log('Proveedores obtenidos:', proveedoresarticulos);
-            const proveedorSelect = $('#editarproveedor');
-            proveedorSelect.empty(); // Limpiamos las opciones anteriores
-
-            if (proveedoresarticulos && proveedoresarticulos.length > 0) {
-                proveedoresarticulos.forEach(function(proveedorarticulo) {
-                    const proveedor = proveedorarticulo.proveedor;
-                    const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
-                    proveedorSelect.append(option);
-                });
-
-                // Seleccionar el proveedor actual de la orden de compra
-                const proveedorActual = proveedoresarticulos.find(pa => pa.proveedor.id == proveedorSelect.val());
-                if (proveedorActual) {
-                    proveedorSelect.val(proveedorActual.proveedor.id);
-                }
-            } else {
-                console.log('No se encontraron proveedores para el artículo con ID:', articuloId);
-            }
-        },
-        error: function(error) {
-            console.error('Error al obtener la lista de proveedores:', error);
-            alert('Error al obtener la lista de proveedores.');
-        }
-    });
-}
-
 // Función para cargar proveedores para un artículo específico
-function cargarproveedores(articuloId) {
+function cargarproveedores(articuloId, contexto) {
     $.ajax({
         type: 'GET',
         url: `http://localhost:9090/api/v1/proveedoresarticulos/findProveedoresByArticulo/${articuloId}`,
         success: function(proveedoresarticulos) {
             console.log('Proveedores obtenidos:', proveedoresarticulos);
-            const proveedorSelect = $('#proveedor'); // Verificar el ID del select aquí
-            proveedorSelect.empty(); // Limpiamos las opciones anteriores
+
+            const proveedorSelect = contexto === 'editar' ? $('#editarproveedor') : $('#proveedor');
+            proveedorSelect.empty(); // Clear previous options
 
             proveedorSelect.append('<option value="">Seleccione un Proveedor</option>');
 
@@ -223,10 +166,12 @@ function cargarproveedorpredeterminado(articuloId) {
 // Mostrar el modal y cargar artículos al hacer clic en el botón para crear un artículo
 $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
     cargararticulos();
+    console.log("Modal para crear orden de compra mostrado");
 });
 
 // Función para guardar la orden de compra
 function guardarOrdenDeCompra() {
+    console.log("Función guardarOrdenDeCompra llamada");
     const fechaOrdenCompra = new Date().toISOString().split('T')[0];
     const estadoOrdenCompra = 'PENDIENTE';
     const proveedorId = $('#proveedor').val();
@@ -243,103 +188,117 @@ function guardarOrdenDeCompra() {
             if (response) {
                 alert('El artículo ya tiene una orden de compra activa.');
             } else {
-                // If no active order exists, proceed to create the new order
-                const ordenDeCompra = {
+                // Si no hay una orden activa, procedemos a crear la nueva orden
+                const nuevaOrden = {
                     fechaOrdenCompra: fechaOrdenCompra,
                     estadoOrdenCompra: estadoOrdenCompra,
+                    proveedor: {
+                        id: proveedorId,
+                        nombreProveedor: proveedorNombre
+                    },
                     ordenCompraDetalles: [{
-                        cantidadAComprar: parseInt(cantidadAComprar), // Ensure quantity is an integer
+                        cantidadAComprar: cantidadAComprar,
                         articulo: {
-                            id: parseInt(articuloId), // Ensure articuloId is an integer
+                            id: articuloId,
                             nombreArticulo: articuloNombre
                         }
-                    }],
-                    proveedor: {
-                        id: parseInt(proveedorId), // Ensure proveedorId is an integer
-                        nombreProveedor: proveedorNombre
-                    }
+                    }]
                 };
+                console.log("Nueva orden de compra a enviar:", nuevaOrden);
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'http://localhost:9090/api/v1/ordenescompras',
-                    contentType: 'application/json',
-                    data: JSON.stringify(ordenDeCompra),
-                    success: function(response) {
-                        alert('Orden de Compra guardada con éxito!');
-                        $('#crearOrdenDeCompraModal').modal('hide');
-                        // Clear the form
-                        $('#proveedor').val('');
-                        $('#cantidadorden').val('');
-                        $('#articulo').val('');
+                fetch("http://localhost:9090/api/v1/ordenescompras", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
                     },
-                    error: function(error) {
-                        console.error('Error al guardar la Orden de Compra:', error);
-                        alert('Error al guardar la Orden de Compra.');
-                    }
-                });
+                    body: JSON.stringify(nuevaOrden),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        $('#crearOrdenDeCompraModal').modal('hide');
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error al crear la orden de compra:", error);
+                    });
             }
         },
         error: function(error) {
-            console.error('Error al verificar la orden de compra activa:', error);
-            alert('Error al verificar la orden de compra activa.');
+            console.error('Error al verificar si el artículo tiene una orden activa:', error);
         }
     });
 }
 
-// guardar
-$('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
+// Función para editar la orden de compra
+function editarOrdenDeCompra(ordenCompraId) {
+    console.log("Función editarOrdenDeCompra llamada para ID:", ordenCompraId);
+    const proveedorId = $('#editarproveedor').val();
+    const proveedorNombre = $('#editarproveedor option:selected').text();
+    const cantidadAComprar = $('#editarcantidadorden').val();
+    const articuloId = $('#editararticulo').val();
+    const articuloNombre = $('#editararticulo option:selected').text();
 
-//MODIFICACION DE ESTADO MANUAL
-
-// FUNCION PARA CONFIRMAR (PENDIENTE --> EN CURSO)
-function confirmarOrdenCompra(ordenCompraId) {
-    fetch(`http://localhost:9090/api/v1/ordenescompras/confirmar/${ordenCompraId}`, {
-        method: 'PUT'
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Orden de compra confirmada exitosamente');
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                alert('Error al confirmar la orden de compra');
+    const ordenEditada = {
+        id: ordenCompraId,
+        proveedor: {
+            id: proveedorId,
+            nombreProveedor: proveedorNombre
+        },
+        ordenCompraDetalles: [{
+            cantidadAComprar: cantidadAComprar,
+            articulo: {
+                id: articuloId,
+                nombreArticulo: articuloNombre
             }
+        }]
+    };
+    console.log("Orden de compra editada a enviar:", ordenEditada);
+
+    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ordenEditada),
+    })
+        .then(response => response.json())
+        .then(data => {
+            $('#editarOrdenDeCompraModal').modal('hide');
+            location.reload();
         })
         .catch(error => {
-            console.error('Error al confirmar la orden de compra:', error);
+            console.error("Error al editar la orden de compra:", error);
         });
 }
 
-function finalizarOrdenCompra(ordenCompraId) {
-    fetch(`http://localhost:9090/api/v1/ordenescompras/finalizar/${ordenCompraId}`, {
-        method: 'PUT'
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Orden de compra Finalizada exitosamente');
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                alert('Error al Finalizar la orden de compra');
-            }
-        })
-        .catch(error => {
-            console.error('Error al Finalizar la orden de compra:', error);
-        });
-}
+// Cargar artículos disponibles
+function cargararticulos() {
+    $.ajax({
+        type: 'GET',
+        url: 'http://localhost:9090/api/v1/articulos',
+        success: function(articulos) {
+            console.log('Artículos obtenidos:', articulos);
+            const articuloSelect = $('#articulo');
+            articuloSelect.empty(); // Clear previous options
 
-function cancelarOrdenCompra(ordenCompraId) {
-    fetch(`http://localhost:9090/api/v1/ordenescompras/cancelar/${ordenCompraId}`, {
-        method: 'PUT'
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Orden de compra Cancelada exitosamente');
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                alert('Error al Cancelada la orden de compra');
-            }
-        })
-        .catch(error => {
-            console.error('Error al Cancelada la orden de compra:', error);
-        });
+            articuloSelect.append('<option value="">Seleccione un Artículo</option>');
+
+            articulos.forEach(function(articulo) {
+                const option = $('<option>').text(articulo.nombreArticulo).attr('value', articulo.id);
+                articuloSelect.append(option);
+            });
+
+            // Evento para cargar proveedores al cambiar de artículo
+            articuloSelect.off('change').on('change', function() {
+                const articuloId = $(this).val();
+                if (articuloId) {
+                    cargarproveedores(articuloId, 'crear');
+                    cargarproveedorpredeterminado(articuloId);
+                }
+            });
+        },
+        error: function(error) {
+            console.error('Error al obtener la lista de artículos:', error);
+        }
+    });
 }
