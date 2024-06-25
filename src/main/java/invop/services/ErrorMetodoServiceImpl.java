@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -52,8 +53,10 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             double sumatoriaError = 0.0;
             List<Integer> listaDemandasHistoricas = crearListaHistoricasParaError(12, datosError.getFechaDesde(), datosError.getIdArticulo());
             int denominador = 0;
+            long cantidadMeses = ChronoUnit.MONTHS.between(datosError.getFechaDesde(), datosError.getFechaHasta());
 
-            for(int i = 0; i < 12; i++) {
+            System.out.println("La cantidad de meses de la fecha ingersada es: "+cantidadMeses);
+            for(int i = 0; i < cantidadMeses+1; i++) {
 
                 LocalDate fechaInicioMes = datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1);
                 LocalDate fechaFinMes = fechaInicioMes.withDayOfMonth(fechaInicioMes.lengthOfMonth());

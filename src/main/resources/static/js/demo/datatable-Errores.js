@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Error al obtener los errores:", error);
             });
     }
-
     // CARGA LOS ARTICULOS CUANDO SE CARGA LA PAGINA
     cargarArticulos();
 
@@ -102,90 +101,66 @@ document.addEventListener("DOMContentLoaded", function() {
     cargarErrores();
 
     //PARA CREAR ERROR
-    //CARGA LOS MODELOS EN EL LABEL DE CREAR
-    function cargarModelos() {
-        const modelos = ["PROMEDIO_MOVIL_PONDERADO", "PROMEDIO_MOVIL_SUAVIZADO", "REGRESION_LINEAL", "ESTACIONALIDAD"]; // Reemplaza esto con una llamada fetch si necesitas cargar los modelos desde el backend.
-        const modeloSelect = document.querySelector("#modeloPrediccion");
-        modelos.forEach(modelo => {
-            const option = document.createElement("option");
-            option.textContent = modelo;
-            option.value = modelo;
-            modeloSelect.appendChild(option);
-        });
-        modeloSelect.addEventListener("change", manejarCambioModelo);
-    }
 
-    //ATRAPA LA SELECCION DE MODELO Y ELIGE QUE MOSTRAR
-    function manejarCambioModelo(event){
-        const selectedModel = event.target.value;
-        const coefContainer = document.querySelector('#coefPondContainer');
-        const prediccionPMPS = document.querySelector('#prediccionPMPS');
-        const prediccionEst = document.querySelector('#prediccionEst');
-        const cantidadPeriodos = document.querySelector('#cantidadPeriodosContainer');
-
-        coefContainer.innerHTML = ''; //limpiar inputs previos
-        prediccionPMPS.style.display = 'none';
-        prediccionEst.style.display = 'none';
-        cantidadPeriodos.style.display = 'none';
-        coefContainer.style.display = 'none';
-
-        switch(selectedModel){
-            case "PROMEDIO_MOVIL_PONDERADO":
-                cantidadPeriodos.style.display = 'block';
-                coefContainer.style.display = 'block';
-                break;
-            case "PROMEDIO_MOVIL_SUAVIZADO":
-                prediccionPMPS.style.display = 'block';
-                break;
-            case "REGRESION_LINEAL":
-                cantidadPeriodos.style.display = 'block';
-                break;
-            case "ESTACIONALIDAD":
-                prediccionEst.style.display = 'block';
-                break;
-        }
-    }
-    cargarModelos();
 
     //ESTO ES PARA QUE INGRESE LOS COEFICIENTES DE PONDERACION SEGUN LA CANTIDAD DE PERIODOS
     document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
         const coefContainer = document.querySelector("#coefPondContainer");
-        coefContainer.innerHTML = ''; // Clear previous inputs
-        const cantidadPeriodos = this.value;
-        for (let i = 0; i < cantidadPeriodos; i++) {
-            const input = document.createElement("input");
-            input.type = "number";
-            input.className = "form-control";
-            input.name = `coefPond${i + 1}`;
-            input.placeholder = `Coeficiente ${i + 1}`;
-            coefContainer.appendChild(input);
+        coefContainer.innerHTML = ''; // Borra inputs previos
+        const cantidadPeriodos = parseInt(this.value);
+        if(cantidadPeriodos > 0){
+            coefContainer.style.display = 'block';
+            for (let i = 0; i < cantidadPeriodos; i++) {
+                const input = document.createElement("input");
+                input.type = "number";
+                input.className = "form-control";
+                input.name = `coefPond${i + 1}`;
+                input.placeholder = `Coeficiente ${i + 1}`;
+                coefContainer.appendChild(input);
+            }
+        } else {
+            coefContainer.style.display = 'none';
         }
+
     });
 
     //PARA CREAR EL ERROR, ES EL POST
     document.querySelector("#guardarError").addEventListener("click", function() {
         const form = document.querySelector("#crearErrorForm");
-        const formData = new FormData(form);
-        const jsonData = {};
-        formData.forEach((value, key) => {
-            if (key.startsWith("coefPond")) {
-                if (!jsonData.coefPonderacion) {
-                    jsonData.coefPonderacion = [];
-                }
-                jsonData.coefPonderacion.push(parseFloat(value));
-            } else {
-                jsonData[key] = value;
-            }
-        });
+        const formData = {
+            cantidadPeriodosHistoricos: document.querySelector('#cantidadPeriodos').value,
+            cantidadPeriodosAdelante: 1,
+            coeficientesPonderacion: [],
+            idArticulo: document.querySelector('#idArticulo').value,
+            mesAPredecir: null,
+            anioAPredecir: null,
+            alfa: document.querySelector('#alfa').value,
+            nombreMetodoPrediccion: null,
+            cantidadDemandaAnualTotal: document.querySelector('#demandaAnual').value,
+            fechaDesde: document.querySelector('#fechaDesde').value,
+            fechaHasta: document.querySelector('#fechaHasta').value
+        };
+        //agregar coef al formData
+        for (let i = 0; i < formData.cantidadPeriodosHistoricos; i++) {
+            const coefValue = parseFloat(document.querySelector(`input[name="coefPond${i + 1}"]`).value);
+            formData.coeficientesPonderacion.push(coefValue);
+        };
 
-        fetch("http://localhost:9090/api/v1/errores/calcularerror", {
+        console.log("Enviando datos... :", formData)
+
+        fetch("http://localhost:9090/api/v1/errores/crearErrores", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(jsonData)
+            body: JSON.stringify(formData)
         })
-            .then(response => response.json())
+            .then(response => {
+                if(!response.ok){
+                    throw new Error("Error en la respuesta del servidor" + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data) {
                     cargarErrores();
@@ -193,6 +168,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     console.error("Error al guardar el error:", data.message);
                 }
+            })
+            .catch(error => {
+                console.error("Error al guardar el error:", error);
             })
     });
 });
