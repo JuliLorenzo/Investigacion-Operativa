@@ -8,6 +8,7 @@ import invop.repositories.ArticuloRepository;
 import invop.repositories.BaseRepository;
 import invop.repositories.VentaDetalleRepository;
 import invop.repositories.VentaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +25,8 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
     private VentaRepository ventaRepository;
     @Autowired
     private ArticuloService articuloService;
-
     @Autowired
     private VentaDetalleRepository ventaDetalleRepository;
-
 
     public VentaServiceImpl(BaseRepository<Venta, Long> baseRepository, VentaRepository ventaRepository, ArticuloService articuloService, VentaDetalleRepository ventaDetalleRepository){
         super(baseRepository);
@@ -64,10 +63,10 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
 //    }
 
     //Crear una Venta
-
     public Venta crearVenta(VentaDto ventaDto) throws Exception {
         Venta nuevaVenta = new Venta();
         for (Map.Entry<String,Integer> item : ventaDto.getArticulosDetalleVenta().entrySet()) {
+            System.out.println("Entro a " + item.getKey() + ": " + item.getValue());
             String idArticuloStr = item.getKey();
             Long idArticulo = Long.parseLong(idArticuloStr);
             Integer cantidad = item.getValue();
@@ -82,6 +81,7 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         nuevaVenta.setFechaVenta(ventaDto.getFechaHora());
 
         ventaRepository.save(nuevaVenta);
+        System.out.println("guardo venta");
         return nuevaVenta;
     }
 
