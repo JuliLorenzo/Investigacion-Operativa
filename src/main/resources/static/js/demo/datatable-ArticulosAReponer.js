@@ -20,3 +20,11 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error al obtener los artículos a reponer:", error);
         });
 });
+
+$(document).ready(function() {
+    $('#articulos-areponer-table').DataTable({
+        "paging": false, // Deshabilita la paginación
+        searching: false, // Desactiva la función de búsqueda
+        info: false,      // Desactiva la información de 'Showing X of X entries'
+    });
+});

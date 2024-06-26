@@ -24,17 +24,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 </td>
                 <td>
                     <div style="text-align: center">
-                        <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}">
-                            <i class="fas fa-check"></i>
-                        </a>
-                        <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}">
+                        <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
                             <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                         </a>
-                        <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}">
+                       
+                        <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
+                            <i class="fas fa-check"></i>
+                        </a>
+                        
+                        <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cancelar">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                         ${ordenesdecompras.estadoOrdenCompra === 'PENDIENTE' ? `
-                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}">
+                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>` : ''}
                     </div>
@@ -42,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
                 tableBody.appendChild(row);
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
 
             // LLAMA AL METODO PARA IR AL DETALLE DE LAS OC
             tableBody.addEventListener('click', function(event) {
