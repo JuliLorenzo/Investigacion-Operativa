@@ -313,8 +313,9 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             // Verificar el valor seleccionado del proveedor
-            console.log('ID del proveedor seleccionado:', proveedorId);
+            console.log('ID del proveedor en el form data:', formData.proveedorPredeterminado.id);
             console.log('Datos enviados:', formData);
+
 
             // Realizar una solicitud PATCH al servidor para modificar el artículo
             $.ajax({
