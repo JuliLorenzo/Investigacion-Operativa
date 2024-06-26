@@ -14,5 +14,5 @@ public interface OrdenCompraRepository extends BaseRepository<OrdenCompra, Long>
             value = "SELECT * FROM ordenes_compra WHERE estado_orden_compra = :filtroEstado",
             nativeQuery = true
     )
-    List<OrdenCompra> findOrdenCompraByEstado(@Param("filtroEstado") EstadoOrdenCompra filtroEstado);
+    List<OrdenCompra> findOrdenCompraByEstado(@Param("filtroEstado") String filtroEstado);
 }

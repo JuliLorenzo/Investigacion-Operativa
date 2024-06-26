@@ -107,13 +107,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             articulo.setCantidadArticulo(nuevoStock);
             articuloRepository.save(articulo);
 
-            if (articulo.getModeloInventario() == ModeloInventario.MODELO_LOTE_FIJO){
-                try {
-                    controlStockPP(articulo);
-
-                }catch (Exception e){
-                    throw new Exception(e.getMessage());
-                }
+            if (articulo.getModeloInventario() == ModeloInventario.MODELO_LOTE_FIJO) {
+                controlStockPP(articulo);
             }
         }catch (Exception e){
             throw new Exception(e.getMessage());
@@ -132,9 +127,9 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     public void controlStockPP(Articulo articulo) throws Exception{
         if (articulo.getCantidadArticulo() <= articulo.getPuntoPedidoArticulo()){
             try{
-                //if (!ordenCompraService.articuloConOrdenActiva(articulo.getId())){
+                if (!controlOrdenCompraActiva(articulo.getId())){
                     ordenCompraService.crearOrdenCompraAutomatica(articulo);
-                //}
+                }
 
             }catch (Exception e){
                 throw new Exception(e.getMessage());

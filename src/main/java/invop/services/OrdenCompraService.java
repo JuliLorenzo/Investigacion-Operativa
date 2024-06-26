@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface OrdenCompraService extends BaseService<OrdenCompra, Long> {
     // Métodos específicos de Orden de Compra
-    public List<OrdenCompra> findOrdenCompraByEstado(EstadoOrdenCompra filtroEstado) throws Exception;
+    public List<OrdenCompra> findOrdenCompraByEstado(EstadoOrdenCompra estadoOrdenCompra) throws Exception;
     public boolean articuloConOrdenActiva(Long articuloId) throws Exception;
     public OrdenCompra crearOrdenCompraAutomatica(Articulo articulo) throws Exception;
     public OrdenCompra modificarOCAutomatica(Long idOrdenCompra, Long idProveedor, Integer nuevaCantidad) throws Exception;

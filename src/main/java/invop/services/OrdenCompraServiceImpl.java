@@ -37,7 +37,7 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
 
     public List<OrdenCompra> findOrdenCompraByEstado(EstadoOrdenCompra estadoOrdenCompra) throws Exception {
         try {
-            return ordenCompraRepository.findOrdenCompraByEstado(estadoOrdenCompra);
+            return ordenCompraRepository.findOrdenCompraByEstado(estadoOrdenCompra.name().toUpperCase());
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
