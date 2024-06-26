@@ -331,9 +331,7 @@ public class PrediccionDemandaServiceImpl extends BaseServiceImpl<PrediccionDema
             System.out.println("VALOR DE a: " + a);
 
             Integer valorPrediccion = (int)(a + (b * (datosPrediccionDTO.getCantidadPeriodosHistoricos()+1)));
-            if (valorPrediccion < 0){
-                valorPrediccion = 0;
-            }
+
             return valorPrediccion;
         } catch(Exception e){
             throw new Exception(e.getMessage());
