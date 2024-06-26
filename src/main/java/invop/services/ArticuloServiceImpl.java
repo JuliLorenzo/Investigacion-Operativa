@@ -456,6 +456,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
     public void modificarValoresSegunProveedor(Articulo articulo, Proveedor proveedor) throws Exception{
         try{
+            //System.out.println("EL id del articulo es: " + articulo.getId());
+            //System.out.println("EL id del proveedor es: " +proveedor.getId());
             ProveedorArticulo proveedorArticuloPred = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), proveedor.getId());
             articulo.setCostoAlmacenamientoArticulo(proveedorArticuloPred.getCostoAlmacenamientoArticuloProveedor());
             articulo.setCostoPedidoArticulo(proveedorArticuloPred.getCostoPedidoArticuloProveedor());
@@ -468,24 +470,29 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     public Articulo modificarArticulo(ModificarArticuloDTO articuloAModificar) throws Exception{
         try{
+
+
             Articulo nuevoArticulo = new Articulo();
             nuevoArticulo.setNombreArticulo(articuloAModificar.getNombreArticulo());
             nuevoArticulo.setId(articuloAModificar.getIdArticulo());
             nuevoArticulo.setTiempoRevisionArticulo(articuloAModificar.getTiempoRevisionArticulo());
 
+
+
             Proveedor proveedorPredeterminado = proveedorService.findById(articuloAModificar.getProveedorPredeterminadoId());
             nuevoArticulo.setProveedorPredeterminado(proveedorPredeterminado);
             nuevoArticulo.setModeloInventario(articuloAModificar.getModeloInventario());
+
 
             Optional<Articulo> articuloOpcional = articuloRepository.findById(nuevoArticulo.getId());
             Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + nuevoArticulo.getId()));
 
             BeanUtils.copyProperties(nuevoArticulo, articuloExistente, getNullPropertyNames(nuevoArticulo));
             Articulo articuloModificado = articuloOpcional.get();
-            System.out.println("DATOS DEL MODIFICADO: "+articuloModificado.getProveedorPredeterminado().getNombreProveedor()+articuloModificado.getModeloInventario());
+            articuloModificado.setProveedorPredeterminado(proveedorPredeterminado);
             articuloRepository.save(articuloModificado); //aca lo guardo para que no se pierda lo que modifico
 
-            System.out.println("EL PROV PREDETERMINADO ES "+ articuloModificado.getProveedorPredeterminado().getNombreProveedor());
+            //System.out.println("el id del predeterminado essss: "+nuevoArticulo.getProveedorPredeterminado().getId());
             modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
             modificarModeloInventarioArticulo(articuloModificado);
 
