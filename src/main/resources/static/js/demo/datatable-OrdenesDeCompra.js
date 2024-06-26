@@ -169,6 +169,8 @@ $('#crearOrdenDeCompraModal').on('show.bs.modal', function () {
     console.log("Modal para crear orden de compra mostrado");
 });
 
+$('#crearOrdenDeCompraModal .btn-primary').on('click', guardarOrdenDeCompra);
+
 // Función para guardar la orden de compra
 function guardarOrdenDeCompra() {
     console.log("Función guardarOrdenDeCompra llamada");
@@ -301,4 +303,54 @@ function cargararticulos() {
             console.error('Error al obtener la lista de artículos:', error);
         }
     });
+}
+function confirmarOrdenCompra(ordenCompraId) {
+    fetch(`http://localhost:9090/api/v1/ordenescompras/confirmar/${ordenCompraId}`, {
+        method: 'PUT'
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Orden de compra confirmada exitosamente');
+                location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                alert('Error al confirmar la orden de compra');
+            }
+        })
+        .catch(error => {
+            console.error('Error al confirmar la orden de compra:', error);
+        });
+}
+
+function finalizarOrdenCompra(ordenCompraId) {
+    fetch(`http://localhost:9090/api/v1/ordenescompras/finalizar/${ordenCompraId}`, {
+        method: 'PUT'
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Orden de compra Finalizada exitosamente');
+                location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                alert('Error al Finalizar la orden de compra');
+            }
+        })
+        .catch(error => {
+            console.error('Error al Finalizar la orden de compra:', error);
+        });
+}
+
+function cancelarOrdenCompra(ordenCompraId) {
+    fetch(`http://localhost:9090/api/v1/ordenescompras/cancelar/${ordenCompraId}`, {
+        method: 'PUT'
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Orden de compra Cancelada exitosamente');
+                location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                alert('Error al Cancelada la orden de compra');
+            }
+        })
+        .catch(error => {
+            console.error('Error al Cancelada la orden de compra:', error);
+        });
 }
