@@ -1,5 +1,6 @@
 package invop.services;
 
+import invop.dto.ModificarArticuloDTO;
 import invop.entities.*;
 import invop.enums.ModeloInventario;
 import invop.repositories.ArticuloRepository;
@@ -458,20 +459,33 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             ProveedorArticulo proveedorArticuloPred = proveedorArticuloService.findProveedorArticuloByAmbosIds(articulo.getId(), proveedor.getId());
             articulo.setCostoAlmacenamientoArticulo(proveedorArticuloPred.getCostoAlmacenamientoArticuloProveedor());
             articulo.setCostoPedidoArticulo(proveedorArticuloPred.getCostoPedidoArticuloProveedor());
+            System.out.println("el CA ES : "+ articulo.getCostoAlmacenamientoArticulo());
             articuloRepository.save(articulo); //lo guardo primero para q despues con los calculos use esto
         }catch (Exception e ) {
             throw new Exception(e.getMessage());
         }
     }
 
-    public Articulo modificarArticulo(Long idArticulo, Articulo nuevoArticulo) throws Exception{
+    public Articulo modificarArticulo(ModificarArticuloDTO articuloAModificar) throws Exception{
         try{
-            Optional<Articulo> articuloOpcional = articuloRepository.findById(idArticulo);
-            Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + idArticulo));
+            Articulo nuevoArticulo = new Articulo();
+            nuevoArticulo.setNombreArticulo(articuloAModificar.getNombreArticulo());
+            nuevoArticulo.setId(articuloAModificar.getIdArticulo());
+            nuevoArticulo.setTiempoRevisionArticulo(articuloAModificar.getTiempoRevisionArticulo());
+
+            Proveedor proveedorPredeterminado = proveedorService.findById(articuloAModificar.getProveedorPredeterminadoId());
+            nuevoArticulo.setProveedorPredeterminado(proveedorPredeterminado);
+            nuevoArticulo.setModeloInventario(articuloAModificar.getModeloInventario());
+
+            Optional<Articulo> articuloOpcional = articuloRepository.findById(nuevoArticulo.getId());
+            Articulo articuloExistente = articuloOpcional.orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con el id: " + nuevoArticulo.getId()));
+
             BeanUtils.copyProperties(nuevoArticulo, articuloExistente, getNullPropertyNames(nuevoArticulo));
             Articulo articuloModificado = articuloOpcional.get();
+            System.out.println("DATOS DEL MODIFICADO: "+articuloModificado.getProveedorPredeterminado().getNombreProveedor()+articuloModificado.getModeloInventario());
             articuloRepository.save(articuloModificado); //aca lo guardo para que no se pierda lo que modifico
 
+            System.out.println("EL PROV PREDETERMINADO ES "+ articuloModificado.getProveedorPredeterminado().getNombreProveedor());
             modificarValoresSegunProveedor(articuloModificado, articuloModificado.getProveedorPredeterminado());
             modificarModeloInventarioArticulo(articuloModificado);
 

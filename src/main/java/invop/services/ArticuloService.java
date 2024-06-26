@@ -1,5 +1,6 @@
 package invop.services;
 
+import invop.dto.ModificarArticuloDTO;
 import invop.entities.Articulo;
 import invop.entities.Proveedor;
 import invop.entities.ProveedorArticulo;
@@ -45,7 +46,7 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void modificarModeloInventarioArticulo(Articulo articulo) throws Exception;
     public void sacarIntervaloFijo(Articulo articulo) throws Exception;
     public void sacarLoteFijo(Articulo articulo) throws Exception;
-    public Articulo modificarArticulo(Long idArticulo,  Articulo nuevoArticulo) throws Exception;
+    public Articulo modificarArticulo(ModificarArticuloDTO articuloAModificar) throws Exception;
     //fin
 
     public Articulo crearArticulo(Articulo articuloCreado, ProveedorArticulo proveedorArticulo) throws Exception;

@@ -303,17 +303,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
             //proveedorId = proveedorId ? parseInt(proveedorId, 10) : null;
             var formData = {
-                id: articuloId,
+                idArticulo: articuloId,
                 nombreArticulo: $('#nombreParaModificar').val(),
                 modeloInventario: modeloSeleccionado,
-                proveedorPredeterminado: {
-                    id: proveedorId
-                },
+                proveedorPredeterminadoId: proveedorId,
                 tiempoRevisionArticulo: tiempoRevision ? parseFloat(tiempoRevision) : null
             };
 
             // Verificar el valor seleccionado del proveedor
-            console.log('ID del proveedor en el form data:', formData.proveedorPredeterminado.id);
+            console.log('ID del proveedor en el form data:', formData.proveedorPredeterminadoId);
             console.log('Datos enviados:', formData);
 
 

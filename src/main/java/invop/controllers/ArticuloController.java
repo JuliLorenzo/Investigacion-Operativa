@@ -3,6 +3,7 @@ package invop.controllers;
 import invop.dto.ArticuloAReponerDto;
 import invop.dto.ArticuloFaltanteDto;
 import invop.dto.CrearArticuloDto;
+import invop.dto.ModificarArticuloDTO;
 import invop.entities.Articulo;
 import invop.entities.Proveedor;
 import invop.entities.ProveedorArticulo;
@@ -91,9 +92,9 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
 
 
     @PatchMapping("/modificar/{idArticulo}")
-    public ResponseEntity<?> modificarArticulo(@PathVariable Long idArticulo, @RequestBody Articulo articulo){
+    public ResponseEntity<?> modificarArticulo(@RequestBody ModificarArticuloDTO articuloModificado){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(articuloService.modificarArticulo(idArticulo, articulo));
+            return ResponseEntity.status(HttpStatus.OK).body(articuloService.modificarArticulo(articuloModificado));
         }
         catch (Exception e){
             e.printStackTrace();
