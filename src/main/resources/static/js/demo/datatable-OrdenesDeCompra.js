@@ -24,17 +24,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 </td>
                 <td>
                     <div style="text-align: center">
-                        <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}">
-                            <i class="fas fa-check"></i>
-                        </a>
-                        <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}">
+                        <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
                             <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                         </a>
-                        <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}">
+                       
+                        <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
+                            <i class="fas fa-check"></i>
+                        </a>
+                        
+                        <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cancelar">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                         ${ordenesdecompras.estadoOrdenCompra === 'PENDIENTE' ? `
-                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}">
+                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>` : ''}
                     </div>
@@ -42,6 +44,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 `;
                 tableBody.appendChild(row);
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
 
             // LLAMA AL METODO PARA IR AL DETALLE DE LAS OC
             tableBody.addEventListener('click', function(event) {
@@ -235,33 +239,22 @@ function guardarOrdenDeCompra() {
 function editarOrdenDeCompra(ordenCompraId) {
     console.log("Función editarOrdenDeCompra llamada para ID:", ordenCompraId);
     const proveedorId = $('#editarproveedor').val();
-    const proveedorNombre = $('#editarproveedor option:selected').text();
     const cantidadAComprar = $('#editarcantidadorden').val();
-    const articuloId = $('#editararticulo').val();
-    const articuloNombre = $('#editararticulo option:selected').text();
 
-    const ordenEditada = {
-        id: ordenCompraId,
-        proveedor: {
-            id: proveedorId,
-            nombreProveedor: proveedorNombre
-        },
-        ordenCompraDetalles: [{
-            cantidadAComprar: cantidadAComprar,
-            articulo: {
-                id: articuloId,
-                nombreArticulo: articuloNombre
-            }
-        }]
-    };
-    console.log("Orden de compra editada a enviar:", ordenEditada);
+    // Crear los parámetros de consulta para la solicitud
+    const url = new URL(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}/modificar`);
+    if (proveedorId) {
+        url.searchParams.append('idProveedor', proveedorId);
+    }
+    if (cantidadAComprar) {
+        url.searchParams.append('nuevaCantidad', cantidadAComprar);
+    }
 
-    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}`, {
+    fetch(url, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ordenEditada),
+        }
     })
         .then(response => response.json())
         .then(data => {
@@ -272,6 +265,7 @@ function editarOrdenDeCompra(ordenCompraId) {
             console.error("Error al editar la orden de compra:", error);
         });
 }
+
 
 // Cargar artículos disponibles
 function cargararticulos() {
