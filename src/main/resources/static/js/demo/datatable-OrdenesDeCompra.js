@@ -235,33 +235,22 @@ function guardarOrdenDeCompra() {
 function editarOrdenDeCompra(ordenCompraId) {
     console.log("Función editarOrdenDeCompra llamada para ID:", ordenCompraId);
     const proveedorId = $('#editarproveedor').val();
-    const proveedorNombre = $('#editarproveedor option:selected').text();
     const cantidadAComprar = $('#editarcantidadorden').val();
-    const articuloId = $('#editararticulo').val();
-    const articuloNombre = $('#editararticulo option:selected').text();
 
-    const ordenEditada = {
-        id: ordenCompraId,
-        proveedor: {
-            id: proveedorId,
-            nombreProveedor: proveedorNombre
-        },
-        ordenCompraDetalles: [{
-            cantidadAComprar: cantidadAComprar,
-            articulo: {
-                id: articuloId,
-                nombreArticulo: articuloNombre
-            }
-        }]
-    };
-    console.log("Orden de compra editada a enviar:", ordenEditada);
+    // Crear los parámetros de consulta para la solicitud
+    const url = new URL(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}/modificar`);
+    if (proveedorId) {
+        url.searchParams.append('idProveedor', proveedorId);
+    }
+    if (cantidadAComprar) {
+        url.searchParams.append('nuevaCantidad', cantidadAComprar);
+    }
 
-    fetch(`http://localhost:9090/api/v1/ordenescompras/${ordenCompraId}`, {
+    fetch(url, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ordenEditada),
+        }
     })
         .then(response => response.json())
         .then(data => {
@@ -272,6 +261,7 @@ function editarOrdenDeCompra(ordenCompraId) {
             console.error("Error al editar la orden de compra:", error);
         });
 }
+
 
 // Cargar artículos disponibles
 function cargararticulos() {
