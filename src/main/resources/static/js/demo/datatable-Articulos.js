@@ -208,6 +208,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+    let modeloOriginal = null;
+    let proveedorOriginalId = null;
     $(document).on('click', '.btn-modificar-articulo', function (event) {
         event.preventDefault();
         var articuloId = $(this).data('id');
@@ -222,8 +224,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log('Artículo obtenido:', articulo);
                 // Rellena el formulario con la información del artículo
                 $('#nombreParaModificar').val(articulo.nombreArticulo);
+                modeloOriginal = articulo.modeloInventario;
+                proveedorOriginalId = articulo.proveedorPredeterminado.id;
+                console.log("EL ORIGINAL POSTA DE UN PRINCIPIOE S: ",proveedorOriginalId)
                 const modeloSelect = $('#modeloParaModificar');
                 modeloSelect.empty();
+
+                if(!articulo.modeloInventario){
+                    const opcionDefault = $('<option>').text("Seleccione un modelo de inventario").attr('value', '');
+                    modeloSelect.append(opcionDefault);
+                }
                 modelosInventario.forEach(function (modelo) {
                     const option = $('<option>').text(modelo).attr('value', modelo);
                     if (modelo === articulo.modeloInventario) {
@@ -243,13 +253,16 @@ document.addEventListener("DOMContentLoaded", function() {
                         proveedorSelect.empty();
                         const defaultOption = document.createElement("option");
                         defaultOption.textContent = articulo.proveedorPredeterminado.nombreProveedor;
+                        proveedorOriginalId = articulo.proveedorPredeterminado.id;
+                        //const defaultOption = $('<option>').text(articulo.proveedorPredeterminado.nombreProveedor).attr('value', articulo.proveedorPredeterminado.id);
                         proveedorSelect.append(defaultOption);
+
                         proveedoresarticulos.forEach(function(proveedorarticulo) {
                             const proveedor = proveedorarticulo.proveedor;
                             const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
-                            if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
+                            /*if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
                                 option.attr('selected', 'selected');
-                            }
+                            }*/
                             proveedorSelect.append(option);
                         });
                     },
@@ -271,12 +284,28 @@ document.addEventListener("DOMContentLoaded", function() {
         $('#guardarArticuloModificado').off('click').on('click', function() {
             console.log('ID DEL ARTICULO:', articuloId);
             var tiempoRevision = $('#tiempoEntrePedidosModificacion').val();
+
+            var modeloSeleccionado = $('#modeloParaModificar').val();
+            if(modeloSeleccionado == '' || modeloSeleccionado == null){
+                modeloSeleccionado = modeloOriginal;
+            }
+
+
             var proveedorId = $('#proveedorParaModificar').val();
-            proveedorId = proveedorId ? parseInt(proveedorId, 10) : null;
+            console.log('ID MUCHO ANTES:', proveedorId);
+            if (isNaN(proveedorId)){
+                proveedorId = proveedorOriginalId;
+            } else {
+                proveedorId = parseInt(proveedorId, 10)
+            }
+
+            console.log('ID del proveedor seleccionado:', proveedorId);
+
+            //proveedorId = proveedorId ? parseInt(proveedorId, 10) : null;
             var formData = {
                 id: articuloId,
                 nombreArticulo: $('#nombreParaModificar').val(),
-                modeloInventario: $('#modeloParaModificar').val(),
+                modeloInventario: modeloSeleccionado,
                 proveedorPredeterminado: {
                     id: proveedorId
                 },
@@ -284,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             // Verificar el valor seleccionado del proveedor
-            console.log('ID del proveedor seleccionado:', $('#proveedorParaModificar').val());
+            console.log('ID del proveedor seleccionado:', proveedorId);
             console.log('Datos enviados:', formData);
 
             // Realizar una solicitud PATCH al servidor para modificar el artículo
@@ -306,6 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+
 
     function toggleTiempoEntrePedidosModificacion(modelo) {
         if (modelo === 'MODELO_INTERVALO_FIJO') {
