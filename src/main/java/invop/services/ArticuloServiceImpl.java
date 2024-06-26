@@ -225,7 +225,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     //Ver si mover el metodo a DemandaHistorica
     @Override
-    //@Transactional
+    @Transactional
     public Integer calculoDemandaAnual(Long idArticulo) throws Exception {
         try {
             // Obtener fecha actual y fecha de hace un año
@@ -235,7 +235,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
             Articulo articulo = articuloRepository.findById(idArticulo).orElseThrow(() -> new Exception("Articulo no encontrado"));
 
             // esto es para que si el artículo es nuevo, usa el atributo cargado en articulo como la demanda anual
-            if (demandaAnual == -1) {
+            if (demandaAnual == 0) {
                 demandaAnual = articulo.getDemandaAnualArticulo();
             }
 
