@@ -9,18 +9,75 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector("#ventas-table tbody");
+            let i = 0;
             data.forEach(venta => {
                 const row = document.createElement("tr");
+                const idVenta = venta.id;
+
                 row.innerHTML = `
                     <td>${venta.id}</td>
                     <td>${venta.fechaVenta}</td>
+                    <td>
+                        <a href="VentaDetalle.html" class="btn btn-primary btn-icon-split ver-detalles"  data-id-venta="${venta.id}">
+                            <span class="text">Ver detalles</span>
+                        </a>
+                    </td>
                 `;
                 tableBody.appendChild(row);
+                const verDetallesBtn = row.querySelector('.ver-detalles');
+                verDetallesBtn.addEventListener('click', function(event){
+                    event.preventDefault();
+                    const idVentaAMandar = this.getAttribute('data-id-venta');
+                    localStorage.setItem('idVentaSeleccionada', idVenta);
+                    window.location.href = "VentaDetalle.html"
+                });
+
+
             });
         })
         .catch(error => {
             console.error("Error al obtener las ventas:", error);
         });
+
+
+
+    /*
+    * document.querySelectorAll('.ver-detalles').forEach(button => {
+        button.addEventListener('click', function() {
+            const idVenta = this.getAttribute('data-id-venta');
+            if (idVenta) {
+                sessionStorage.setItem('idVenta', idVenta);
+                console.log(`ID de venta ${idVenta} guardado en sessionStorage.`);
+                window.location.href = 'VentaDetalle.html';
+            } else {
+    let j = 0;
+    document.querySelectorAll('.ver-detalles').forEach(button => {
+        button.add()('click', function(){
+            const idVenta = this.getAttribute('data-id-venta');
+            if(idVenta){
+                sessionStorage.setItem('idVenta', idVenta);
+                localStorage.setItem('idVenta', idVenta);
+                //console.log("EL id anets de mandar es: ",localStorage.getItem(idVenta));
+
+                window.location.href = `VentaDetalle.html`;
+            }else{
+                console.error('ID de venta no encontrado.');
+            }
+        });
+        j++;
+    });
+    document.getElementById('ver-detalles').addEventListener('click', function() {
+        const idVenta = this.getAttribute('data-id-venta');
+        if(idVenta){
+            sessionStorage.setItem('idVenta', idVenta);
+            localStorage.setItem('idVenta', idVenta);
+            //console.log("EL id anets de mandar es: ",localStorage.getItem(idVenta));
+
+            window.location.href = `VentaDetalle.html`;
+        }else{
+            console.error('ID de venta no encontrado.');
+        }
+    });*/
 
     // Agregar funcionalidad para agregar detalles dinámicos
     document.getElementById('agregarDetalleBtn').addEventListener('click', function() {

@@ -21,4 +21,12 @@ public interface VentaDetalleRepository extends BaseRepository<VentaDetalle, Lon
     )
     List<VentaDetalle> findDetallesByArticulo(@PathVariable("filtroArticulo") Long filtroArticulo);
 
+    @Query(
+            value = "SELECT * " +
+                    "FROM venta_detalles " +
+                    "WHERE id_venta = :filtroVenta ",
+            nativeQuery = true
+    )
+    List<VentaDetalle> findDetallesByVenta(@PathVariable("filtroVenta") Long filtroVenta);
+
 }

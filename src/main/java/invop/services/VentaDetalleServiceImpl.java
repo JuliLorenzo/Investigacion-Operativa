@@ -30,4 +30,13 @@ public class VentaDetalleServiceImpl extends BaseServiceImpl<VentaDetalle, Long>
         }
     }
 
+    public List<VentaDetalle> buscarDetallesPorVenta(Long idVenta) throws Exception{
+        try{
+            List<VentaDetalle> listaDetalles = ventaDetalleRepository.findDetallesByVenta(idVenta);
+            return listaDetalles;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
 }

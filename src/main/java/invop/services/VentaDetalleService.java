@@ -11,4 +11,6 @@ public interface VentaDetalleService extends BaseService<VentaDetalle, Long> {
 
     public List<VentaDetalle> buscarDetallesPorIdArticulo(Long idArticulo) throws Exception;
 
+    public List<VentaDetalle> buscarDetallesPorVenta(Long idVenta) throws Exception;
+
 }
