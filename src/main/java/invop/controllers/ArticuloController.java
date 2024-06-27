@@ -7,7 +7,6 @@ import invop.dto.ModificarArticuloDTO;
 import invop.entities.Articulo;
 import invop.entities.Proveedor;
 import invop.entities.ProveedorArticulo;
-import invop.enums.ModeloInventario;
 import invop.services.ArticuloService;
 import invop.services.ArticuloServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
