@@ -187,9 +187,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (response) {
                         alert('El artículo tiene una orden de compra activa y no puede ser eliminado');
                     } else {
+                        console.log("el id del art es ", articuloId)
                         $.ajax({
                             type: 'DELETE',
-                            url: `http://localhost:9090/api/v1/articulos/${articuloId}`,
+                            url: `http://localhost:9090/api/v1/articulos/borrarArticulo/${articuloId}`,
                             success: function() {
                                 alert('Artículo eliminado exitosamente');
                                 location.reload();  // Actualizar la tabla para reflejar la eliminación

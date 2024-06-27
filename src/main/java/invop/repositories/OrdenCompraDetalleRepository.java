@@ -14,7 +14,13 @@ import java.util.List;
 
 @Repository
 public interface OrdenCompraDetalleRepository extends BaseRepository<OrdenCompraDetalle, Long> {
-    List<OrdenCompraDetalle> findByArticuloId(Long articuloId);
+    @Query(
+            value = "SELECT * " +
+                    "FROM orden_compra_detalles " +
+                    "WHERE id_articulo = :idArticulo ",
+            nativeQuery = true
+    )
+    List<OrdenCompraDetalle> buscarDetallesPorArticulo(@Param("idArticulo") Long idArticulo);
 
 
     @Query(

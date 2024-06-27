@@ -1,19 +1,19 @@
 package invop.services;
 
+import invop.controllers.VentaDetalleController;
 import invop.dto.ModificarArticuloDTO;
 import invop.entities.*;
 import invop.enums.ModeloInventario;
-import invop.repositories.ArticuloRepository;
-import invop.repositories.BaseRepository;
-import invop.repositories.ProveedorArticuloRepository;
-import invop.repositories.VentaRepository;
+import invop.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.View;
 
 import java.beans.PropertyDescriptor;
 import java.time.LocalDate;
@@ -25,6 +25,8 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
 
     @Autowired
     private ArticuloRepository articuloRepository;
+    //@Autowired
+    //private DemandaHistoricaRepository demandaHistoricaRepository;
     @Autowired
     private OrdenCompraService ordenCompraService;
     @Autowired
@@ -33,16 +35,38 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     private ProveedorArticuloService proveedorArticuloService;
     @Autowired
     private ProveedorService proveedorService;
+    /*@Autowired
+    private VentaDetalleRepository ventaDetalleRepository;
     @Autowired
-    private VentaDetalleService ventaDetalleService;
+    private PrediccionDemandaRepository prediccionDemandaRepository;
+    @Autowired
+    private OrdenCompraDetalleRepository ordenCompraDetalleRepository;
+    @Autowired
+    private OrdenCompraDetalleService ordenCompraDetalleService;
+    @Autowired
+    private ErrorMetodoRepository errorMetodoRepository;
+    @Autowired
+    private ErrorMetodoService errorMetodoService;
+    @Autowired
+    private VentaDetalleRepository ventaDetalleRepository;
+    @Autowired
+    private ProveedorArticuloRepository proveedorArticuloRepository;*/
 
-    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository, OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService, ProveedorArticuloService proveedorArticuloService, ProveedorService proveedorService) {
+    public ArticuloServiceImpl(BaseRepository<Articulo, Long> baseRepository, ArticuloRepository articuloRepository,
+                               OrdenCompraService ordenCompraService, DemandaHistoricaService demandaHistoricaService,
+                               ProveedorArticuloService proveedorArticuloService, ProveedorService proveedorService) {
         super(baseRepository);
         this.articuloRepository = articuloRepository;
         this.ordenCompraService = ordenCompraService;
         this.demandaHistoricaService = demandaHistoricaService;
         this.proveedorArticuloService = proveedorArticuloService;
         this.proveedorService = proveedorService;
+        /*this.prediccionDemandaRepository = prediccionDemandaRepository;
+        this.ordenCompraDetalleRepository = ordenCompraDetalleRepository;
+        this.ordenCompraDetalleService = ordenCompraDetalleService;
+        this.errorMetodoRepository = errorMetodoRepository;
+        this.errorMetodoService = errorMetodoService;
+        this.ventaDetalleRepository = ventaDetalleRepository;*/
     }
 
     public Articulo findArticuloById(Long id) {
@@ -62,28 +86,85 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
     }
 
     //Borrar articulo si no hay orden de compra activa
-    public boolean darDeBajaArticulo(Long idArticulo) throws Exception{
+    /*public boolean darDeBajaArticulo(Long idArticulo) throws Exception{
         boolean ordenActiva = controlOrdenCompraActiva(idArticulo);
         try{
             if(!ordenActiva){
                 Articulo articuloABorrar = articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado"));
                 List<ProveedorArticulo> lineasProveedorArticulo = proveedorArticuloService.findProveedoresByArticulo(idArticulo);
                 List<VentaDetalle> listaDetalles = ventaDetalleService.buscarDetallesPorIdArticulo(idArticulo);
+                List<PrediccionDemanda> listaPredicciones = prediccionDemandaService.buscarPrediccionesSegunArticulo(idArticulo);
+                List<DemandaHistorica> listaDemandas = demandaHistoricaRepository.buscarDemandasHistoricasPorArticulo(idArticulo);
+                List<OrdenCompraDetalle> listaDetallesOC = ordenCompraDetalleRepository.buscarDetallesPorArticulo(idArticulo);
+                List<ErrorMetodo> listaErrores = errorMetodoRepository.findErroresByArticulo(idArticulo);
+
                 //borra todos los detalles relacionados con ese articulo
                 for (VentaDetalle ventaDetalle : listaDetalles){
                     Long idLinea = ventaDetalle.getId();
                     ventaDetalleService.delete(idLinea);
                 }
-                for( ProveedorArticulo linea : lineasProveedorArticulo){
+
+                for (ProveedorArticulo linea : lineasProveedorArticulo){
                     Long idLinea = linea.getId();
                     proveedorArticuloService.delete(idLinea);
                 }
+
+                for (PrediccionDemanda prediccion : listaPredicciones) {
+                    Long idPrediccion = prediccion.getId();
+                    prediccionDemandaService.delete(idPrediccion);
+                }
+
+                for (DemandaHistorica demanda : listaDemandas) {
+                    Long idDemanda = demanda.getId();
+                    demandaHistoricaService.delete(idDemanda);
+                }
+
+                for (OrdenCompraDetalle ordenCompraDetalle : listaDetallesOC) {
+                    Long idOrdenCompraDetalle = ordenCompraDetalle.getId();
+                    ordenCompraDetalleService.delete(idOrdenCompraDetalle);
+                }
+
+                for (ErrorMetodo error : listaErrores) {
+                    Long idError = error.getId();
+                    errorMetodoService.delete(idError);
+                }
+
                 articuloRepository.delete(articuloABorrar);
                 return true;
-            } else{
+            } else {
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }*/
+
+    public boolean darDeBajaArticulo(Long idArticulo) throws Exception{
+        boolean ordenActiva = controlOrdenCompraActiva(idArticulo);
+        System.out.println("el control de la orden es: "+ordenActiva);
+        try {
+            if (!ordenActiva) {
+                Articulo articuloABorrar = articuloRepository.findById(idArticulo).orElseThrow(() -> new EntityNotFoundException("Articulo no encontrado"));
+                System.out.println("el articulo es"+articuloABorrar.getId());
+                articuloRepository.deleteDetallesByVenta(idArticulo);
+                System.out.println("borre el detalle venta");
+                articuloRepository.deleteDetallesPorArticulo(idArticulo);
+                System.out.println("borre el detalle oc");
+                articuloRepository.deletePrediccionesByArticulo(idArticulo);
+                System.out.println("borre la prediccion");
+                articuloRepository.deleteDemandasHistoricasPorArticulo(idArticulo);
+                System.out.println("borre la demanda his");
+                articuloRepository.deleteProveedorArticuloByArticulo(idArticulo);
+                System.out.println("borre el prov art");
+                articuloRepository.deleteErroresByArticulo(idArticulo);
+                System.out.println("borre el errores");
+
+                articuloRepository.delete(articuloABorrar);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
