@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
+
+
     fetch("http://localhost:9090/api/v1/ordenescompras")
         .then(response => response.json())
         .then(data => {
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>
                     <a href="OrdenCompraDetalle.html" class="btn btn-primary btn-icon-split ver-detalles-oc"  data-id-oc="${ordenesdecompras.id}">
                             <span class="text">Ver detalles</span>
-                        </a>
+                    </a>
                 </td>
                 <td>
                     <div style="text-align: center">
@@ -43,6 +45,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     </div>
                 </td>
                 `;
+
+
                 tableBody.appendChild(row);
                 const verDetallesOCBtn = row.querySelector('.ver-detalles-oc');
                 verDetallesOCBtn.addEventListener('click', function(event){
