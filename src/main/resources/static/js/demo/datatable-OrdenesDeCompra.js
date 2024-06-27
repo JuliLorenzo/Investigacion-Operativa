@@ -19,31 +19,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>${ordenesdecompras.estadoOrdenCompra}</td>
                 <td>${ordenesdecompras.proveedor ? ordenesdecompras.proveedor.nombreProveedor : 'No asignado'}</td>
                 <td>
-                    <a href="OrdenCompraDetalle.html" class="btn btn-primary btn-icon-split ver-detalles-oc"  data-id-oc="${ordenesdecompras.id}">
-                            <span class="text">Ver detalles</span>
-                        </a>
+                    <a href="OrdenCompraDetalle.html" class="btn btn-primary btn-icon-split ver-detalles-oc" data-id-oc="${ordenesdecompras.id}">
+                        <span class="text">Ver detalles</span>
+                    </a>
                 </td>
                 <td>
                     <div style="text-align: center">
-                        <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
-                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                        </a>
-                       
-                        <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
-                            <i class="fas fa-check"></i>
-                        </a>
-                        
-                        <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cancelar">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </a>
                         ${ordenesdecompras.estadoOrdenCompra === 'PENDIENTE' ? `
-                        <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>` : ''}
+                            <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
+                                <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                            </a>
+                            <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-circle btn-sm btn-accion btn-cancelar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cancelar">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </a>
+                            
+                            <a href="#" class="btn btn-warning btn-circle btn-sm btn-modificar-OC" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        ` : ordenesdecompras.estadoOrdenCompra === 'EN_CURSO' ? `
+                            <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
+                                <i class="fas fa-check"></i>
+                            </a>
+                        ` : ''}
                     </div>
                 </td>
                 `;
                 tableBody.appendChild(row);
+
                 const verDetallesOCBtn = row.querySelector('.ver-detalles-oc');
                 verDetallesOCBtn.addEventListener('click', function(event){
                     event.preventDefault();
@@ -100,6 +105,9 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error al obtener las órdenes de compra:", error);
         });
 });
+
+
+
 
 // ABRIR EL MODAL DE MODIFICACION
 function abrirEditarOrdenCompraModal(ordenCompraId) {
