@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
                                 <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                             </a>
+                           
                             <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
                                 <i class="fas fa-check"></i>
                             </a>
