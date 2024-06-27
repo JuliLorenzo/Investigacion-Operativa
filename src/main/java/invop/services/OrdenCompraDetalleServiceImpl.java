@@ -1,9 +1,6 @@
 package invop.services;
 
-import invop.entities.Articulo;
-import invop.entities.OrdenCompra;
-import invop.entities.OrdenCompraDetalle;
-import invop.entities.Venta;
+import invop.entities.*;
 import invop.repositories.OrdenCompraDetalleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,15 @@ public class OrdenCompraDetalleServiceImpl extends BaseServiceImpl<OrdenCompraDe
         this.ordenCompraDetalleRepository = ordenCompraDetalleRepository;
     }
 
+
+    public List<OrdenCompraDetalle> buscarDetallesPorOC(Long idOC) throws Exception{
+        try{
+            List<OrdenCompraDetalle> listaDetalles = ordenCompraDetalleRepository.findDetallesByOC(idOC);
+            return listaDetalles;
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 }
 
 

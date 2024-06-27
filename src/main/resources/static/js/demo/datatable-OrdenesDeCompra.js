@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     .map(detalle => detalle.articulo ? detalle.articulo.nombreArticulo : 'No asignado')
                     .join(', ');
 
+                const idOC = ordenesdecompras.id;
                 row.innerHTML = `
                 <td>${ordenesdecompras.id}</td>
                 <td>${nombresArticulos}</td>
@@ -18,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 <td>${ordenesdecompras.estadoOrdenCompra}</td>
                 <td>${ordenesdecompras.proveedor ? ordenesdecompras.proveedor.nombreProveedor : 'No asignado'}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm btn-detalle" data-id="${ordenesdecompras.id}">
-                        Detalle
-                    </button>
+                    <a href="OrdenCompraDetalle.html" class="btn btn-primary btn-icon-split ver-detalles-oc"  data-id-oc="${ordenesdecompras.id}">
+                            <span class="text">Ver detalles</span>
+                        </a>
                 </td>
                 <td>
                     <div style="text-align: center">
@@ -43,6 +44,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 </td>
                 `;
                 tableBody.appendChild(row);
+                const verDetallesOCBtn = row.querySelector('.ver-detalles-oc');
+                verDetallesOCBtn.addEventListener('click', function(event){
+                    event.preventDefault();
+                    const idOCAMandar = this.getAttribute('data-id-oc');
+                    localStorage.setItem('idOCSeleccionada', idOC);
+                    window.location.href = "OrdenCompraDetalle.html";
+                });
             });
 
             $('[data-toggle="tooltip"]').tooltip();
