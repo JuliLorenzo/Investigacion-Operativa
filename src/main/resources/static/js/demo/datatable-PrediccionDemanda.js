@@ -168,6 +168,10 @@ document.addEventListener("DOMContentLoaded", function () {
     //document.getElementById('guardarPrediccion').addEventListener('click', submitForm);
     document.querySelector("#guardarPrediccion").addEventListener("click",
         function () {
+        if(document.querySelector('#metodo').value != "ESTACIONALIDAD" || document.querySelector('#metodo').value != "REGRESION_LINEAL" || document.querySelector('#metodo').value != "PROMEDIO_MOVIL_PONDERADO" || document.querySelector('#metodo').value != "PROMEDIO_MOVIL_SUAVIZADO") {
+            alert("Para predecir con este artículo debe primero guardar el método predeterminado. Para ello debe calcular el error para ese artículo.");
+            return;
+        }
             const form = document.querySelector("#crearPrediccionForm");
             let periodosHistoricos = null;
             let alfa = null;
@@ -208,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 fechaDesde: null,
                 fechaHasta: null,
             };
+
             console.log("Enviando datos... :", formData);
             fetch("http://localhost:9090/api/v1/prediccionesdemandas/crearPredicciones", {
                 method: "POST",
