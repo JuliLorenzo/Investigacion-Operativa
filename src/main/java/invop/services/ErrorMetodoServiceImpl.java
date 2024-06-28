@@ -51,12 +51,13 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
     public Double calculoError(DatosPrediccionDTO datosError) throws Exception{
         try{
             double sumatoriaError = 0.0;
-            List<Integer> listaDemandasHistoricas = crearListaHistoricasParaError(12, datosError.getFechaDesde(), datosError.getIdArticulo());
+
             int denominador = 0;
             long cantidadMeses = ChronoUnit.MONTHS.between(datosError.getFechaDesde(), datosError.getFechaHasta());
+            List<Integer> listaDemandasHistoricas = crearListaHistoricasParaError(cantidadMeses, datosError.getFechaDesde(), datosError.getIdArticulo());
 
             System.out.println("La cantidad de meses de la fecha ingersada es: "+cantidadMeses);
-            for(int i = 0; i < cantidadMeses+1; i++) {
+            for(int i = 0; i < cantidadMeses; i++) {
 
                 LocalDate fechaInicioMes = datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1);
                 LocalDate fechaFinMes = fechaInicioMes.withDayOfMonth(fechaInicioMes.lengthOfMonth());
@@ -96,7 +97,8 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
             if(denominador == 0){
                 denominador = 1;
             }
-
+            System.out.println("La sumatoria es: " + sumatoriaError);
+            System.out.println("El denominador es: " + denominador);
             double errorPorcentual = 100 * (sumatoriaError)/denominador;
 
             return errorPorcentual;
@@ -285,7 +287,7 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
         }
     }
 
-    public List<Integer> crearListaHistoricasParaError(int cantPeriodos, LocalDate fechaDesde, Long idArticulo) throws Exception {
+    public List<Integer> crearListaHistoricasParaError(long cantPeriodos, LocalDate fechaDesde, Long idArticulo) throws Exception {
         try{
             List<Integer> listaDemandasHistoricas = new ArrayList<>();
 
