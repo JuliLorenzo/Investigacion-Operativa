@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             <a href="#" class="btn btn-info btn-circle btn-sm btn-accion btn-confirmar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a En Curso">
                                 <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                             </a>
-                           
                             <a href="#" class="btn btn-success btn-circle btn-sm btn-finalizar" data-id="${ordenesdecompras.id}" data-toggle="tooltip" title="Cambiar a Finalizado">
                                 <i class="fas fa-check"></i>
                             </a>
@@ -365,20 +364,3 @@ function cancelarOrdenCompra(ordenCompraId) {
             console.error('Error al Cancelada la orden de compra:', error);
         });
 }
-
-// function cancelarOrdenCompra(ordenCompraId) {
-//     fetch(`http://localhost:9090/api/v1/ordenescompras/cancelar/${ordenCompraId}`, {
-//         method: 'PUT'
-//     })
-//         .then(response => {
-//             if (response.ok) {
-//                 alert('Orden de compra Cancelada exitosamente');
-//                 location.reload(); // Recargar la página para reflejar los cambios
-//             } else {
-//                 alert('Error al Cancelada la orden de compra');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error al Cancelada la orden de compra:', error);
-//         });
-// }
