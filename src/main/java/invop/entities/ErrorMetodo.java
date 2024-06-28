@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Builder
 public class ErrorMetodo extends Base {
 
-
     @Column(name = "sumatoria_error")
     private Double porcentajeError;
 

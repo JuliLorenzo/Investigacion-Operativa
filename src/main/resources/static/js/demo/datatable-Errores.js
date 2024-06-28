@@ -101,9 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
     cargarErrores();
 
     //PARA CREAR ERROR
-
-
-    //ESTO ES PARA QUE INGRESE LOS COEFICIENTES DE PONDERACION SEGUN LA CANTIDAD DE PERIODOS
+    //PARA QUE INGRESE LOS COEFICIENTES DE PONDERACION SEGUN LA CANTIDAD DE PERIODOS
     document.querySelector("#cantidadPeriodos").addEventListener("input", function() {
         const coefContainer = document.querySelector("#coefPondContainer");
         const coefAclaracion = document.querySelector("#coefPondAclaracion");
@@ -126,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     });
 
-    //PARA CREAR EL ERROR, ES EL POST
+    //PARA CREAR EL ERROR
     document.querySelector("#guardarError").addEventListener("click", function() {
         const form = document.querySelector("#crearErrorForm");
         const formData = {

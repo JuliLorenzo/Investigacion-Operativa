@@ -12,7 +12,6 @@ import java.util.Map;
 public interface ArticuloService extends BaseService<Articulo, Long> {
     public Articulo findArticuloById(Long id);
     public boolean controlOrdenCompraActiva(Long idArticulo) throws Exception;
-
     public boolean darDeBajaArticulo(Long idArticulo) throws Exception;
     public List<Long> getArticulosSinStock(Map<String, Integer> articulosDetalleVenta);
     public void disminuirStock(Articulo articulo, Integer cantVendida) throws Exception;
@@ -31,10 +30,6 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public int calculoPuntoPedido(Long idArticulo) throws Exception;
     public Integer calculoDemandaAnual(Long idArticulo) throws Exception;
     public int calculoDeLoteOptimo(Long idArticulo) throws Exception;
-
-    //METODOS PARA EL MODELO INTERVALO FIJO
-
-    //METODOS PARA EL MODELO INTERVALO FIJO
     Integer cantidadMaxima(Articulo articulo) throws Exception;
     Integer cantidadAPedir(Articulo articulo) throws Exception;
 
@@ -47,10 +42,8 @@ public interface ArticuloService extends BaseService<Articulo, Long> {
     public void sacarIntervaloFijo(Articulo articulo) throws Exception;
     public void sacarLoteFijo(Articulo articulo) throws Exception;
     public Articulo modificarArticulo(ModificarArticuloDTO articuloAModificar) throws Exception;
-    //fin
 
     public Articulo crearArticulo(Articulo articuloCreado, ProveedorArticulo proveedorArticulo) throws Exception;
-
     Proveedor obtenerProveedorPredeterminado(Long articuloId);
 
 }

@@ -42,14 +42,4 @@ public class ProveedorArticuloController extends BaseControllerImpl<ProveedorArt
         }
     }
 
-    /*
-    @GetMapping("/obtenerTiempoDemoraPromedio")
-
-    public ResponseEntity<?> obtenerTiempoDemoraPromedioProveedores(@RequestParam Long filtroArticulo) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.obtenerTiempoDemoraPromedioProveedores(filtroArticulo));
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\": \"" + e.getMessage() + "\"}"));
-        }
-    }*/
 }

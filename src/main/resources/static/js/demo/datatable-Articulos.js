@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             const tableBody = document.querySelector("#articulos-table tbody");
             data.forEach(articulo => {
-                //articulo.loteOptimoArticulo = articulo.loteOptimoArticulo;
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${articulo.id}</td>
@@ -255,15 +254,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         const defaultOption = document.createElement("option");
                         defaultOption.textContent = articulo.proveedorPredeterminado.nombreProveedor;
                         proveedorOriginalId = articulo.proveedorPredeterminado.id;
-                        //const defaultOption = $('<option>').text(articulo.proveedorPredeterminado.nombreProveedor).attr('value', articulo.proveedorPredeterminado.id);
                         proveedorSelect.append(defaultOption);
 
                         proveedoresarticulos.forEach(function(proveedorarticulo) {
                             const proveedor = proveedorarticulo.proveedor;
                             const option = $('<option>').text(proveedor.nombreProveedor).attr('value', proveedor.id);
-                            /*if (articulo.proveedorPredeterminado && proveedor.id === articulo.proveedorPredeterminado.id) {
-                                option.attr('selected', 'selected');
-                            }*/
+
                             proveedorSelect.append(option);
                         });
                     },
@@ -302,7 +298,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             console.log('ID del proveedor seleccionado:', proveedorId);
 
-            //proveedorId = proveedorId ? parseInt(proveedorId, 10) : null;
             var formData = {
                 idArticulo: articuloId,
                 nombreArticulo: $('#nombreParaModificar').val(),
@@ -345,20 +340,4 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }})
 
-//PARA MODIFICACION DE ARTICULOS
 
-
-//fetch UN solo articulo
-/*async function obtenerArticuloSeleccionado(idArticulo) {
-    try {
-        const response = await fetch(`http://localhost:9090/api/v1/articulos/${idArticulo}`);
-        if (!response.ok) {
-            throw new Error('No se pudo obtener el artículo');
-        }
-        const articulo = await response.json();
-        return articulo;
-    } catch (error) {
-        console.error("Error al obtener el artículo:", error);
-        throw error; // Puedes relanzar el error para manejarlo en el contexto que llame a esta función
-    }
-}*/

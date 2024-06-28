@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch("http://localhost:9090/api/v1/demandashistoricas")
         .then(response => response.json())
         .then(data => {
-            //console.log(data); // Verifica la estructura de los datos <td>${demandashistoricas.ventaList ? demandashistoricas.ventaList.map(venta => venta.detalle).join(', ') : 'N/A'}</td>
             const tableBody = document.querySelector("#demandahistorica-table tbody");
             data.forEach(demandashistoricas => {
                 const row = document.createElement("tr");

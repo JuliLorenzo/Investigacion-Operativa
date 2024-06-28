@@ -40,45 +40,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
 
-
-    /*
-    * document.querySelectorAll('.ver-detalles').forEach(button => {
-        button.addEventListener('click', function() {
-            const idVenta = this.getAttribute('data-id-venta');
-            if (idVenta) {
-                sessionStorage.setItem('idVenta', idVenta);
-                console.log(`ID de venta ${idVenta} guardado en sessionStorage.`);
-                window.location.href = 'VentaDetalle.html';
-            } else {
-    let j = 0;
-    document.querySelectorAll('.ver-detalles').forEach(button => {
-        button.add()('click', function(){
-            const idVenta = this.getAttribute('data-id-venta');
-            if(idVenta){
-                sessionStorage.setItem('idVenta', idVenta);
-                localStorage.setItem('idVenta', idVenta);
-                //console.log("EL id anets de mandar es: ",localStorage.getItem(idVenta));
-
-                window.location.href = `VentaDetalle.html`;
-            }else{
-                console.error('ID de venta no encontrado.');
-            }
-        });
-        j++;
-    });
-    document.getElementById('ver-detalles').addEventListener('click', function() {
-        const idVenta = this.getAttribute('data-id-venta');
-        if(idVenta){
-            sessionStorage.setItem('idVenta', idVenta);
-            localStorage.setItem('idVenta', idVenta);
-            //console.log("EL id anets de mandar es: ",localStorage.getItem(idVenta));
-
-            window.location.href = `VentaDetalle.html`;
-        }else{
-            console.error('ID de venta no encontrado.');
-        }
-    });*/
-
     // Agregar funcionalidad para agregar detalles dinámicos
     document.getElementById('agregarDetalleBtn').addEventListener('click', function() {
         agregarDetalle();

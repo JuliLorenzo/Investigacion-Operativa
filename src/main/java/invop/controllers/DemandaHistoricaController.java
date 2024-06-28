@@ -30,7 +30,6 @@ public class DemandaHistoricaController extends BaseControllerImpl<DemandaHistor
         try {
             LocalDate fechaDesde = demandaHistorica.getFechaDesde();
             LocalDate fechaHasta = demandaHistorica.getFechaHasta();
-            //LocalDateTime fechaAlta = LocalDateTime.now();
             return ResponseEntity.status(HttpStatus.OK).body(demandaHistoricaService.crearDemandaHistorica(fechaDesde, fechaHasta, demandaHistorica.getIdArticulo()));
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Articulo no encontrado");

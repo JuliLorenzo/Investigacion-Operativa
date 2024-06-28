@@ -33,7 +33,6 @@ public class ArticuloController extends BaseControllerImpl<Articulo, ArticuloSer
         this.articuloService = articuloService;
     }
 
-    //Revisar si queremos devolver un String en vez de un boolean (y cambiar las exception)
     @GetMapping("/{id}/control-orden-compra")
     public ResponseEntity<Boolean> controlOrdenCompraActiva(@PathVariable Long id) {
         try {

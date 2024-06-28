@@ -31,7 +31,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     public DemandaHistoricaServiceImpl(DemandaHistoricaRepository demandaHistoricaRepository, VentaRepository ventaRepository, ArticuloRepository articuloRepository){
         super(demandaHistoricaRepository);
         this.demandaHistoricaRepository = demandaHistoricaRepository;
-        //this.ventaService = ventaService;
         this.articuloRepository = articuloRepository;
         this.ventaRepository = ventaRepository;
     }
@@ -60,7 +59,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
     }
 
     public Integer calcularDemandaHistorica(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo){
-        //System.out.println("La fecha desde es: "+ fechaDesde + " la fecha hasta es: "+ fechaHasta);
         int cantidadTotal = calcularDemandaHistoricaArticulo(fechaDesde, fechaHasta, idArticulo);
         return cantidadTotal;
     }
@@ -84,7 +82,6 @@ public class DemandaHistoricaServiceImpl extends BaseServiceImpl<DemandaHistoric
         DemandaHistorica demandaHistorica = new DemandaHistorica();
         demandaHistorica.setFechaDesde(fechaDesde);
         demandaHistorica.setFechaHasta(fechaHasta);
-        //demandaHistorica.setFechaAlta(fechaAlta);
         if(cantidadTotal < 0){
             cantidadTotal = 0;
         }

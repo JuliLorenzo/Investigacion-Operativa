@@ -128,50 +128,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    /*function submitForm() {
-        const form = document.querySelector("#crearPrediccionForm");
-        const formData = new FormData(form);
-        const datosPrediccion = {
-            idArticulo: formData.get("articulo"),
-            cantidadPeriodosAdelante: parseInt(formData.get("cantidadPeriodosAdelante")),
-            mesAPredecir: parseInt(formData.get("mesAPredecir")),
-            anioAPredecir: parseInt(formData.get("anioAPredecir")),
-            nombreMetodoPrediccion: formData.get("metodo"),
-            cantidadDemandaAnualTotal: formData.get("cantidadDemandaAnualTotal") ? parseInt(formData.get("cantidadDemandaAnualTotal")) : null,
-            cantidadPeriodosHistoricos: formData.get("cantidadPeriodosHistoricos") ? parseInt(formData.get("cantidadPeriodosHistoricos")) : null,
-            coeficientesPonderacion: Array.from(document.querySelectorAll('[name="coeficientesPonderacion"]')).map(input => parseFloat(input.value)) || null,
-            alfa: formData.get("alfa") ? parseFloat(formData.get("alfa")) : null
-        };
-        console.log(datosPrediccion);
-        fetch("http://localhost:9090/api/v1/prediccionesdemandas/crearPredicciones", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(datosPrediccion)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Predicción creada");
-                console.log()
-            })
-            .catch(error => {
-                console.error("Error al crear predicciones:", error);
-            });
-    }*/
 
-    //document.getElementById('guardarPrediccion').addEventListener('click', submitForm);
     document.querySelector("#guardarPrediccion").addEventListener("click",
         function () {
-        if(document.querySelector('#metodo').value != "ESTACIONALIDAD" || document.querySelector('#metodo').value != "REGRESION_LINEAL" || document.querySelector('#metodo').value != "PROMEDIO_MOVIL_PONDERADO" || document.querySelector('#metodo').value != "PROMEDIO_MOVIL_SUAVIZADO") {
+        console.log("Nombre del metodo: ", document.querySelector('#metodo').value)
+        /*if(document.querySelector('#metodo').value == "Método Desconocido" || document.querySelector('#metodo').value == null) {
             alert("Para predecir con este artículo debe primero guardar el método predeterminado. Para ello debe calcular el error para ese artículo.");
             return;
-        }
+        }*/
             const form = document.querySelector("#crearPrediccionForm");
             let periodosHistoricos = null;
             let alfa = null;

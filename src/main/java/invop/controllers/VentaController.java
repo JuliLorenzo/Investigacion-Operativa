@@ -67,10 +67,6 @@ public class VentaController extends BaseControllerImpl<Venta, VentaServiceImpl>
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).build();
         }
 
-        // if (!articulosSinStock.isEmpty()) {
-        // throw new RuntimeException(String.format("Hay articulos sin stock: %s", articulosSinStock));
-        // ventaService.crearVenta(ventaDTO);
-        // return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

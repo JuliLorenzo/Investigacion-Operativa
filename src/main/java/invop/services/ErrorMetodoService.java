@@ -15,9 +15,7 @@ public interface ErrorMetodoService extends BaseService<ErrorMetodo, Long> {
 
     public Integer calcularSumaPredicciones(DatosPrediccionDTO datosError) throws Exception;
     public List<Integer> crearListaHistoricasParaError(long cantPeriodos, LocalDate fechaDesde, Long idArticulo) throws Exception;
-
     public Double calculoErrorTotal(DatosPrediccionDTO datosError) throws Exception;
-
     public ErrorMetodo devolverMenorError(Long idArticulo) throws Exception;
     public ErrorMetodo crearErrorMetodoPMP(DatosPrediccionDTO datosError) throws Exception;
     public ErrorMetodo crearErrorMetodoPMPS(DatosPrediccionDTO datosError) throws Exception;

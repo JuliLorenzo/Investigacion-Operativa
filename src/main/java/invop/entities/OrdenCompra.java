@@ -34,11 +34,6 @@ public class OrdenCompra extends Base{
     @JoinColumn(name = "id_proveedor")
     private Proveedor proveedor;
 
-    /*
-    @Column(name = "total_orden_compra")
-    private Double totalOrdenCompra;
-    */
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name="id_orden_compra")
     @Builder.Default

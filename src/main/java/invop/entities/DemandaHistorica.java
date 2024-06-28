@@ -23,7 +23,6 @@ public class DemandaHistorica extends Base {
     @Column(name = "fecha_hasta")
     private LocalDate fechaHasta;
 
-    //@NotNull
     @Column(name = "cantidad_vendida")
     private Integer cantidadVendida;
 
@@ -32,12 +31,5 @@ public class DemandaHistorica extends Base {
     @JoinColumn(name = "id_articulo")
     private Articulo articulo;
 
-    //@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    //@JoinTable(
-    //        name ="historicas-ventas",
-    //        joinColumns = @JoinColumn(name = "demanda_historica_id"),
-    //        inverseJoinColumns = @JoinColumn(name = "venta_id")
-    //)
-    //private List <Venta> ventaList;
 
 }

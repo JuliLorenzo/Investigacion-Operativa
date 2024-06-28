@@ -82,7 +82,6 @@ public class ProveedorArticuloServiceImpl extends BaseServiceImpl<ProveedorArtic
     }
 
 
-    //POSIBLE ELIMINACION -> REEMPLAZO CON UNA @QUERY
     //Busca el Costo de Pedido de un ProveedorArticulo.
     public ProveedorArticulo findArticuloDeProveedorDeterminado(List<ProveedorArticulo> articulosDelProveedor, Long idArticulo) throws Exception {
         try {

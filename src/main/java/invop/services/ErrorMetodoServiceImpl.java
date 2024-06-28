@@ -90,15 +90,12 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
                     //contador para tener en cuenta solo los meses validos
                     denominador += 1;
                 }
-                System.out.println("Demanda real del mes "+ (i+1) + ": " + demandaReal);
-                System.out.println("Demanda predecida del mes "+ (i+1) + ": " + pronosticoDemanda);
+
             }
-            //esto en caso de que todas las demandas reales sean 0 (no creo q pase pero por las dudas)
+            //esto en caso de que todas las demandas reales sean 0
             if(denominador == 0){
                 denominador = 1;
             }
-            System.out.println("La sumatoria es: " + sumatoriaError);
-            System.out.println("El denominador es: " + denominador);
             double errorPorcentual = 100 * (sumatoriaError)/denominador;
 
             return errorPorcentual;
@@ -109,7 +106,6 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public ErrorMetodo crearErrorMetodoPMP(DatosPrediccionDTO datosError) throws Exception{
         try{
-            System.out.println("ENTRE AL CREAR ERROR DEL PMP");
             datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_PONDERADO);
 
             ErrorMetodo errorPMP = new ErrorMetodo();
@@ -142,7 +138,6 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public ErrorMetodo crearErrorMetodoPMPS(DatosPrediccionDTO datosError) throws Exception{
         try{
-            System.out.println("ENTRE AL CREAR ERROR DEL PMPS");
             datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.PROMEDIO_MOVIL_SUAVIZADO);
 
             ErrorMetodo errorPMPS = new ErrorMetodo();
@@ -175,7 +170,6 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public ErrorMetodo crearErrorMetodoRL(DatosPrediccionDTO datosError) throws Exception{
         try{
-            System.out.println("ENTRE AL CREAR ERROR DEL REGRESION LINEAL");
             datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.REGRESION_LINEAL);
 
             ErrorMetodo errorRL = new ErrorMetodo();
@@ -208,7 +202,6 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
 
     public ErrorMetodo crearErrorMetodoEst(DatosPrediccionDTO datosError) throws Exception{
         try{
-            System.out.println("ENTRE AL CREAR ERROR DEL ESTACIONAL");
             datosError.setNombreMetodoPrediccion(NombreMetodoPrediccion.ESTACIONALIDAD);
 
             ErrorMetodo errorEst = new ErrorMetodo();

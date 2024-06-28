@@ -45,22 +45,6 @@ public class VentaServiceImpl extends BaseServiceImpl<Venta, Long> implements Ve
         }
     }
 
-//    public Integer calcularDemandaHistoricaArticulo(LocalDate fechaDesde, LocalDate fechaHasta, Long idArticulo) {
-//        List<Venta> ventas = ventaRepository.findVentasByFechas(fechaDesde, fechaHasta);
-//
-//        int cantidadTotalVendida = 0;
-//
-//        //recorrer ventas y acumular la cantidad vendida del articulo
-//        for (Venta venta : ventas) {
-//            for (VentaDetalle detalle : venta.getVentaDetalles()) {
-//                if (detalle.getArticulo().getId().equals(idArticulo)) {
-//                    cantidadTotalVendida = cantidadTotalVendida + detalle.getCantidadVendida();
-//
-//                }
-//            }
-//        }
-//        return cantidadTotalVendida;
-//    }
 
     //Crear una Venta
     public Venta crearVenta(VentaDto ventaDto) throws Exception {

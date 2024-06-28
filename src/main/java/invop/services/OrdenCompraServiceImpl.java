@@ -73,7 +73,6 @@ public class OrdenCompraServiceImpl extends BaseServiceImpl<OrdenCompra, Long> i
     }
 
     //CREAR ORDEN DE COMPRA AUTOMATICA
-
     @Override
     @Transactional
     public OrdenCompra crearOrdenCompraAutomatica(Articulo articulo) throws Exception{
