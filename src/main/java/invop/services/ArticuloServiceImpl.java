@@ -347,7 +347,7 @@ public class ArticuloServiceImpl extends BaseServiceImpl<Articulo, Long> impleme
                 Integer cantidadArticulo = articulo.getCantidadArticulo();
                 Integer stockSeguridadArticulo = articulo.getStockSeguridadArticulo();
 
-                if(cantidadArticulo!= null && stockSeguridadArticulo != null){
+                if(cantidadArticulo != null && stockSeguridadArticulo != null){
                     if(cantidadArticulo <= stockSeguridadArticulo){
                         articulosFaltantes.add(articulo);
                     }

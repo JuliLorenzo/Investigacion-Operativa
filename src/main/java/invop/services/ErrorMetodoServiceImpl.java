@@ -268,11 +268,11 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
     public Double calculoErrorTotal(DatosPrediccionDTO datosError) throws Exception{
         try{
             int valorDemandaReal = demandaHistoricaService.calcularDemandaHistorica(datosError.getFechaDesde(), datosError.getFechaHasta(), datosError.getIdArticulo());
-
+            int cantidadMeses = (int)ChronoUnit.MONTHS.between(datosError.getFechaDesde(), datosError.getFechaHasta());
             int valorPrediccionDemanda = calcularSumaPredicciones(datosError);
 
             double numerador = (double)100 * Math.abs(valorDemandaReal - valorPrediccionDemanda) / valorDemandaReal;
-            double valorError = numerador/12;
+            double valorError = numerador/ cantidadMeses;
 
             return valorError;
         }catch(Exception e){
@@ -301,9 +301,10 @@ public class ErrorMetodoServiceImpl extends BaseServiceImpl<ErrorMetodo, Long> i
     }
     public Integer calcularSumaPredicciones(DatosPrediccionDTO datosError) throws Exception {
         try{
+            int cantidadMeses = (int)ChronoUnit.MONTHS.between(datosError.getFechaDesde(), datosError.getFechaHasta());
 
             Integer sumaPredicciones = 0;
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < cantidadMeses; i++) {
                 datosError.setMesAPredecir((datosError.getFechaDesde().plusMonths(i).withDayOfMonth(1)).getMonthValue());
 
                 int pronosticoDemanda = 0;
