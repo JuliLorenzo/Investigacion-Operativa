@@ -365,3 +365,20 @@ function cancelarOrdenCompra(ordenCompraId) {
             console.error('Error al Cancelada la orden de compra:', error);
         });
 }
+
+// function cancelarOrdenCompra(ordenCompraId) {
+//     fetch(`http://localhost:9090/api/v1/ordenescompras/cancelar/${ordenCompraId}`, {
+//         method: 'PUT'
+//     })
+//         .then(response => {
+//             if (response.ok) {
+//                 alert('Orden de compra Cancelada exitosamente');
+//                 location.reload(); // Recargar la página para reflejar los cambios
+//             } else {
+//                 alert('Error al Cancelada la orden de compra');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error al Cancelada la orden de compra:', error);
+//         });
+// }
