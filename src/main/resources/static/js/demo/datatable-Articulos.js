@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${articulo.modeloInventario}</td>
                     <td>${articulo.proveedorPredeterminado ? articulo.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
                     <td>${articulo.demandaAnualArticulo}</td>
+                    <td>${articulo.cantidadMaximaArticulo}</td>
                     <td>${articulo.tiempoRevisionArticulo}</td>
                     <td>${articulo.loteOptimoArticulo}</td>
                     <td>${articulo.puntoPedidoArticulo}</td>
@@ -145,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <td>${response.modeloInventario}</td>
                     <td>${response.proveedorPredeterminado ? response.proveedorPredeterminado.nombreProveedor : 'No asignado'}</td>
                     <td>${response.demandaAnualArticulo}</td>
+                    <td>${response.cantidadMaximaArticulo}</td>
                     <td>${response.tiempoRevisionArticulo}</td>
                     <td>${response.loteOptimoArticulo}</td>
                     <td>${response.puntoPedidoArticulo}</td>
