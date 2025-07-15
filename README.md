@@ -30,4 +30,4 @@ Este proyecto fue desarrollado como trabajo final para la materia Investigación
 3. Ejecutar `./gradlew bootRun` o desde el IDE.
 
 ## Acerca del proyecto
-Proyecto grupal realizado en el marco de la carrera Ingeniería en Sistemas de Información. Participé activamente en el desarrollo backend, colaborando en la implementación de la lógica de negocio, servicios, controladores y procesos de predicción, automatización de órdenes y gestión de datos.
+Proyecto grupal realizado en el marco de la carrera Ingeniería en Sistemas de Información. 
